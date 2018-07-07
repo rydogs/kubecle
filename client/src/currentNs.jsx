@@ -41,7 +41,7 @@ class CurrentNs extends React.Component {
   
       return (
         <form className={classes.container} noValidate autoComplete="off" action="" onSubmit={() => this.handleSubmit()}>
-            <TextField inputStyle={classes.input} label="Namespace" required id="currentNs" value={this.state.namespace} className={classes.textField} margin="normal" onChange={(e) => this.handleChange(e)} />
+            <TextField label="Namespace" required id="currentNs" value={this.state.namespace} className={classes.textField} margin="normal" onChange={(e) => this.handleChange(e)} />
         </form>
       )
     }

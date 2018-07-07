@@ -38,7 +38,9 @@ class Pods extends React.Component {
         super(props);
         this.state = {
             pods: [],
+            time: new Date(),
         };
+        this.intervalID = setInterval(() => this.tick(), 10000);
     }
 
     componentDidMount() {
@@ -49,9 +51,13 @@ class Pods extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.currentNs !== prevProps.currentNs) {
+        if (this.props.currentNs !== prevProps.currentNs || this.state.time !== prevState.time) {
             this.componentDidMount();
         }
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.intervalID);
     }
 
     formatPodStatus(status) {
@@ -64,6 +70,10 @@ class Pods extends React.Component {
         } else {
             return "Unknown";
         }
+    }
+
+    tick() {
+        this.setState({time: new Date()});
     }
 
     imageName(image) {
