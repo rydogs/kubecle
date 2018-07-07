@@ -13,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
+import Badge from '@material-ui/core/Badge';
 import Moment from 'react-moment';
 import { connect } from "react-redux";
 
@@ -65,6 +66,23 @@ class Pods extends React.Component {
         }
     }
 
+    imageName(image) {
+        var imgStr;
+        if (image.includes("/")) {
+            imgStr = image.split("/")[1]
+        } else {
+            imgStr = image;
+        }
+        var parts = imgStr.split(":");
+        if (parts.length > 1) {
+            return (
+                <span>{parts[1]}</span>
+            );
+        } else {
+            return <span>{parts[0]}</span>;
+        }
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -81,7 +99,8 @@ class Pods extends React.Component {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Name</TableCell>
-                                <TableCell>Image</TableCell>
+                                <TableCell>Container Name</TableCell>
+                                <TableCell>Image Version</TableCell>
                                 <TableCell>Status</TableCell>
                                 <TableCell>Restart Count</TableCell>
                                 <TableCell>Created</TableCell>
@@ -96,7 +115,10 @@ class Pods extends React.Component {
                                                 {s.metadata.name}
                                             </TableCell>
                                             <TableCell component="th" scope="row">
-                                                {c.image.includes("/") ? c.image.split("/")[1] : c.image}
+                                                {c.name}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                {this.imageName(c.image)}
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 {this.formatPodStatus(s.status.containerStatuses[i])}

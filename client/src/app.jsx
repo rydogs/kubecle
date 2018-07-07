@@ -21,7 +21,7 @@ import CurrentNs from './currentNs';
 import { Route, Link, HashRouter } from "react-router-dom";
 
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const styles = theme => ({
   root: {
