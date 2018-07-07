@@ -26,6 +26,12 @@ app.get('/api/namespace/:namespace/pods', asyncHandler(async (req, res) => {
   res.send(pods);
 }));
 
+app.delete('/api/namespace/:namespace/pods/:podname', asyncHandler(async (req, res) => {
+  let pods = await client.api.v1.namespaces(req.params.namespace).pods(req.params.podname).delete();
+  res.setHeader('Content-Type', 'application/json');
+  res.send(pods);
+}));
+
 app.get('/api/namespace/:namespace/services', asyncHandler(async (req, res) => {
   let pods = await client.api.v1.namespaces(req.params.namespace).services().get();
   res.setHeader('Content-Type', 'application/json');

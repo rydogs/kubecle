@@ -14,6 +14,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
 import Badge from '@material-ui/core/Badge';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Moment from 'react-moment';
 import { connect } from "react-redux";
 
@@ -50,6 +51,8 @@ class Pods extends React.Component {
             });
     }
 
+
+
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentNs !== prevProps.currentNs || this.state.time !== prevState.time) {
             this.componentDidMount();
@@ -58,6 +61,18 @@ class Pods extends React.Component {
 
     componentWillUnmount() {
         clearInterval(this.intervalID);
+    }
+
+    tick() {
+        this.setState({time: new Date()});
+    }
+
+    deletePod(podName) {
+        axios.delete(`/api/namespace/${this.props.currentNs}/pods/${podName}`)
+            .then(res => {
+                console.log(res);
+                this.tick();
+            });
     }
 
     formatPodStatus(status) {
@@ -70,10 +85,6 @@ class Pods extends React.Component {
         } else {
             return "Unknown";
         }
-    }
-
-    tick() {
-        this.setState({time: new Date()});
     }
 
     imageName(image) {
@@ -114,6 +125,7 @@ class Pods extends React.Component {
                                 <TableCell>Status</TableCell>
                                 <TableCell>Restart Count</TableCell>
                                 <TableCell>Created</TableCell>
+                                <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -138,6 +150,9 @@ class Pods extends React.Component {
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                <Button size="small" color="secondary" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>
                                             </TableCell>
                                         </TableRow>
                                     );
