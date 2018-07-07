@@ -17,6 +17,7 @@ import GroupWork from '@material-ui/icons/GroupWork';
 import Services from './services';
 import Deployments from './deployments';
 import Pods from './pods';
+import CurrentNs from './currentNs';
 import { Route, Link, HashRouter } from "react-router-dom";
 
 
@@ -55,9 +56,12 @@ class App extends Component {
         <div className={classes.root}>
           <AppBar position="absolute" className={classes.appBar}>
             <Toolbar>
-              <Typography variant="title" color="inherit" noWrap>
+              <Typography variant="title" color="inherit" noWrap style={{ flex: 1 }}>
                 Kubecle
             </Typography>
+            <div >
+              <CurrentNs />
+            </div>
             </Toolbar>
           </AppBar>
           <Drawer

@@ -10,6 +10,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Moment from 'react-moment';
+import { connect } from "react-redux";
 
 import axios from 'axios';
 
@@ -23,6 +25,10 @@ const styles = theme => ({
     },
 });
 
+const mapStateToProps = state => {
+    return { currentNs: state.currentNs };
+};
+
 class Deployments extends React.Component {
     constructor(props) {
         super(props);
@@ -32,11 +38,16 @@ class Deployments extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`/api/namespace/dev05/deployments`)
+        axios.get(`/api/namespace/${this.props.currentNs}/deployments`)
             .then(res => {
-                console.log(res.data.body.items);
                 this.setState({ deployments: res.data.body.items });
             });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.currentNs !== prevProps.currentNs) {
+            this.componentDidMount();
+        }
     }
 
     render() {
@@ -56,27 +67,33 @@ class Deployments extends React.Component {
                                 <TableCell>Name</TableCell>
                                 <TableCell>Replicas</TableCell>
                                 <TableCell>Image</TableCell>
+                                <TableCell>Port</TableCell>
                                 <TableCell>Created</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {this.state.deployments.map(s => {
-                                return (
-                                    <TableRow key={s.metadata.id}>
-                                        <TableCell component="th" scope="row">
-                                            {s.metadata.name}
-                                        </TableCell>
-                                        <TableCell component="th" scope="row">
-                                            {s.spec.replicas}
-                                        </TableCell>
-                                        <TableCell component="th" scope="row">
-                                            {s.spec.template.spec.containers[0].image.includes("/") ? s.spec.template.spec.containers[0].image.split("/")[1] : s.spec.template.spec.containers[0].image}
-                                        </TableCell>
-                                        <TableCell component="th" scope="row">
-                                            {s.metadata.creationTimestamp}
-                                        </TableCell>
-                                    </TableRow>
-                                );
+                                return s.spec.template.spec.containers.map(c => {
+                                    return (
+                                        <TableRow key={s.metadata.id}>
+                                            <TableCell component="th" scope="row">
+                                                {c.name}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                {s.spec.replicas}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                {c.image.includes("/") ? c.image.split("/")[1] : c.image}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                {c.ports && c.ports[0].containerPort}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })
                             })}
                         </TableBody>
                     </Table>
@@ -90,4 +107,4 @@ Deployments.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Deployments);
+export default withStyles(styles)(connect(mapStateToProps)(Deployments));
