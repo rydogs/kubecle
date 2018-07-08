@@ -28,11 +28,15 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
+const mapStateToProps = state => {
+    return { currentNs: state.currentNs };
+};
+
 class CurrentNs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            namespace: 'default',
+            namespace: props.currentNs,
         };
     }
     
@@ -60,4 +64,4 @@ CurrentNs.propTypes = {
     classes: PropTypes.object.isRequired,
 };
   
-export default withStyles(styles)(connect(null, mapDispatchToProps)(CurrentNs));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(CurrentNs));

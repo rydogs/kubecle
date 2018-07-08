@@ -15,10 +15,12 @@ import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
 import Badge from '@material-ui/core/Badge';
 import DeleteIcon from '@material-ui/icons/Delete';
+import ListIcon from '@material-ui/icons/List'
+import LinearProgress from '@material-ui/core/LinearProgress';
 import Moment from 'react-moment';
 import { connect } from "react-redux";
-
 import axios from 'axios';
+import LogViwer from './logViwer';
 
 const styles = theme => ({
     root: {
@@ -40,8 +42,10 @@ class Pods extends React.Component {
         this.state = {
             pods: [],
             time: new Date(),
+            logViwerOpen: false,
+            logUrl: '',
         };
-        this.intervalID = setInterval(() => this.tick(), 10000);
+        this.intervalID = setInterval(() => this.tick(), 5000);
     }
 
     componentDidMount() {
@@ -50,8 +54,6 @@ class Pods extends React.Component {
                 this.setState({ pods: res.data.body.items });
             });
     }
-
-
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.currentNs !== prevProps.currentNs || this.state.time !== prevState.time) {
@@ -65,6 +67,11 @@ class Pods extends React.Component {
 
     tick() {
         this.setState({time: new Date()});
+    }
+    
+    viewLog(podName, containerName) {
+        console.log(`get logs.....${podName} ${containerName}`);
+        this.setState({logViwerOpen: true, logUrl: `/api/namespace/${this.props.currentNs}/pods/${podName}/logs/${containerName}`});
     }
 
     deletePod(podName) {
@@ -115,7 +122,7 @@ class Pods extends React.Component {
                     </Typography>
                 </Grid>
                 <Paper className={classes.root}>
-
+                    <LinearProgress variant="query" />
                     <Table className={classes.table}>
                         <TableHead>
                             <TableRow>
@@ -132,7 +139,7 @@ class Pods extends React.Component {
                             {this.state.pods.map(s => {
                                 return s.spec.containers.map((c, i) => {
                                     return (
-                                        <TableRow key={s.metadata.id}>
+                                        <TableRow key={s.metadata.uid + c.name}>
                                             <TableCell component="th" scope="row">
                                                 {s.metadata.name}
                                             </TableCell>
@@ -152,7 +159,10 @@ class Pods extends React.Component {
                                                 <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
                                             </TableCell>
                                             <TableCell component="th" scope="row">
-                                                <Button size="small" color="secondary" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>
+                                                <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                    <Button mini color="primary" variant="fab" onClick={() => this.viewLog(s.metadata.name, c.name)}><ListIcon /></Button>
+                                                    <Button mini color="secondary" variant="fab" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -160,6 +170,9 @@ class Pods extends React.Component {
                             })}
                         </TableBody>
                     </Table>
+                    <div>
+                        <LogViwer logUrl={this.state.logUrl} open={this.state.logViwerOpen} onClose={() => this.setState({logViwerOpen: false})} />
+                    </div>
                 </Paper>
             </div>
         );

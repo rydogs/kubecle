@@ -26,6 +26,14 @@ app.get('/api/namespace/:namespace/pods', asyncHandler(async (req, res) => {
   res.send(pods);
 }));
 
+app.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandler(async (req, res) => {
+  let logs = await client.api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.get({
+    qs: { container: req.params.containerName }
+  });
+  res.setHeader('Content-Type', 'application/text');
+  res.send(logs.body);
+}));
+
 app.delete('/api/namespace/:namespace/pods/:podname', asyncHandler(async (req, res) => {
   let pods = await client.api.v1.namespaces(req.params.namespace).pods(req.params.podname).delete();
   res.setHeader('Content-Type', 'application/json');
@@ -36,12 +44,6 @@ app.get('/api/namespace/:namespace/services', asyncHandler(async (req, res) => {
   let pods = await client.api.v1.namespaces(req.params.namespace).services().get();
   res.setHeader('Content-Type', 'application/json');
   res.send(pods);
-}));
-
-app.get('/api/namespace/:namespace/pods/:pods/logs', asyncHandler(async (req, res) => {
-  let logs = await client.api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.get();
-  res.setHeader('Content-Type', 'application/json');
-  res.send(logs);
 }));
 
 var server = app.listen(process.env.PORT || 6888, async () => {
