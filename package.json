@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Useful ui for kubernettes",
   "main": "index.js",
+  "engineStrict": true,
+  "engines": {
+    "node": ">=8.0.0",
+    "npm": ">=5.6.0"
+  },
   "scripts": {
     "start": "NODE_ENV=production npm --prefix client run build && node server/index",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +18,7 @@
     "k8s"
   ],
   "author": "Ryan Liu",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.16.3",
     "express-async-handler": "^1.1.3",
