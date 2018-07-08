@@ -5,6 +5,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AceEditor from 'react-ace';
 import beautify from 'json-beautify';
+import 'brace/mode/json';
+import 'brace/theme/monokai';
 
 const styles = theme => ({
 });
