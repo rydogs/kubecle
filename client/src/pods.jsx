@@ -15,12 +15,14 @@ import ListItem from '@material-ui/core/ListItem';
 import Button from '@material-ui/core/Button';
 import Badge from '@material-ui/core/Badge';
 import DeleteIcon from '@material-ui/icons/Delete';
+import InfoIcon from '@material-ui/icons/Info';
 import ListIcon from '@material-ui/icons/List'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Moment from 'react-moment';
 import { connect } from "react-redux";
 import axios from 'axios';
-import LogViwer from './logViwer';
+import LogViewer from './logViewer';
+import Editor from './editor';
 
 const styles = theme => ({
     root: {
@@ -42,8 +44,14 @@ class Pods extends React.Component {
         this.state = {
             pods: [],
             time: new Date(),
-            logViwerOpen: false,
-            logUrl: '',
+            logViewer: {
+                open: false,
+                logUrl: ''
+            },
+            editor: {
+                open: false,
+                content: {},
+            }
         };
         this.intervalID = setInterval(() => this.tick(), 5000);
     }
@@ -70,8 +78,11 @@ class Pods extends React.Component {
     }
     
     viewLog(podName, containerName) {
-        console.log(`get logs.....${podName} ${containerName}`);
-        this.setState({logViwerOpen: true, logUrl: `/api/namespace/${this.props.currentNs}/pods/${podName}/logs/${containerName}`});
+        this.setState({logViewer: {open: true, logUrl: `/api/namespace/${this.props.currentNs}/pods/${podName}/logs/${containerName}`}});
+    }
+
+    showInfo(c) {
+        this.setState({editor: {open: true, content: c}});
     }
 
     deletePod(podName) {
@@ -160,6 +171,7 @@ class Pods extends React.Component {
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                    <Button mini color="primary" variant="fab" onClick={() => this.showInfo(s)}><InfoIcon /></Button>
                                                     <Button mini color="primary" variant="fab" onClick={() => this.viewLog(s.metadata.name, c.name)}><ListIcon /></Button>
                                                     <Button mini color="secondary" variant="fab" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>
                                                 </div>
@@ -171,7 +183,8 @@ class Pods extends React.Component {
                         </TableBody>
                     </Table>
                     <div>
-                        <LogViwer logUrl={this.state.logUrl} open={this.state.logViwerOpen} onClose={() => this.setState({logViwerOpen: false})} />
+                        <LogViewer logUrl={this.state.logViewer.logUrl} open={this.state.logViewer.open} onClose={() => this.setState({logViewer: {open: false}})} />
+                        <Editor content={this.state.editor.content} readOnly={true} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
                     </div>
                 </Paper>
             </div>

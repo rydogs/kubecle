@@ -11,7 +11,10 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
+import Button from '@material-ui/core/Button';
+import InfoIcon from '@material-ui/icons/info';
 import { connect } from "react-redux";
+import Editor from './editor';
 
 import axios from 'axios';
 
@@ -34,6 +37,10 @@ class Deployments extends React.Component {
         super(props);
         this.state = {
             deployments: [],
+            editor: {
+                open: false,
+                content: {},
+            }
         };
     }
 
@@ -48,6 +55,10 @@ class Deployments extends React.Component {
         if (this.props.currentNs !== prevProps.currentNs) {
             this.componentDidMount();
         }
+    }
+
+    showInfo(c) {
+        this.setState({editor: {open: true, content: c}});
     }
 
     render() {
@@ -69,13 +80,14 @@ class Deployments extends React.Component {
                                 <TableCell>Image</TableCell>
                                 <TableCell>Port</TableCell>
                                 <TableCell>Created</TableCell>
+                                <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {this.state.deployments.map(s => {
                                 return s.spec.template.spec.containers.map(c => {
                                     return (
-                                        <TableRow key={s.metadata.id}>
+                                        <TableRow key={s.metadata.uid}>
                                             <TableCell component="th" scope="row">
                                                 {c.name}
                                             </TableCell>
@@ -91,12 +103,18 @@ class Deployments extends React.Component {
                                             <TableCell component="th" scope="row">
                                                 <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
                                             </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                    <Button mini color="primary" variant="fab" onClick={() => this.showInfo(s)}><InfoIcon /></Button>
+                                                </div>
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })
                             })}
                         </TableBody>
                     </Table>
+                    <Editor content={this.state.editor.content} readOnly={true} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
                 </Paper>
             </div>
         );
