@@ -27,6 +27,11 @@ module.exports = {
                     presets: ['es2015', 'react']
                 },
                 exclude: /node_modules/
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: ['babel-loader', 'eslint-loader']
             }
         ]
     },
