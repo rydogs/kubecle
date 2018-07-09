@@ -29,7 +29,7 @@ It also allows you to perform some basic actions:
 * [Material UI](https://material-ui.com/)
 * [kubernetes-client](https://github.com/godaddy/kubernetes-client)
 * [react-ace](https://github.com/securingsincity/react-ace) editor
-* [react-lazylog](https://github.com/mozilla-frontend-infra/react-lazylog) log viwer
+* [react-lazylog](https://github.com/mozilla-frontend-infra/react-lazylog) log viewer
 
 ## Screenshots
 ![Pods](/screenshot/pods.png)
