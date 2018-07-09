@@ -93,15 +93,20 @@ class Pods extends React.Component {
             });
     }
 
-    formatPodStatus(status) {
-        if (status.state.running) {
-            return <Button size="small" color="primary">Running</Button>;
-        } else if (status.state.waiting) {
-            return <Button size="small" color="secondary">{status.state.waiting.reason}</Button>;
-        } else if (status.state.terminated) {
-            return <Button size="small" color="secondary">{status.state.terminated.reason}</Button>;
+    formatPodStatus(s, i) {
+        if (s.containerStatuses) {
+            let status = s.containerStatuses[i];
+            if (status.state.running) {
+                return <Button size="small" color="primary">Running</Button>;
+            } else if (status.state.waiting) {
+                return <Button size="small" color="secondary">{status.state.waiting.reason}</Button>;
+            } else if (status.state.terminated) {
+                return <Button size="small" color="secondary">{status.state.terminated.reason}</Button>;
+            } else {
+                return "Unknown";
+            }            
         } else {
-            return "Unknown";
+            return <Button size="small" color="secondary">{s.phase} - {s.reason}</Button>;
         }
     }
 
@@ -161,10 +166,10 @@ class Pods extends React.Component {
                                                 {this.imageName(c.image)}
                                             </TableCell>
                                             <TableCell component="th" scope="row">
-                                                {this.formatPodStatus(s.status.containerStatuses[i])}
+                                                {this.formatPodStatus(s.status, i)}
                                             </TableCell>
                                             <TableCell component="th" scope="row">
-                                                {s.status.containerStatuses[i].restartCount}
+                                                {s.status.containerStatuses && s.status.containerStatuses[i].restartCount}
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
