@@ -18,7 +18,7 @@ import Services from './services';
 import Deployments from './deployments';
 import Pods from './pods';
 import CurrentNs from './currentNs';
-import { Route, Link, HashRouter } from "react-router-dom";
+import { Route, Redirect, Link, HashRouter } from "react-router-dom";
 
 
 const drawerWidth = 200;
@@ -107,6 +107,9 @@ class App extends Component {
             <Route path="/deployments" component={Deployments} />
             <Route path="/services" component={Services} />
             <Route path="/pods" component={Pods} />
+            <Route exact path="/" render={()=> (
+              <Redirect to="/pods"/>
+            )}/>
           </main>
         </div>
       </HashRouter>
