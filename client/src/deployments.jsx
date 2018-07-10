@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
 import Button from '@material-ui/core/Button';
-import InfoIcon from '@material-ui/icons/info';
+import BuildIcon from '@material-ui/icons/build';
 import { connect } from "react-redux";
 import Editor from './editor';
 
@@ -39,6 +39,7 @@ class Deployments extends React.Component {
             deployments: [],
             editor: {
                 open: false,
+                editUrl: "",
                 content: {},
             }
         };
@@ -57,8 +58,8 @@ class Deployments extends React.Component {
         }
     }
 
-    showInfo(c) {
-        this.setState({editor: {open: true, content: c}});
+    edit(c) {
+        this.setState({editor: {open: true, content: c, editUrl: `/api/namespace/${this.props.currentNs}/deployments/${c.metadata.name}`}});
     }
 
     render() {
@@ -87,7 +88,7 @@ class Deployments extends React.Component {
                             {this.state.deployments.map(s => {
                                 return s.spec.template.spec.containers.map(c => {
                                     return (
-                                        <TableRow key={s.metadata.uid}>
+                                        <TableRow key={s.metadata.uid + c.name}>
                                             <TableCell component="th" scope="row">
                                                 {c.name}
                                             </TableCell>
@@ -105,7 +106,7 @@ class Deployments extends React.Component {
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <Button mini color="primary" variant="fab" onClick={() => this.showInfo(s)}><InfoIcon /></Button>
+                                                    <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
@@ -114,7 +115,7 @@ class Deployments extends React.Component {
                             })}
                         </TableBody>
                     </Table>
-                    <Editor content={this.state.editor.content} readOnly={true} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
+                    <Editor content={this.state.editor.content} editUrl={this.state.editor.editUrl} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
                 </Paper>
             </div>
         );

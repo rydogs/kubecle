@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser')
 const app = express();
 const path = require('path');
 const beautify = require('json-beautify');
@@ -8,6 +9,7 @@ const config = require('kubernetes-client').config;
 const client = new Client({ config: config.fromKubeconfig(), version: '1.9' });
 
 app.use(express.static(path.join(__dirname, '/../client/dist')));
+app.use(bodyParser.json());
 
 app.get('/api/namespace/', asyncHandler(async (req, res) => {
   const deployments = await client.apis.apps.v1.namespaces().get();
@@ -17,6 +19,15 @@ app.get('/api/namespace/', asyncHandler(async (req, res) => {
 app.get('/api/namespace/:namespace/deployments', asyncHandler(async (req, res) => {
   const deployments = await client.apis.apps.v1.namespaces(req.params.namespace).deployments().get();
   res.json(deployments);
+}));
+
+app.post('/api/namespace/:namespace/deployments/:deployment', asyncHandler(async (req, res) => {
+  try {
+    const updated = await client.apis.apps.v1.namespaces(req.params.namespace).deployments(req.params.deployment).put({ body: req.body });
+    res.json(updated);
+  } catch (err) {
+    if (err.statusCode !== 409) throw err;
+  }
 }));
 
 app.get('/api/namespace/:namespace/pods', asyncHandler(async (req, res) => {

@@ -189,7 +189,7 @@ class Pods extends React.Component {
                     </Table>
                     <div>
                         <LogViewer logUrl={this.state.logViewer.logUrl} open={this.state.logViewer.open} onClose={() => this.setState({logViewer: {open: false}})} />
-                        <Editor content={this.state.editor.content} readOnly={true} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
+                        <Editor content={this.state.editor.content} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
                     </div>
                 </Paper>
             </div>
