@@ -23,7 +23,7 @@ class LogViewer extends React.Component {
         return (
             <Dialog fullWidth={true} maxWidth="md" open={open} onClose={onClose}>
                 <DialogTitle id="simple-dialog-title">Logs</DialogTitle>
-                <LazyLog follow url={logUrl} height={600}></LazyLog>
+                {logUrl && <LazyLog stream follow url={logUrl} height={600}></LazyLog>}
             </Dialog>
         )
     }

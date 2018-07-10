@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const beautify = require('json-beautify');
 const asyncHandler = require('express-async-handler')
 const Client = require('kubernetes-client').Client;
 const config = require('kubernetes-client').config;
@@ -27,7 +28,15 @@ app.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandle
   const logs = await client.api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.get({
     qs: { container: req.params.containerName }
   });
-  res.json(logs.body);
+  lines = logs.body.split('\n').map(s => { 
+    try {
+      return beautify(JSON.parse(s), null, 2, 80);
+    } catch (e) {
+      return s;
+    }
+  });
+  res.contentType("application/text");
+  res.send(lines.join('\n'));
 }));
 
 app.delete('/api/namespace/:namespace/pods/:podname', asyncHandler(async (req, res) => {
