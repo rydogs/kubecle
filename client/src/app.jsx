@@ -17,7 +17,7 @@ import GroupWork from '@material-ui/icons/GroupWork';
 import Services from './services';
 import Deployments from './deployments';
 import Pods from './pods';
-import CurrentNs from './currentNs';
+import Context from './context';
 import { Route, Redirect, Link, HashRouter } from "react-router-dom";
 
 
@@ -60,7 +60,7 @@ class App extends Component {
                 Kubecle
             </Typography>
             <div >
-              <CurrentNs />
+              <Context />
             </div>
             </Toolbar>
           </AppBar>

@@ -26,7 +26,7 @@ class Editor extends React.Component {
     }
 
     render() {
-        const { classes, title, content, editUrl, open, onClose } = this.props;
+        const { classes, title, context, content, editUrl, open, onClose } = this.props;
         return (
             <Dialog fullWidth={true} maxWidth="md" open={open} onClose={onClose}>
                 <DialogTitle id="simple-dialog-title">Describe</DialogTitle>
@@ -45,7 +45,7 @@ class Editor extends React.Component {
                         <Button onClick={onClose} color="primary">
                             Cancel
                         </Button>
-                        <Button onClick={() => this.save(editUrl, onClose)} color="secondary">
+                        <Button onClick={() => this.save(editUrl, context, onClose)} color="secondary">
                             Save
                         </Button>
                     </DialogActions>
@@ -65,11 +65,11 @@ class Editor extends React.Component {
         this.editedContent = newValue;
     }
 
-    save(editUrl, onClose) {
+    save(editUrl, context, onClose) {
         try {
             let json = JSON.parse(this.editedContent);
             delete json.status;
-            axios.post(editUrl, json).then(res => {
+            axios.post(editUrl, {data: json, headers: {'k8s-context': context}}).then(res => {
                 onClose();
             }).catch((e) => {
                 this.error = e;
@@ -85,6 +85,7 @@ Editor.propTypes = {
     onClose: PropTypes.func,
     editUrl: PropTypes.string,
     content: PropTypes.object,
+    context: PropTypes.string,
 };
 
 export default withStyles(styles)(Editor);

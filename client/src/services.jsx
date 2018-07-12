@@ -13,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
 import Button from '@material-ui/core/Button';
 import InfoIcon from '@material-ui/icons/info';
+import Tooltip from '@material-ui/core/Tooltip';
 import Editor from './editor';
 
 import { connect } from "react-redux";
@@ -30,7 +31,7 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => {
-    return { currentNs: state.currentNs };
+    return { currentNs: state.currentNs, currentContext: state.currentContext };
 };
 
 class Services extends React.Component {
@@ -46,14 +47,14 @@ class Services extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`/api/namespace/${this.props.currentNs}/services`)
+        axios.get(`/api/namespace/${this.props.currentNs}/services`, {headers: {'k8s-context': this.props.currentContext}})
             .then(res => {
                 this.setState({ services: res.data.body.items });
             });
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.currentNs !== prevProps.currentNs) {
+        if (this.props.currentNs !== prevProps.currentNs || this.props.currentContext !== prevProps.currentContext) {
             this.componentDidMount();
         }
     }
@@ -105,7 +106,9 @@ class Services extends React.Component {
                                         </TableCell>
                                         <TableCell component="th" scope="row">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <Button mini color="primary" variant="fab" onClick={() => this.showInfo(s)}><InfoIcon /></Button>
+                                                    <Tooltip id="tooltip-top" title="Describe" placement="top">
+                                                        <Button mini color="primary" variant="fab" onClick={() => this.showInfo(s)}><InfoIcon /></Button>
+                                                    </Tooltip>
                                                 </div>
                                         </TableCell>
                                     </TableRow>

@@ -1,14 +1,16 @@
-import { CHANGE_NS } from './actions';
+import { CHANGE_CONTEXT } from './actions';
 
 const initialState = {
-    currentNs: "default"
+    currentNs: "default",
+    currentContext: "",
 };
 
 const rootReducer = (state = initialState, action) => {
     switch (action.type) {
-      case CHANGE_NS: {
+      case CHANGE_CONTEXT: {
         return {
-            currentNs: action.namespace
+            currentNs: action.namespace,
+            currentContext: action.context
         }
       }
       default:
