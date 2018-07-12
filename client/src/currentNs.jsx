@@ -24,12 +24,12 @@ const styles = theme => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeNs: (url) => dispatch(changeNs(url))
+        changeNs: (ns, context) => dispatch(changeNs(ns, context))
     };
 };
 
 const mapStateToProps = state => {
-    return { currentNs: state.currentNs };
+    return { currentNs: state.currentNs, currentContext: state.currentContext };
 };
 
 class CurrentNs extends React.Component {
@@ -37,6 +37,7 @@ class CurrentNs extends React.Component {
         super(props);
         this.state = {
             namespace: props.currentNs,
+            context: props.currentContext,
         };
     }
     
@@ -45,17 +46,22 @@ class CurrentNs extends React.Component {
   
       return (
         <form className={classes.container} noValidate autoComplete="off" action="" onSubmit={() => this.handleSubmit()}>
-            <TextField label="Namespace" required id="currentNs" value={this.state.namespace} className={classes.textField} margin="normal" onChange={(e) => this.handleChange(e)} />
+            <TextField label="Context" required id="currentContext" value={this.state.context} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeContext(e)} />
+            <TextField label="Namespace" required id="currentNs" value={this.state.namespace} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeNs(e)} />
         </form>
       )
     }
 
-    handleChange(event) {
-        this.setState({namespace: event.target.value})
+    handleChangeNs(event) {
+        this.setState({namespace: event.target.value});
+    }
+
+    handleChangeContext(event) {
+        this.setState({namespace: "default", context: event.target.value});
     }
 
     handleSubmit() {
-        this.props.changeNs(this.state.namespace);
+        this.props.changeNs(this.state.namespace, this.state.context);
         event.preventDefault();
     }
 }

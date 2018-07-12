@@ -30,7 +30,7 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => {
-    return { currentNs: state.currentNs };
+    return { currentNs: state.currentNs, currentContext: state.currentContext };
 };
 
 class Deployments extends React.Component {
@@ -47,14 +47,14 @@ class Deployments extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`/api/namespace/${this.props.currentNs}/deployments`)
+        axios.get(`/api/namespace/${this.props.currentNs}/deployments`, {headers: {'k8s-context': this.props.currentContext}})
             .then(res => {
                 this.setState({ deployments: res.data.body.items });
             });
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.currentNs !== prevProps.currentNs) {
+        if (this.props.currentNs !== prevProps.currentNs || this.props.currentContext !== prevProps.currentContext) {
             this.componentDidMount();
         }
     }

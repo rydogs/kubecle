@@ -18,12 +18,12 @@ class LogViewer extends React.Component {
     }
 
     render() {
-        const { classes, title, logUrl, open, onClose } = this.props;
+        const { classes, title, logUrl, context, open, onClose } = this.props;
 
         return (
             <Dialog fullWidth={true} maxWidth="md" open={open} onClose={onClose}>
                 <DialogTitle id="simple-dialog-title">Logs</DialogTitle>
-                {logUrl && <LazyLog stream follow url={logUrl} height={600}></LazyLog>}
+                {logUrl && <LazyLog fetchOptions={{headers: {"k8s-context": context}}} stream follow url={logUrl} height={600}></LazyLog>}
             </Dialog>
         )
     }
@@ -33,6 +33,7 @@ LogViewer.propTypes = {
     classes: PropTypes.object.isRequired,
     onClose: PropTypes.func,
     logUrl: PropTypes.string,
+    context: PropTypes.string,
 };
 
 export default withStyles(styles)(LogViewer);

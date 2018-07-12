@@ -6,24 +6,24 @@ const beautify = require('json-beautify');
 const asyncHandler = require('express-async-handler')
 const Client = require('kubernetes-client').Client;
 const config = require('kubernetes-client').config;
-const client = new Client({ config: config.fromKubeconfig(), version: '1.9' });
+const contextMap = {};
 
 app.use(express.static(path.join(__dirname, '/../client/dist')));
 app.use(bodyParser.json());
 
 app.get('/api/namespace/', asyncHandler(async (req, res) => {
-  const deployments = await client.apis.apps.v1.namespaces().get();
+  const deployments = await getClient(req).apis.apps.v1.namespaces().get();
   res.json(deployments);
 }));
 
 app.get('/api/namespace/:namespace/deployments', asyncHandler(async (req, res) => {
-  const deployments = await client.apis.apps.v1.namespaces(req.params.namespace).deployments().get();
+  const deployments = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).deployments().get();
   res.json(deployments);
 }));
 
 app.post('/api/namespace/:namespace/deployments/:deployment', asyncHandler(async (req, res) => {
   try {
-    const updated = await client.apis.apps.v1.namespaces(req.params.namespace).deployments(req.params.deployment).put({ body: req.body });
+    const updated = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).deployments(req.params.deployment).put({ body: req.body });
     res.json(updated);
   } catch (err) {
     if (err.statusCode !== 409) throw err;
@@ -31,12 +31,12 @@ app.post('/api/namespace/:namespace/deployments/:deployment', asyncHandler(async
 }));
 
 app.get('/api/namespace/:namespace/pods', asyncHandler(async (req, res) => {
-  const pods = await client.api.v1.namespaces(req.params.namespace).pods().get();
+  const pods = await getClient(req).api.v1.namespaces(req.params.namespace).pods().get();
   res.json(pods);
 }));
 
 app.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandler(async (req, res) => {
-  const logs = await client.api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.get({
+  const logs = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.get({
     qs: { container: req.params.containerName }
   });
   lines = logs.body.split('\n').map(s => { 
@@ -51,14 +51,34 @@ app.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandle
 }));
 
 app.delete('/api/namespace/:namespace/pods/:podname', asyncHandler(async (req, res) => {
-  const pods = await client.api.v1.namespaces(req.params.namespace).pods(req.params.podname).delete();
+  const pods = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.podname).delete();
   res.json(pods);
 }));
 
 app.get('/api/namespace/:namespace/services', asyncHandler(async (req, res) => {
-  const pods = await client.api.v1.namespaces(req.params.namespace).services().get();
+  const pods = await getClient(req).api.v1.namespaces(req.params.namespace).services().get();
   res.json(pods);
 }));
+
+function getClient(req) {
+  let contextHeader = req.headers['k8s-context'];
+  let contextKey = contextHeader || 'k8s-default';
+  if (contextMap[contextKey]) {
+    return contextMap[contextKey];
+  } else {
+    if (contextHeader != null && contextHeader !== 'null') {
+      console.log(`load context header: ${contextHeader} ${typeof contextHeader}`);
+      let client = new Client({ config: config.fromKubeconfig(null, contextHeader), version: '1.9' });
+      contextMap[contextKey]=client;
+      return client;
+    } else {
+      console.log('load default...');
+      let client = new Client({ config: config.fromKubeconfig(), version: '1.9' });
+      contextMap['k8s-default']=client;
+      return client;
+    }
+  }
+}
 
 var server = app.listen(process.env.PORT || 6888, async () => {
   var host = server.address().address;

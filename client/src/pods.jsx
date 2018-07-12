@@ -36,7 +36,7 @@ const styles = theme => ({
 });
 
 const mapStateToProps = state => {
-    return { currentNs: state.currentNs };
+    return { currentNs: state.currentNs, currentContext: state.currentContext };
 };
 
 class Pods extends React.Component {
@@ -58,14 +58,14 @@ class Pods extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`/api/namespace/${this.props.currentNs}/pods`)
+        axios.get(`/api/namespace/${this.props.currentNs}/pods`, {headers: {'k8s-context': this.props.currentContext}})
             .then(res => {
                 this.setState({ pods: res.data.body.items });
             });
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.currentNs !== prevProps.currentNs || this.state.time !== prevState.time) {
+        if (this.props.currentNs !== prevProps.currentNs || this.props.currentContext !== prevProps.currentContext || this.state.time !== prevState.time) {
             this.componentDidMount();
         }
     }
@@ -87,7 +87,7 @@ class Pods extends React.Component {
     }
 
     deletePod(podName) {
-        axios.delete(`/api/namespace/${this.props.currentNs}/pods/${podName}`)
+        axios.delete(`/api/namespace/${this.props.currentNs}/pods/${podName}`, {headers: {'k8s-context': this.props.currentContext}})
             .then(res => {
                 console.log(res);
                 this.tick();
@@ -195,8 +195,8 @@ class Pods extends React.Component {
                         </TableBody>
                     </Table>
                     <div>
-                        <LogViewer logUrl={this.state.logViewer.logUrl} open={this.state.logViewer.open} onClose={() => this.setState({logViewer: {open: false}})} />
-                        <Editor content={this.state.editor.content} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
+                        <LogViewer context={this.props.currentContext} logUrl={this.state.logViewer.logUrl} open={this.state.logViewer.open} onClose={() => this.setState({logViewer: {open: false}})} />
+                        <Editor context={this.props.currentContext} content={this.state.editor.content} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
                     </div>
                 </Paper>
             </div>

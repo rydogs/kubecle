@@ -1,9 +1,10 @@
 const CHANGE_NS = 'CHANGE_NS';
 
-function changeNs(namespace) {
+function changeNs(namespace, context) {
     return dispatch => dispatch({
         type: CHANGE_NS,
-        namespace
+        namespace,
+        context
     });
 }
 
