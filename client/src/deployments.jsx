@@ -7,6 +7,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -106,7 +107,9 @@ class Deployments extends React.Component {
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
+                                                    <Tooltip id="tooltip-top" title="Edit" placement="top">
+                                                        <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
+                                                    </Tooltip>
                                                 </div>
                                             </TableCell>
                                         </TableRow>

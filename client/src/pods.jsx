@@ -9,6 +9,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -16,7 +17,7 @@ import Button from '@material-ui/core/Button';
 import Badge from '@material-ui/core/Badge';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InfoIcon from '@material-ui/icons/Info';
-import ListIcon from '@material-ui/icons/List'
+import AssignmentIcon from '@material-ui/icons/Assignment'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Moment from 'react-moment';
 import { connect } from "react-redux";
@@ -176,9 +177,15 @@ class Pods extends React.Component {
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <Button mini color="primary" variant="fab" onClick={() => this.showInfo(s)}><InfoIcon /></Button>
-                                                    <Button mini color="primary" variant="fab" onClick={() => this.viewLog(s.metadata.name, c.name)}><ListIcon /></Button>
-                                                    <Button mini color="secondary" variant="fab" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>
+                                                    <Tooltip id="tooltip-top" title="Describe" placement="top">
+                                                        <Button mini color="primary" variant="fab" onClick={() => this.showInfo(s)}><InfoIcon /></Button>
+                                                    </Tooltip>
+                                                    <Tooltip id="tooltip-top" title="Log" placement="top">
+                                                        <Button mini color="primary" variant="fab" onClick={() => this.viewLog(s.metadata.name, c.name)}><AssignmentIcon /></Button>
+                                                    </Tooltip>
+                                                    <Tooltip id="tooltip-top" title="Delete" placement="top">
+                                                        <Button mini color="secondary" variant="fab" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>
+                                                    </Tooltip>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
