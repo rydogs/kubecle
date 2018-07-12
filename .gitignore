@@ -2,3 +2,4 @@ node_modules
 client/node_modules
 client/dist
 client/etc
+*.DS_Store
