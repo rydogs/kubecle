@@ -1,14 +1,14 @@
-const CHANGE_NS = 'CHANGE_NS';
+const CHANGE_CONTEXT = 'CHANGE_CONTEXT';
 
-function changeNs(namespace, context) {
+function changeContext(namespace, context) {
     return dispatch => dispatch({
-        type: CHANGE_NS,
+        type: CHANGE_CONTEXT,
         namespace,
         context
     });
 }
 
 module.exports = {
-    changeNs,
-    CHANGE_NS
+    changeContext,
+    CHANGE_CONTEXT
 };

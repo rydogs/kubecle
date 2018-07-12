@@ -39,15 +39,20 @@ app.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandle
   const logs = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.get({
     qs: { container: req.params.containerName }
   });
-  lines = logs.body.split('\n').map(s => { 
-    try {
-      return beautify(JSON.parse(s), null, 2, 80);
-    } catch (e) {
-      return s;
-    }
-  });
-  res.contentType("application/text");
-  res.send(lines.join('\n'));
+  if (typeof logs.body === 'string') {
+    lines = logs.body.split('\n').map(s => { 
+      try {
+        return beautify(JSON.parse(s), null, 2, 80);
+      } catch (e) {
+        return s;
+      }
+    });
+    res.contentType("application/text");
+    res.send(lines.join('\n'));
+  } else {
+    res.contentType("application/text");
+    res.send(logs.body);
+  }
 }));
 
 app.delete('/api/namespace/:namespace/pods/:podname', asyncHandler(async (req, res) => {
@@ -66,13 +71,11 @@ function getClient(req) {
   if (contextMap[contextKey]) {
     return contextMap[contextKey];
   } else {
-    if (contextHeader != null && contextHeader !== 'null') {
-      console.log(`load context header: ${contextHeader} ${typeof contextHeader}`);
+    if (contextHeader) {
       let client = new Client({ config: config.fromKubeconfig(null, contextHeader), version: '1.9' });
       contextMap[contextKey]=client;
       return client;
     } else {
-      console.log('load default...');
       let client = new Client({ config: config.fromKubeconfig(), version: '1.9' });
       contextMap['k8s-default']=client;
       return client;

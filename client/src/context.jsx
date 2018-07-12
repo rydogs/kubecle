@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import { connect } from "react-redux";
-import { changeNs } from './actions';
+import { changeContext } from './actions';
 
 const styles = theme => ({
     container: {
@@ -24,7 +25,7 @@ const styles = theme => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        changeNs: (ns, context) => dispatch(changeNs(ns, context))
+        changeContext: (ns, context) => dispatch(changeContext(ns, context))
     };
 };
 
@@ -32,7 +33,7 @@ const mapStateToProps = state => {
     return { currentNs: state.currentNs, currentContext: state.currentContext };
 };
 
-class CurrentNs extends React.Component {
+class Context extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,9 +46,10 @@ class CurrentNs extends React.Component {
       const { classes } = this.props;
   
       return (
-        <form className={classes.container} noValidate autoComplete="off" action="" onSubmit={() => this.handleSubmit()}>
-            <TextField label="Context" required id="currentContext" value={this.state.context} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeContext(e)} />
+        <form className={classes.container} noValidate autoComplete="off" action="">
+            <TextField label="Context" id="currentContext" value={this.state.context} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeContext(e)} />
             <TextField label="Namespace" required id="currentNs" value={this.state.namespace} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeNs(e)} />
+            <Button onClick={() => this.handleSubmit()} color="secondary">Set</Button>
         </form>
       )
     }
@@ -61,13 +63,13 @@ class CurrentNs extends React.Component {
     }
 
     handleSubmit() {
-        this.props.changeNs(this.state.namespace, this.state.context);
+        this.props.changeContext(this.state.namespace, this.state.context);
         event.preventDefault();
     }
 }
 
-CurrentNs.propTypes = {
+Context.propTypes = {
     classes: PropTypes.object.isRequired,
 };
   
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(CurrentNs));
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Context));
