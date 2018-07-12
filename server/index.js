@@ -40,7 +40,7 @@ app.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandle
     qs: { container: req.params.containerName }
   });
   if (typeof logs.body === 'string') {
-    lines = logs.body.split('\n').map(s => { 
+    lines = logs.body.split('\n').map(s => {
       try {
         return beautify(JSON.parse(s), null, 2, 80);
       } catch (e) {
@@ -73,11 +73,11 @@ function getClient(req) {
   } else {
     if (contextHeader) {
       let client = new Client({ config: config.fromKubeconfig(null, contextHeader), version: '1.9' });
-      contextMap[contextKey]=client;
+      contextMap[contextKey] = client;
       return client;
     } else {
       let client = new Client({ config: config.fromKubeconfig(), version: '1.9' });
-      contextMap['k8s-default']=client;
+      contextMap['k8s-default'] = client;
       return client;
     }
   }
