@@ -66,10 +66,11 @@ class Editor extends React.Component {
     }
 
     save(editUrl, context, onClose) {
+        console.log(`Save.... ${context}`);
         try {
             let json = JSON.parse(this.editedContent);
             delete json.status;
-            axios.post(editUrl, {data: json, headers: {'k8s-context': context}}).then(res => {
+            axios.post(editUrl, json, {headers: {'k8s-context': context}}).then(res => {
                 onClose();
             }).catch((e) => {
                 this.error = e;

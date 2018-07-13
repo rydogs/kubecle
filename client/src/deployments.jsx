@@ -118,7 +118,7 @@ class Deployments extends React.Component {
                             })}
                         </TableBody>
                     </Table>
-                    <Editor content={this.state.editor.content} editUrl={this.state.editor.editUrl} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
+                    <Editor context={this.props.currentContext} content={this.state.editor.content} editUrl={this.state.editor.editUrl} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
                 </Paper>
             </div>
         );
