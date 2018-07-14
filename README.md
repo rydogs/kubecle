@@ -4,23 +4,23 @@ Kubecle is a web ui running locally to provides useful information to your kuber
 - [x] Pods
 - [x] Deployments
 - [x] Services
+- [x] Config map
 - [ ] Ingress
 - [ ] Endpoints
 - [ ] Accounts
-- [ ] Config
 - [ ] Secrets
 
 It also allows you to perform some basic actions:
 - [x] Delete pods
 - [x] View logs
 - [x] Describe
-- [ ] Edit
-- [ ] Switch clusters
+- [x] Edit
+- [x] Switch clusters
 - [ ] Apply manifest
 
 ## How to use
 1. Run `kubectl config use-context <context>` to set default context
-2. `npm install && npm --prefix client install && npm start`
+2. `npm install && npm start`
 3. Open browser to http://localhost:6888/?#/pods
 4. Update namespace on the up right corner as needed
 
