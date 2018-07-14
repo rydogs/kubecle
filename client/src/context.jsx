@@ -5,20 +5,33 @@ import { withStyles } from '@material-ui/core/styles';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 import { connect } from "react-redux";
 import { changeContext } from './actions';
+import axios from 'axios';
 
 const styles = theme => ({
     container: {
-      display: 'flex',
-      flexWrap: 'wrap',
+        display: 'flex',
+        flexWrap: 'wrap',
     },
     textField: {
-      marginLeft: theme.spacing.unit,
-      marginRight: theme.spacing.unit,
-      width: 250,
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        width: 250,
     },
-    input: {
+    formControl: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        marginTop: 16,
+        marginBottom: 8,
+        width: 300,
+        color: "white"
+    },
+    white: {
         color: "white"
     }
 });
@@ -40,26 +53,44 @@ class Context extends React.Component {
             namespace: props.currentNs,
             context: props.currentContext,
         };
+        this.loadContext();
     }
-    
+
     render() {
-      const { classes } = this.props;
-  
-      return (
-        <form className={classes.container} noValidate autoComplete="off" action="">
-            <TextField label="Context" required id="currentContext" value={this.state.context} InputLabelProps={{className: classes.input}} InputProps={{className: classes.input}} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeContext(e)} />
-            <TextField label="Namespace" required id="currentNs" value={this.state.namespace} InputLabelProps={{className: classes.input}} InputProps={{className: classes.input}} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeNs(e)} />
-            <Button variant="flat" onClick={() => this.handleSubmit()} classes={{text: classes.input}}>Set</Button>
-        </form>
-      )
+        const { classes } = this.props;
+
+        return (
+            <form className={classes.container} noValidate autoComplete="off" action="">
+                <FormControl className={classes.formControl}>
+                    <InputLabel htmlFor="context-select" className={classes.white}>Context</InputLabel>
+                    <Select value={this.state.context} onChange={(e) => this.handleChangeContext(e)} className={classes.white} inputProps={{ name: 'context', id: 'context-select' }}>
+                        {
+                            this.state.contexts &&
+                            (
+                                this.state.contexts.map((c) => <MenuItem value={c}>{c}</MenuItem>)
+                            )
+                        }
+                    </Select>
+                </FormControl>
+                <TextField label="Namespace" required id="currentNs" value={this.state.namespace} InputLabelProps={{ className: classes.white }} InputProps={{ className: classes.white }} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeNs(e)} />
+                <Button variant="flat" onClick={() => this.handleSubmit()} classes={{ text: classes.white }}>Set</Button>
+            </form>
+        )
+    }
+
+    loadContext() {
+        axios.get(`/api/context`)
+            .then(res => {
+                this.setState({ contexts: res.data.contexts,  context: res.data.currentContext});
+            });
     }
 
     handleChangeNs(event) {
-        this.setState({namespace: event.target.value});
+        this.setState({ namespace: event.target.value });
     }
 
     handleChangeContext(event) {
-        this.setState({namespace: "default", context: event.target.value});
+        this.setState({ namespace: "default", context: event.target.value });
     }
 
     handleSubmit() {
@@ -71,5 +102,5 @@ class Context extends React.Component {
 Context.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-  
+
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Context));

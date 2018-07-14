@@ -11,11 +11,6 @@ const contextMap = {};
 app.use(express.static(path.join(__dirname, '/../client/dist')));
 app.use(bodyParser.json());
 
-app.get('/api/namespace/', asyncHandler(async (req, res) => {
-  const deployments = await getClient(req).apis.apps.v1.namespaces().get();
-  res.json(deployments);
-}));
-
 app.get('/api/namespace/:namespace/deployments', asyncHandler(async (req, res) => {
   const deployments = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).deployments().get();
   res.json(deployments);
@@ -63,6 +58,11 @@ app.delete('/api/namespace/:namespace/pods/:podname', asyncHandler(async (req, r
 app.get('/api/namespace/:namespace/services', asyncHandler(async (req, res) => {
   const pods = await getClient(req).api.v1.namespaces(req.params.namespace).services().get();
   res.json(pods);
+}));
+
+app.get('/api/context', asyncHandler(async (req, res) => {
+  const k8sConfig = config.loadKubeconfig();
+  res.json({"currentContext": k8sConfig['current-context'], "contexts": k8sConfig.clusters.map(c => c.name)});
 }));
 
 function getClient(req) {
