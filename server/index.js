@@ -60,7 +60,7 @@ app.get('/api/namespace/:namespace/services', asyncHandler(async (req, res) => {
   res.json(pods);
 }));
 
-app.get('/api/context', asyncHandler(async (req, res) => {
+app.get('/api/contexts', asyncHandler(async (req, res) => {
   const k8sConfig = config.loadKubeconfig();
   res.json({"currentContext": k8sConfig['current-context'], "contexts": k8sConfig.clusters.map(c => c.name)});
 }));

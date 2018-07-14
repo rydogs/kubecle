@@ -67,7 +67,7 @@ class Context extends React.Component {
                         {
                             this.state.contexts &&
                             (
-                                this.state.contexts.map((c) => <MenuItem value={c}>{c}</MenuItem>)
+                                this.state.contexts.map((c) => <MenuItem key={c} value={c}>{c}</MenuItem>)
                             )
                         }
                     </Select>
@@ -79,7 +79,7 @@ class Context extends React.Component {
     }
 
     loadContext() {
-        axios.get(`/api/context`)
+        axios.get(`/api/contexts`)
             .then(res => {
                 this.setState({ contexts: res.data.contexts,  context: res.data.currentContext});
             });
@@ -90,7 +90,7 @@ class Context extends React.Component {
     }
 
     handleChangeContext(event) {
-        this.setState({ namespace: "default", context: event.target.value });
+        this.setState({ namespace: "default", context: event.target.value }, ()=> this.props.changeContext(this.state.namespace, event.target.value));   
     }
 
     handleSubmit() {
