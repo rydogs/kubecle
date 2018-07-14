@@ -10,13 +10,14 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import DraftsIcon from '@material-ui/icons/Drafts';
+import DescriptionIcon from '@material-ui/icons/Description';
 import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
 import Build from '@material-ui/icons/Build';
 import GroupWork from '@material-ui/icons/GroupWork';
 import Services from './services';
 import Deployments from './deployments';
 import Pods from './pods';
+import Configmaps from './configmaps';
 import Context from './context';
 import { Route, Redirect, Link, HashRouter } from "react-router-dom";
 
@@ -96,6 +97,14 @@ class App extends Component {
                   <ListItemText primary="Services" />
                 </ListItem>
               </Link>
+              <Link to="/configmaps" style={{ textDecoration: 'none' }}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <DescriptionIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Configmaps" />
+                </ListItem>
+              </Link>
             </List>
             <Divider />
             <List>
@@ -107,6 +116,7 @@ class App extends Component {
             <Route path="/deployments" component={Deployments} />
             <Route path="/services" component={Services} />
             <Route path="/pods" component={Pods} />
+            <Route path="/configmaps" component={Configmaps} />
             <Route exact path="/" render={()=> (
               <Redirect to="/pods"/>
             )}/>

@@ -14,6 +14,9 @@ import Moment from 'react-moment';
 import Button from '@material-ui/core/Button';
 import BuildIcon from '@material-ui/icons/Build';
 import Tooltip from '@material-ui/core/Tooltip';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Editor from './editor';
 
 import { connect } from "react-redux";
@@ -34,11 +37,11 @@ const mapStateToProps = state => {
     return { currentNs: state.currentNs, currentContext: state.currentContext };
 };
 
-class Services extends React.Component {
+class ConfigMaps extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            services: [],
+            configmaps: [],
             editor: {
                 open: false,
                 content: {},
@@ -47,9 +50,9 @@ class Services extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`/api/namespace/${this.props.currentNs}/services`, {headers: {'k8s-context': this.props.currentContext}})
+        axios.get(`/api/namespace/${this.props.currentNs}/configmaps`, { headers: { 'k8s-context': this.props.currentContext } })
             .then(res => {
-                this.setState({ services: res.data.body.items });
+                this.setState({ configmaps: res.data.body.items });
             });
     }
 
@@ -60,7 +63,7 @@ class Services extends React.Component {
     }
 
     edit(c) {
-        this.setState({editor: {open: true, content: c, editUrl: `/api/namespace/${this.props.currentNs}/services/${c.metadata.name}`}});
+        this.setState({ editor: { open: true, content: c, editUrl: `/api/namespace/${this.props.currentNs}/configmaps/${c.metadata.name}` } });
     }
 
     render() {
@@ -70,7 +73,7 @@ class Services extends React.Component {
             <div>
                 <Grid>
                     <Typography variant="title" gutterBottom>
-                        Services
+                        Config Map
                     </Typography>
                 </Grid>
                 <Paper className={classes.root}>
@@ -78,53 +81,53 @@ class Services extends React.Component {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Name</TableCell>
-                                <TableCell>Type</TableCell>
-                                <TableCell>External Name</TableCell>
-                                <TableCell>Ports</TableCell>
+                                <TableCell>Values</TableCell>
                                 <TableCell>Created</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {this.state.services.map(s => {
+                            {this.state.configmaps.map(s => {
                                 return (
                                     <TableRow key={s.metadata.uid}>
                                         <TableCell component="th" scope="row">
                                             {s.metadata.name}
                                         </TableCell>
                                         <TableCell component="th" scope="row">
-                                            {s.spec.type}
-                                        </TableCell>
-                                        <TableCell component="th" scope="row">
-                                            {s.spec.externalName}
-                                        </TableCell>
-                                        <TableCell component="th" scope="row">
-                                            {s.spec.ports && s.spec.ports[0].port}:{s.spec.ports && s.spec.ports[0].targetPort}
+                                            <List dense>
+                                                {
+                                                    Object.keys(s.data).map((k) => {
+                                                        return (<ListItem disableGutters>
+                                                             <ListItemText primary={`${k}: ${s.data[k]}`} />
+                                                        </ListItem>)
+                                                    })
+                                                }
+                                            </List>
                                         </TableCell>
                                         <TableCell component="th" scope="row">
                                             <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
                                         </TableCell>
                                         <TableCell component="th" scope="row">
-                                                <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <Tooltip id="tooltip-top" title="Edit" placement="top">
-                                                        <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
-                                                    </Tooltip>
-                                                </div>
+                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                                <Tooltip id="tooltip-top" title="Edit" placement="top">
+                                                    <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
+                                                </Tooltip>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 );
                             })}
                         </TableBody>
                     </Table>
-                    <Editor context={this.props.currentContext} content={this.state.editor.content} editUrl={this.state.editor.editUrl} readOnly={true} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
+                    <Editor context={this.props.currentContext} content={this.state.editor.content} editUrl={this.state.editor.editUrl} open={this.state.editor.open} onClose={() => this.setState({ editor: { open: false } })} />
                 </Paper>
             </div>
         );
     }
 }
 
-Services.propTypes = {
+ConfigMaps.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(connect(mapStateToProps)(Services));
+export default withStyles(styles)(connect(mapStateToProps)(ConfigMaps));

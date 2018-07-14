@@ -66,7 +66,6 @@ class Editor extends React.Component {
     }
 
     save(editUrl, context, onClose) {
-        console.log(`Save.... ${context}`);
         try {
             let json = JSON.parse(this.editedContent);
             delete json.status;

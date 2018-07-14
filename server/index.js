@@ -56,8 +56,31 @@ app.delete('/api/namespace/:namespace/pods/:podname', asyncHandler(async (req, r
 }));
 
 app.get('/api/namespace/:namespace/services', asyncHandler(async (req, res) => {
-  const pods = await getClient(req).api.v1.namespaces(req.params.namespace).services().get();
-  res.json(pods);
+  const services = await getClient(req).api.v1.namespaces(req.params.namespace).services().get();
+  res.json(services);
+}));
+
+app.post('/api/namespace/:namespace/services/:service', asyncHandler(async (req, res) => {
+  try {
+    const updated = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).services(req.params.service).put({ body: req.body });
+    res.json(updated);
+  } catch (err) {
+    if (err.statusCode !== 409) throw err;
+  }
+}));
+
+app.get('/api/namespace/:namespace/configmaps', asyncHandler(async (req, res) => {
+  const configmaps = await getClient(req).api.v1.namespaces(req.params.namespace).configmaps().get();
+  res.json(configmaps);
+}));
+
+app.post('/api/namespace/:namespace/configmaps/:configmap', asyncHandler(async (req, res) => {
+  try {
+    const updated = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).configmaps(req.params.configmap).put({ body: req.body });
+    res.json(updated);
+  } catch (err) {
+    if (err.statusCode !== 409) throw err;
+  }
 }));
 
 app.get('/api/contexts', asyncHandler(async (req, res) => {
