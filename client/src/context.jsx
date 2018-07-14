@@ -16,7 +16,7 @@ const styles = theme => ({
     textField: {
       marginLeft: theme.spacing.unit,
       marginRight: theme.spacing.unit,
-      width: 300,
+      width: 250,
     },
     input: {
         color: "white"
@@ -47,9 +47,9 @@ class Context extends React.Component {
   
       return (
         <form className={classes.container} noValidate autoComplete="off" action="">
-            <TextField label="Context" id="currentContext" value={this.state.context} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeContext(e)} />
-            <TextField label="Namespace" required id="currentNs" value={this.state.namespace} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeNs(e)} />
-            <Button onClick={() => this.handleSubmit()} color="secondary">Set</Button>
+            <TextField label="Context" required id="currentContext" value={this.state.context} InputLabelProps={{className: classes.input}} InputProps={{className: classes.input}} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeContext(e)} />
+            <TextField label="Namespace" required id="currentNs" value={this.state.namespace} InputLabelProps={{className: classes.input}} InputProps={{className: classes.input}} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeNs(e)} />
+            <Button variant="flat" onClick={() => this.handleSubmit()} classes={{text: classes.input}}>Set</Button>
         </form>
       )
     }
