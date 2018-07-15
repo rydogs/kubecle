@@ -36,6 +36,10 @@ const styles = theme => ({
     table: {
         minWidth: 700,
     },
+    title: {
+        paddingTop: theme.spacing.unit * 2,
+        paddingBottom: theme.spacing.unit * 2
+    },
     centered: {
         textAlign: 'center'
     }
@@ -156,7 +160,7 @@ class Pods extends React.Component {
         return (
             <div>
                 <Grid>
-                    <Typography variant="title" gutterBottom>
+                    <Typography variant="title" className={classes.title}>
                         Pods
                     </Typography>
                 </Grid>

@@ -50,6 +50,9 @@ const styles = theme => ({
     padding: theme.spacing.unit * 3,
     minWidth: 0, // So the Typography noWrap works
   },
+  menu: {
+    paddingTop: theme.spacing.unit * 3
+  },
   toolbar: theme.mixins.toolbar,
 });
 
@@ -76,14 +79,9 @@ class App extends Component {
                 </div>
                 </Toolbar>
               </AppBar>
-              <Drawer
-                variant="permanent"
-                classes={{
-                  paper: classes.drawerPaper,
-                }}
-              >
+              <Drawer variant="permanent" classes={{paper: classes.drawerPaper}}>
                 <div className={classes.toolbar} />
-                <List>
+                <List className={classes.menu}>
                   <Link to="/deployments" style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
@@ -123,7 +121,6 @@ class App extends Component {
               </Drawer>
               <main className={classes.content}>
                 <div className={classes.toolbar} />
-
                 <Route path="/deployments" component={Deployments} />
                 <Route path="/services" component={Services} />
                 <Route path="/pods" component={Pods} />

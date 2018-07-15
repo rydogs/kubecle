@@ -28,6 +28,10 @@ const styles = theme => ({
     table: {
         minWidth: 700,
     },
+    title: {
+        paddingTop: theme.spacing.unit * 2,
+        paddingBottom: theme.spacing.unit * 2
+    }
 });
 
 const mapStateToProps = state => {
@@ -69,7 +73,7 @@ class Services extends React.Component {
         return (
             <div>
                 <Grid>
-                    <Typography variant="title" gutterBottom>
+                    <Typography variant="title" className={classes.title}>
                         Services
                     </Typography>
                 </Grid>
