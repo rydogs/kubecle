@@ -51,6 +51,6 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'src/index.html') }),
-        new CopyWebPackPlugin([{from:'src/images',to:'iamges}'}])
+        new CopyWebPackPlugin([{from:'src/images',to:'images'}])
     ]
 };
