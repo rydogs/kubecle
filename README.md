@@ -1,3 +1,5 @@
+<img src="/client/src/images/kubecle-logo.png" width="100">
+
 # kubecle [![Build Status](https://travis-ci.org/rydogs/kubecle.svg?branch=master)](https://travis-ci.org/rydogs/kubecle) [![Dependency Status](https://david-dm.org/rydogs/kubecle.svg)](https://david-dm.org/rydogs/kubecle.svg)
 Kubecle is a web ui running locally to provides useful information to your kubernettes cluster.
 
