@@ -26,6 +26,12 @@ It also allows you to perform some basic actions:
 3. Open browser to http://localhost:6888/?#/pods
 4. Update namespace on the up right corner as needed
 
+## How to develop
+1. Install [minikube](https://github.com/kubernetes/minikube)
+2. Run `npm run watch` to start server
+3. Run `npm --prefix client start` to start client
+4. Open http://localhost:3001
+
 ## Stack
 * React
 * [Material UI](https://material-ui.com/)
