@@ -17,6 +17,7 @@ import Button from '@material-ui/core/Button';
 import Badge from '@material-ui/core/Badge';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InfoIcon from '@material-ui/icons/Info';
+import InputIcon from '@material-ui/icons/Input';
 import AssignmentIcon from '@material-ui/icons/Assignment'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Moment from 'react-moment';
@@ -24,6 +25,7 @@ import { connect } from "react-redux";
 import axios from 'axios';
 import LogViewer from './logViewer';
 import Editor from './editor';
+import copy from 'copy-to-clipboard';
 
 const styles = theme => ({
     root: {
@@ -128,6 +130,14 @@ class Pods extends React.Component {
         }
     }
 
+    copySshToClipboard(podName, containerName) {
+        let copyCmd = `kubectl exec -it ${podName} -n ${this.props.currentNs} -c ${containerName} sh`;
+        if (this.props.currentContext) {
+            copyCmd += ` --context ${this.props.currentContext}`;
+        }
+        copy(copyCmd);
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -182,6 +192,9 @@ class Pods extends React.Component {
                                                     </Tooltip>
                                                     <Tooltip id="tooltip-top" title="Log" placement="top">
                                                         <Button mini color="primary" variant="fab" onClick={() => this.viewLog(s.metadata.name, c.name)}><AssignmentIcon /></Button>
+                                                    </Tooltip>
+                                                    <Tooltip id="tooltip-top" title="Copy SSH Command" placement="top">
+                                                        <Button mini color="primary" variant="fab" onClick={() => this.copySshToClipboard(s.metadata.name, c.name)}><InputIcon /></Button>
                                                     </Tooltip>
                                                     <Tooltip id="tooltip-top" title="Delete" placement="top">
                                                         <Button mini color="secondary" variant="fab" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>

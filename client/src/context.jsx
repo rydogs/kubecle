@@ -53,7 +53,6 @@ class Context extends React.Component {
             namespace: props.currentNs,
             context: props.currentContext,
         };
-        this.loadContext();
     }
 
     render() {
@@ -76,6 +75,10 @@ class Context extends React.Component {
                     onChange={(e) => this.handleChangeNs(e)} onKeyPress={(e) => this.handleEnter(e)} />
             </form>
         )
+    }
+ 
+    componentDidMount() {
+        this.loadContext();
     }
 
     loadContext() {
