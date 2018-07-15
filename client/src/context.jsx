@@ -72,8 +72,8 @@ class Context extends React.Component {
                         }
                     </Select>
                 </FormControl>
-                <TextField label="Namespace" required id="currentNs" value={this.state.namespace} InputLabelProps={{ className: classes.white }} InputProps={{ className: classes.white }} className={classes.textField} margin="normal" onChange={(e) => this.handleChangeNs(e)} />
-                <Button variant="flat" onClick={() => this.handleSubmit()} classes={{ text: classes.white }}>Set</Button>
+                <TextField label="Namespace" required id="currentNs" value={this.state.namespace} InputLabelProps={{ className: classes.white }} InputProps={{ className: classes.white }} className={classes.textField} margin="normal"
+                    onChange={(e) => this.handleChangeNs(e)} onKeyPress={(e) => this.handleEnter(e)} />
             </form>
         )
     }
@@ -81,7 +81,7 @@ class Context extends React.Component {
     loadContext() {
         axios.get(`/api/contexts`)
             .then(res => {
-                this.setState({ contexts: res.data.contexts,  context: res.data.currentContext});
+                this.setState({ contexts: res.data.contexts, context: res.data.currentContext });
             });
     }
 
@@ -90,12 +90,14 @@ class Context extends React.Component {
     }
 
     handleChangeContext(event) {
-        this.setState({ namespace: "default", context: event.target.value }, ()=> this.props.changeContext(this.state.namespace, event.target.value));   
+        this.setState({ namespace: "default", context: event.target.value }, (e) => this.props.changeContext(this.state.namespace, event.target.value));
     }
 
-    handleSubmit() {
-        this.props.changeContext(this.state.namespace, this.state.context);
-        event.preventDefault();
+    handleEnter(e) {
+        if (e.key === 'Enter') {
+            this.props.changeContext(this.state.namespace, this.state.context);
+            event.preventDefault();
+        }
     }
 }
 
