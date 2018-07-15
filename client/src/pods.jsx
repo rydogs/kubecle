@@ -26,6 +26,7 @@ import axios from 'axios';
 import LogViewer from './logViewer';
 import Editor from './editor';
 import copy from 'copy-to-clipboard';
+import humanize from'string-humanize';
 
 const styles = theme => ({
     root: {
@@ -35,6 +36,9 @@ const styles = theme => ({
     table: {
         minWidth: 700,
     },
+    centered: {
+        textAlign: 'center'
+    }
 });
 
 const mapStateToProps = state => {
@@ -100,16 +104,24 @@ class Pods extends React.Component {
         if (s.containerStatuses) {
             let status = s.containerStatuses[i];
             if (status.state.running) {
-                return <Button size="small" color="primary">Running</Button>;
+                if (status.ready) {
+                    return <Button fullWidth size="small" color="primary">Ready</Button>;
+                } else {
+                    return <Button fullWidth size="small" color="primary">Not Ready</Button>;
+                }
             } else if (status.state.waiting) {
-                return <Button size="small" color="secondary">{status.state.waiting.reason}</Button>;
+                if (status.state.waiting.message) {
+                    return <Tooltip title={status.state.waiting.message} placement="top"><Button fullWidth size="small" color="secondary">{humanize(status.state.waiting.reason)}</Button></Tooltip>;
+                } else {
+                    return <Button fullWidth size="small" color="secondary">{humanize(status.state.waiting.reason)}</Button>
+                }
             } else if (status.state.terminated) {
-                return <Button size="small" color="secondary">{status.state.terminated.reason}</Button>;
+                return <Button fullWidth size="small" color="secondary">Terminated {humanize(status.state.terminated.reason)}</Button>;
             } else {
                 return "Unknown";
-            }            
+            }
         } else {
-            return <Button size="small" color="secondary">{s.phase} - {s.reason}</Button>;
+            return <Button fullWidth size="small" color="secondary">{s.phase} - {s.reason}</Button>;
         }
     }
 
@@ -153,13 +165,13 @@ class Pods extends React.Component {
                     <Table className={classes.table}>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Container Name</TableCell>
-                                <TableCell>Image Version</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Restart Count</TableCell>
-                                <TableCell>Created</TableCell>
-                                <TableCell>Actions</TableCell>
+                                <TableCell padding="dense">Name</TableCell>
+                                <TableCell padding="dense">Container Name</TableCell>
+                                <TableCell padding="dense">Image Version</TableCell>
+                                <TableCell padding="dense" className={classes.centered}>Status</TableCell>
+                                <TableCell padding="dense">Restart Count</TableCell>
+                                <TableCell padding="dense">Created</TableCell>
+                                <TableCell padding="dense">Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -167,36 +179,38 @@ class Pods extends React.Component {
                                 return s.spec.containers.map((c, i) => {
                                     return (
                                         <TableRow key={s.metadata.uid + c.name}>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell padding="dense" scope="row">
                                                 {s.metadata.name}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell padding="dense" scope="row">
                                                 {c.name}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell padding="dense" scope="row">
                                                 {this.imageName(c.image)}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell padding="dense" scope="row">
                                                 {this.formatPodStatus(s.status, i)}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
-                                                {s.status.containerStatuses && s.status.containerStatuses[i].restartCount}
+                                            <TableCell padding="dense" scope="row">
+                                                {s.status.containerStatuses && 
+                                                    (<Typography color={s.status.containerStatuses[i].restartCount > 0 ? 'error': 'primary'}>{s.status.containerStatuses[i].restartCount}</Typography>)
+                                                }
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell padding="dense" scope="row">
                                                 <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell padding="dense" scope="row">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <Tooltip id="tooltip-top" title="Describe" placement="top">
+                                                    <Tooltip title="Describe" placement="top">
                                                         <Button mini color="primary" variant="fab" onClick={() => this.showInfo(s)}><InfoIcon /></Button>
                                                     </Tooltip>
-                                                    <Tooltip id="tooltip-top" title="Log" placement="top">
+                                                    <Tooltip title="Log" placement="top">
                                                         <Button mini color="primary" variant="fab" onClick={() => this.viewLog(s.metadata.name, c.name)}><AssignmentIcon /></Button>
                                                     </Tooltip>
-                                                    <Tooltip id="tooltip-top" title="Copy SSH Command" placement="top">
+                                                    <Tooltip title="Copy SSH Command" placement="top">
                                                         <Button mini color="primary" variant="fab" onClick={() => this.copySshToClipboard(s.metadata.name, c.name)}><InputIcon /></Button>
                                                     </Tooltip>
-                                                    <Tooltip id="tooltip-top" title="Delete" placement="top">
+                                                    <Tooltip title="Delete" placement="top">
                                                         <Button mini color="secondary" variant="fab" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>
                                                     </Tooltip>
                                                 </div>

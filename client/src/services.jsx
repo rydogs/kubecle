@@ -89,24 +89,24 @@ class Services extends React.Component {
                             {this.state.services.map(s => {
                                 return (
                                     <TableRow key={s.metadata.uid}>
-                                        <TableCell component="th" scope="row">
+                                        <TableCell scope="row">
                                             {s.metadata.name}
                                         </TableCell>
-                                        <TableCell component="th" scope="row">
+                                        <TableCell scope="row">
                                             {s.spec.type}
                                         </TableCell>
-                                        <TableCell component="th" scope="row">
+                                        <TableCell scope="row">
                                             {s.spec.externalName}
                                         </TableCell>
-                                        <TableCell component="th" scope="row">
+                                        <TableCell scope="row">
                                             {s.spec.ports && s.spec.ports[0].port}:{s.spec.ports && s.spec.ports[0].targetPort}
                                         </TableCell>
-                                        <TableCell component="th" scope="row">
+                                        <TableCell scope="row">
                                             <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
                                         </TableCell>
-                                        <TableCell component="th" scope="row">
+                                        <TableCell scope="row">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <Tooltip id="tooltip-top" title="Edit" placement="top">
+                                                    <Tooltip title="Edit" placement="top">
                                                         <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
                                                     </Tooltip>
                                                 </div>

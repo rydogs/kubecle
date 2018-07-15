@@ -90,24 +90,24 @@ class Deployments extends React.Component {
                                 return s.spec.template.spec.containers.map(c => {
                                     return (
                                         <TableRow key={s.metadata.uid + c.name}>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell scope="row">
                                                 {c.name}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell scope="row">
                                                 {s.spec.replicas}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell scope="row">
                                                 {c.image.includes("/") ? c.image.split("/")[1] : c.image}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell scope="row">
                                                 {c.ports && c.ports[0].containerPort}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell scope="row">
                                                 <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            <TableCell scope="row">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <Tooltip id="tooltip-top" title="Edit" placement="top">
+                                                    <Tooltip title="Edit" placement="top">
                                                         <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
                                                     </Tooltip>
                                                 </div>

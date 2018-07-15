@@ -109,7 +109,7 @@ class ConfigMaps extends React.Component {
                                         </TableCell>
                                         <TableCell component="th" scope="row">
                                             <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                                <Tooltip id="tooltip-top" title="Edit" placement="top">
+                                                <Tooltip title="Edit" placement="top">
                                                     <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
                                                 </Tooltip>
                                             </div>
