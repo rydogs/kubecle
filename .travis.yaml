@@ -3,3 +3,5 @@ node_js:
   - "8"
 before_script:
   - npm install && npm --prefix client install
+script:
+  - npm --prefix client test

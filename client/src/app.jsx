@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import { createLogger } from 'redux-logger';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -19,6 +22,8 @@ import Deployments from './deployments';
 import Pods from './pods';
 import Configmaps from './configmaps';
 import Context from './context';
+import thunk from 'redux-thunk';
+import { rootReducer, initialState } from './reducer';
 import { Route, Redirect, Link, HashRouter } from "react-router-dom";
 
 
@@ -48,81 +53,89 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar,
 });
 
+const theme = createMuiTheme();
+const logger = createLogger();
+const store = createStore(rootReducer, initialState, applyMiddleware(thunk, logger));
+
 class App extends Component {
   render() {
     const { classes } = this.props;
 
     return (
-      <HashRouter>
-        <div className={classes.root}>
-          <AppBar position="absolute" className={classes.appBar}>
-            <Toolbar>
-              <Typography variant="title" color="inherit" noWrap style={{ flex: 1 }}>
-                Kubecle
-            </Typography>
-            <div >
-              <Context />
-            </div>
-            </Toolbar>
-          </AppBar>
-          <Drawer
-            variant="permanent"
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            <div className={classes.toolbar} />
-            <List>
-              <Link to="/deployments" style={{ textDecoration: 'none' }}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <Build />
-                  </ListItemIcon>
-                  <ListItemText primary="Deployments" />
-                </ListItem>
-              </Link>
-              <Link to="/pods" style={{ textDecoration: 'none' }}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <GroupWork />
-                  </ListItemIcon>
-                  <ListItemText primary="Pods" />
-                </ListItem>
-              </Link>
-              <Link to="/services" style={{ textDecoration: 'none' }}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <SettingsEthernet />
-                  </ListItemIcon>
-                  <ListItemText primary="Services" />
-                </ListItem>
-              </Link>
-              <Link to="/configmaps" style={{ textDecoration: 'none' }}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <DescriptionIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Configmaps" />
-                </ListItem>
-              </Link>
-            </List>
-            <Divider />
-            <List>
-            </List>
-          </Drawer>
-          <main className={classes.content}>
-            <div className={classes.toolbar} />
+      <Provider store={store}>
+        <MuiThemeProvider theme={theme}>
+          <HashRouter>
+            <div className={classes.root}>
+              <AppBar position="absolute" className={classes.appBar}>
+                <Toolbar>
+                  <Typography variant="title" color="inherit" noWrap style={{ flex: 1 }}>
+                    Kubecle
+                </Typography>
+                <div >
+                  <Context />
+                </div>
+                </Toolbar>
+              </AppBar>
+              <Drawer
+                variant="permanent"
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+              >
+                <div className={classes.toolbar} />
+                <List>
+                  <Link to="/deployments" style={{ textDecoration: 'none' }}>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <Build />
+                      </ListItemIcon>
+                      <ListItemText primary="Deployments" />
+                    </ListItem>
+                  </Link>
+                  <Link to="/pods" style={{ textDecoration: 'none' }}>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <GroupWork />
+                      </ListItemIcon>
+                      <ListItemText primary="Pods" />
+                    </ListItem>
+                  </Link>
+                  <Link to="/services" style={{ textDecoration: 'none' }}>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <SettingsEthernet />
+                      </ListItemIcon>
+                      <ListItemText primary="Services" />
+                    </ListItem>
+                  </Link>
+                  <Link to="/configmaps" style={{ textDecoration: 'none' }}>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <DescriptionIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Configmaps" />
+                    </ListItem>
+                  </Link>
+                </List>
+                <Divider />
+                <List>
+                </List>
+              </Drawer>
+              <main className={classes.content}>
+                <div className={classes.toolbar} />
 
-            <Route path="/deployments" component={Deployments} />
-            <Route path="/services" component={Services} />
-            <Route path="/pods" component={Pods} />
-            <Route path="/configmaps" component={Configmaps} />
-            <Route exact path="/" render={()=> (
-              <Redirect to="/pods"/>
-            )}/>
-          </main>
-        </div>
-      </HashRouter>
+                <Route path="/deployments" component={Deployments} />
+                <Route path="/services" component={Services} />
+                <Route path="/pods" component={Pods} />
+                <Route path="/configmaps" component={Configmaps} />
+                <Route exact path="/" render={()=> (
+                  <Redirect to="/pods"/>
+                )}/>
+              </main>
+            </div>
+          </HashRouter>
+        </MuiThemeProvider>
+      </Provider>
     );
   }
 }
