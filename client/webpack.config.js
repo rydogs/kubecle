@@ -1,6 +1,7 @@
 
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebPackPlugin = require('copy-webpack-plugin')
 
 const port = process.env.PORT || 3001;
 
@@ -49,6 +50,7 @@ module.exports = {
         ]
     },
     plugins: [
-        new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'src/index.html') })
+        new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'src/index.html') }),
+        new CopyWebPackPlugin([{from:'src/images',to:'iamges}'}])
     ]
 };

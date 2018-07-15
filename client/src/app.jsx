@@ -40,6 +40,11 @@ const styles = theme => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
+  logo: {
+    paddingRight: 10,
+    height: 50,
+    width: 50,
+  },
   drawerPaper: {
     position: 'relative',
     width: drawerWidth,
@@ -71,6 +76,7 @@ class App extends Component {
             <div className={classes.root}>
               <AppBar position="absolute" className={classes.appBar}>
                 <Toolbar>
+                  <img src="images/kubecle-logo.png" className={classes.logo} />
                   <Typography variant="title" color="inherit" noWrap style={{ flex: 1 }}>
                     Kubecle
                 </Typography>
