@@ -1,4 +1,4 @@
 node_modules
 client/node_modules
 client/etc
-*.DS_Store
+.DS_Store
