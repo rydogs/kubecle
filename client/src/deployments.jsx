@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
 import Button from '@material-ui/core/Button';
-import BuildIcon from '@material-ui/icons/build';
+import BuildIcon from '@material-ui/icons/Build';
 import { connect } from "react-redux";
 import Editor from './editor';
 

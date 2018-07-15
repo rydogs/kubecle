@@ -1,4 +1,4 @@
-# kubecle
+# kubecle [![Build Status](https://travis-ci.org/rydogs/kubecle.svg?branch=master)](https://travis-ci.org/rydogs/kubecle)
 Kubecle is a web ui running locally to provides useful information to your kubernettes cluster.
 
 - [x] Pods
