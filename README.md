@@ -36,6 +36,10 @@ It also allows you to perform some basic actions:
 ## Screenshots
 ![Pods](/screenshot/pods.png)
 
+![Services](/screenshot/service.png)
+
+![Config maps](/screenshot/configmap.png)
+
 ![Logs](/screenshot/logs.png)
 
 ![Describe](/screenshot/describe.png)
