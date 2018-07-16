@@ -211,7 +211,7 @@ class Pods extends React.Component {
                                                     <Tooltip title="Log" placement="top">
                                                         <Button mini color="primary" variant="fab" onClick={() => this.viewLog(s.metadata.name, c.name)}><AssignmentIcon /></Button>
                                                     </Tooltip>
-                                                    <Tooltip title="Copy SSH Command" placement="top">
+                                                    <Tooltip title="Copy Shell Command" placement="top">
                                                         <Button mini color="primary" variant="fab" onClick={() => this.copySshToClipboard(s.metadata.name, c.name)}><InputIcon /></Button>
                                                     </Tooltip>
                                                     <Tooltip title="Delete" placement="top">

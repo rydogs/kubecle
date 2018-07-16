@@ -23,7 +23,7 @@ class LogViewer extends React.Component {
         return (
             <Dialog fullWidth={true} maxWidth="md" open={open} onClose={onClose}>
                 <DialogTitle id="simple-dialog-title">Logs</DialogTitle>
-                {logUrl && <LazyLog fetchOptions={{headers: {"k8s-context": context}}} stream follow url={logUrl} height={600}></LazyLog>}
+                {logUrl && <LazyLog fetchOptions={{headers: {"k8s-context": context}}} stream follow selectableLines url={logUrl} height={600}></LazyLog>}
             </Dialog>
         )
     }
