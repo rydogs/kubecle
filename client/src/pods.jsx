@@ -99,7 +99,6 @@ class Pods extends React.Component {
     deletePod(podName) {
         axios.delete(`/api/namespace/${this.props.currentNs}/pods/${podName}`, {headers: {'k8s-context': this.props.currentContext}})
             .then(res => {
-                console.log(res);
                 this.tick();
             });
     }

@@ -79,6 +79,21 @@ router.post('/api/namespace/:namespace/configmaps/:configmap', asyncHandler(asyn
   }
 }));
 
+router.get('/api/namespace/:namespace/jobs', asyncHandler(async (req, res) => {
+  const jobs = await getClient(req).api.batch.v1.namespaces(req.params.namespace).jobs().get();
+  res.json(jobs);
+}));
+
+router.delete('/api/namespace/:namespace/jobs/:job', asyncHandler(async (req, res) => {
+  const job = await getClient(req).api.batch.v1.namespaces(req.params.namespace).jobs(req.params.job).delete();
+  res.json(job);
+}));
+
+router.get('/api/namespace/:namespace/ingresses', asyncHandler(async (req, res) => {
+  const ingresses = await getClient(req).api.extensions.v1beta1.namespaces(req.params.namespace).ingresses().get();
+  res.json(ingresses);
+}));
+
 router.get('/api/contexts', asyncHandler(async (req, res) => {
   const k8sConfig = config.loadKubeconfig();
   res.json({"currentContext": k8sConfig['current-context'], "contexts": k8sConfig.clusters.map(c => c.name)});

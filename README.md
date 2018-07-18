@@ -7,6 +7,7 @@ Kubecle is a web ui running locally that provides useful information about your 
 - [x] Deployments
 - [x] Services
 - [x] Config map
+- [x] Jobs
 - [ ] Ingress
 - [ ] Endpoints
 - [ ] Accounts

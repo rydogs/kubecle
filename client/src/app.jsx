@@ -15,12 +15,14 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
+import ScheduleIcon from '@material-ui/icons/Schedule';
 import Build from '@material-ui/icons/Build';
 import GroupWork from '@material-ui/icons/GroupWork';
 import Services from './services';
 import Deployments from './deployments';
 import Pods from './pods';
 import Configmaps from './configmaps';
+import Jobs from './jobs';
 import Context from './context';
 import thunk from 'redux-thunk';
 import { rootReducer, initialState } from './reducer';
@@ -104,6 +106,14 @@ class App extends Component {
                       <ListItemText primary="Pods" />
                     </ListItem>
                   </Link>
+                  <Link to="/jobs" style={{ textDecoration: 'none' }}>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <ScheduleIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Jobs" />
+                    </ListItem>
+                  </Link>
                   <Link to="/services" style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
@@ -130,6 +140,7 @@ class App extends Component {
                 <Route path="/deployments" component={Deployments} />
                 <Route path="/services" component={Services} />
                 <Route path="/pods" component={Pods} />
+                <Route path="/jobs" component={Jobs} />
                 <Route path="/configmaps" component={Configmaps} />
                 <Route exact path="/" render={()=> (
                   <Redirect to="/pods"/>
