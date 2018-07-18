@@ -103,7 +103,7 @@ class Services extends React.Component {
                                             {s.spec.externalName}
                                         </TableCell>
                                         <TableCell scope="row">
-                                            {s.spec.ports && s.spec.ports[0].port}:{s.spec.ports && s.spec.ports[0].targetPort}
+                                            {s.spec.ports && s.spec.ports[0].port + ":"}{s.spec.ports && s.spec.ports[0].targetPort}{s.spec.ports && "/" + s.spec.ports[0].protocol}
                                         </TableCell>
                                         <TableCell scope="row">
                                             <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
