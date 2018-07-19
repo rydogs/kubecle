@@ -137,7 +137,7 @@ class Jobs extends React.Component {
                                                         <Button mini color="primary" variant="fab" onClick={() => this.edit(s.metadata.name)}><BuildIcon /></Button>
                                                     </Tooltip>
                                                     <Tooltip title="Delete" placement="top">
-                                                        <Button mini color="secondary" variant="fab" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>
+                                                        <Button mini color="secondary" variant="fab" onClick={() => this.delete(s.metadata.name)}><DeleteIcon /></Button>
                                                     </Tooltip>                                                   
                                                 </div>
                                         </TableCell>
