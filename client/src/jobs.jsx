@@ -67,8 +67,8 @@ class Jobs extends React.Component {
         }
     }
 
-    edit(jobName) {
-        this.setState({editor: {open: true, content: c, editUrl: `/api/namespace/${this.props.currentNs}/jobs/${jobName}`}});
+    edit(s) {
+        this.setState({editor: {open: true, content: s, editUrl: `/api/namespace/${this.props.currentNs}/jobs/${s.metadata.name}`}});
     }
 
     delete(jobName) {
@@ -134,7 +134,7 @@ class Jobs extends React.Component {
                                         <TableCell scope="row">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
                                                     <Tooltip title="Edit" placement="top">
-                                                        <Button mini color="primary" variant="fab" onClick={() => this.edit(s.metadata.name)}><BuildIcon /></Button>
+                                                        <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
                                                     </Tooltip>
                                                     <Tooltip title="Delete" placement="top">
                                                         <Button mini color="secondary" variant="fab" onClick={() => this.delete(s.metadata.name)}><DeleteIcon /></Button>
