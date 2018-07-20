@@ -58,7 +58,7 @@ router.get('/api/namespace/:namespace/services', asyncHandler(async (req, res) =
 
 router.post('/api/namespace/:namespace/services/:service', asyncHandler(async (req, res) => {
   try {
-    const updated = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).services(req.params.service).put({ body: req.body });
+    const updated = await getClient(req).api.v1.namespaces(req.params.namespace).services(req.params.service).put({ body: req.body });
     res.json(updated);
   } catch (err) {
     if (err.statusCode !== 409) throw err;
