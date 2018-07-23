@@ -5,6 +5,14 @@ const initialState = {
     currentContext: "",
 };
 
+const searchParams = new URLSearchParams(window.location.search);
+if (searchParams.has('context') && searchParams.has('namespace')) {
+  Object.assign(initialState, {
+    currentContext: searchParams.get('context'),
+    currentNs: searchParams.get('namespace'),
+  });
+}
+
 const rootReducer = (state = initialState, action) => {
     switch (action.type) {
       case CHANGE_CONTEXT: {
