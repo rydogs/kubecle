@@ -30,6 +30,13 @@ import thunk from 'redux-thunk';
 import { rootReducer, initialState } from './reducer';
 import { Route, Redirect, Link, HashRouter } from "react-router-dom";
 
+const searchParams = new URLSearchParams(window.location.search);
+if (searchParams.has('context') && searchParams.has('namespace')) {
+  Object.assign(initialState, {
+    currentContext: searchParams.get('context'),
+    currentNs: searchParams.get('namespace'),
+  });
+}
 
 const drawerWidth = 200;
 
