@@ -59,7 +59,7 @@ class Context extends React.Component {
         const { classes } = this.props;
 
         return (
-            <form className={classes.container} noValidate autoComplete="off" action="">
+            <div className={classes.container}>
                 <FormControl className={classes.formControl}>
                     <InputLabel htmlFor="context-select" className={classes.white}>Context</InputLabel>
                     <Select value={this.state.context} onChange={(e) => this.handleChangeContext(e)} className={classes.white} inputProps={{ name: 'context', id: 'context-select' }}>
@@ -73,7 +73,7 @@ class Context extends React.Component {
                 </FormControl>
                 <TextField label="Namespace" required id="currentNs" value={this.state.namespace} InputLabelProps={{ className: classes.white }} InputProps={{ className: classes.white }} className={classes.textField} margin="normal"
                     onChange={(e) => this.handleChangeNs(e)} onKeyPress={(e) => this.handleEnter(e)} />
-            </form>
+            </div>
         )
     }
  
@@ -84,7 +84,7 @@ class Context extends React.Component {
     loadContext() {
         axios.get(`/api/contexts`)
             .then(res => {
-                this.setState({ contexts: res.data.contexts, context: res.data.currentContext });
+                this.setState({ contexts: res.data.contexts, context: this.state.context || res.data.currentContext });
             });
     }
 

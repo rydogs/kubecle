@@ -26,9 +26,10 @@ import Pods from './pods';
 import Configmaps from './configmaps';
 import Jobs from './jobs';
 import Context from './context';
+import history from './history';
 import thunk from 'redux-thunk';
 import { rootReducer, initialState } from './reducer';
-import { Route, Redirect, Link, HashRouter } from "react-router-dom";
+import { Route, Redirect, Link, Router } from "react-router-dom";
 
 const drawerWidth = 200;
 
@@ -72,10 +73,11 @@ class App extends Component {
   render() {
     const { classes } = this.props;
 
+    console.log(window.location.search);
     return (
       <Provider store={store}>
         <MuiThemeProvider theme={theme}>
-          <HashRouter>
+          <Router history={history}>
             <div className={classes.root}>
               <AppBar position="absolute" className={classes.appBar}>
                 <Toolbar>
@@ -83,15 +85,15 @@ class App extends Component {
                   <Typography variant="title" color="inherit" noWrap style={{ flex: 1 }}>
                     Kubecle
                 </Typography>
-                <div >
-                  <Context />
-                </div>
+                  <div >
+                    <Context />
+                  </div>
                 </Toolbar>
               </AppBar>
-              <Drawer variant="permanent" classes={{paper: classes.drawerPaper}}>
+              <Drawer variant="permanent" classes={{ paper: classes.drawerPaper }}>
                 <div className={classes.toolbar} />
                 <List className={classes.menu}>
-                  <Link to="/deployments" style={{ textDecoration: 'none' }}>
+                  <Link to={{ pathname: '/deployments', search: window.location.search }} style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
                         <Build />
@@ -99,7 +101,7 @@ class App extends Component {
                       <ListItemText primary="Deployments" />
                     </ListItem>
                   </Link>
-                  <Link to="/pods" style={{ textDecoration: 'none' }}>
+                  <Link to={{ pathname: '/pods', search: window.location.search }} style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
                         <GroupWork />
@@ -107,7 +109,7 @@ class App extends Component {
                       <ListItemText primary="Pods" />
                     </ListItem>
                   </Link>
-                  <Link to="/jobs" style={{ textDecoration: 'none' }}>
+                  <Link to={{ pathname: '/jobs', search: window.location.search }} style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
                         <ScheduleIcon />
@@ -115,7 +117,7 @@ class App extends Component {
                       <ListItemText primary="Jobs" />
                     </ListItem>
                   </Link>
-                  <Link to="/services" style={{ textDecoration: 'none' }}>
+                  <Link to={{ pathname: '/services', search: window.location.search }} style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
                         <SettingsEthernet />
@@ -123,15 +125,15 @@ class App extends Component {
                       <ListItemText primary="Services" />
                     </ListItem>
                   </Link>
-                  <Link to="/ingresses" style={{ textDecoration: 'none' }}>
+                  <Link to={{ pathname: '/ingresses', search: window.location.search }} style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
                         <Input />
                       </ListItemIcon>
                       <ListItemText primary="Ingresses" />
                     </ListItem>
-                  </Link>                  
-                  <Link to="/configmaps" style={{ textDecoration: 'none' }}>
+                  </Link>
+                  <Link to={{ pathname: '/sconfigmaps', search: window.location.search }} style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
                         <DescriptionIcon />
@@ -152,12 +154,12 @@ class App extends Component {
                 <Route path="/pods" component={Pods} />
                 <Route path="/jobs" component={Jobs} />
                 <Route path="/configmaps" component={Configmaps} />
-                <Route exact path="/" render={()=> (
-                  <Redirect to="/pods"/>
-                )}/>
+                <Route exact path="/" render={() => (
+                  <Redirect to="/pods" />
+                )} />
               </main>
             </div>
-          </HashRouter>
+          </Router>
         </MuiThemeProvider>
       </Provider>
     );
