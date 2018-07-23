@@ -1,4 +1,6 @@
 import { CHANGE_CONTEXT } from './actions';
+import { combineReducers } from 'redux';
+import { routerReducer } from 'react-router-redux'
 
 const initialState = {
     currentNs: "default",
@@ -26,7 +28,12 @@ const rootReducer = (state = initialState, action) => {
     }
 };
 
+const reducer = combineReducers({
+      rootReducer,
+      routing: routerReducer
+})
+
 module.exports = {
-    rootReducer,
+    reducer,
     initialState
 };

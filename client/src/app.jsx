@@ -27,7 +27,7 @@ import Configmaps from './configmaps';
 import Jobs from './jobs';
 import Context from './context';
 import thunk from 'redux-thunk';
-import { rootReducer, initialState } from './reducer';
+import { reducer, initialState } from './reducer';
 import { Route, Redirect, Link, HashRouter } from "react-router-dom";
 
 const drawerWidth = 200;
@@ -66,7 +66,7 @@ const styles = theme => ({
 
 const theme = createMuiTheme();
 const logger = createLogger();
-const store = createStore(rootReducer, initialState, applyMiddleware(thunk, logger));
+const store = createStore(reducer, initialState, applyMiddleware(thunk, logger));
 
 class App extends Component {
   render() {
