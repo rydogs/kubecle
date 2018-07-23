@@ -1,5 +1,6 @@
 const beautify = require('json-beautify');
 const express = require('express')
+const path = require('path');
 const asyncHandler = require('express-async-handler')
 const Client = require('kubernetes-client').Client;
 const config = require('kubernetes-client').config;
@@ -107,6 +108,10 @@ router.get('/api/contexts', asyncHandler(async (req, res) => {
   const k8sConfig = config.loadKubeconfig();
   res.json({"currentContext": k8sConfig['current-context'], "contexts": k8sConfig.clusters.map(c => c.name)});
 }));
+
+router.get('/*', function(req, res) { 
+  res.sendFile(path.resolve(__dirname + '/../client/dist/index.html'));
+});
 
 function getClient(req) {
   let contextHeader = req.headers['k8s-context'];
