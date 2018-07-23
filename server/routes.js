@@ -94,6 +94,15 @@ router.get('/api/namespace/:namespace/ingresses', asyncHandler(async (req, res) 
   res.json(ingresses);
 }));
 
+router.post('/api/namespace/:namespace/ingresses/:ingresses', asyncHandler(async (req, res) => {
+  try {
+    const updated = await getClient(req).api.extensions.v1beta1.namespaces(req.params.namespace).ingresses(req.params.ingresses).put({ body: req.body });
+    res.json(updated);
+  } catch (err) {
+    if (err.statusCode !== 409) throw err;
+  }
+}));
+
 router.get('/api/contexts', asyncHandler(async (req, res) => {
   const k8sConfig = config.loadKubeconfig();
   res.json({"currentContext": k8sConfig['current-context'], "contexts": k8sConfig.clusters.map(c => c.name)});

@@ -8,7 +8,7 @@ Kubecle is a web ui running locally that provides useful information about your 
 - [x] Services
 - [x] Config map
 - [x] Jobs
-- [ ] Ingress
+- [x] Ingress
 - [ ] Endpoints
 - [ ] Accounts
 - [ ] Secrets

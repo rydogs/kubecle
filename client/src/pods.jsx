@@ -17,7 +17,7 @@ import Button from '@material-ui/core/Button';
 import Badge from '@material-ui/core/Badge';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InfoIcon from '@material-ui/icons/Info';
-import InputIcon from '@material-ui/icons/Input';
+import ScreenShare from '@material-ui/icons/ScreenShare';
 import AssignmentIcon from '@material-ui/icons/Assignment'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Moment from 'react-moment';
@@ -211,7 +211,7 @@ class Pods extends React.Component {
                                                         <Button mini color="primary" variant="fab" onClick={() => this.viewLog(s.metadata.name, c.name)}><AssignmentIcon /></Button>
                                                     </Tooltip>
                                                     <Tooltip title="Copy Shell Command" placement="top">
-                                                        <Button mini color="primary" variant="fab" onClick={() => this.copySshToClipboard(s.metadata.name, c.name)}><InputIcon /></Button>
+                                                        <Button mini color="primary" variant="fab" onClick={() => this.copySshToClipboard(s.metadata.name, c.name)}><ScreenShare /></Button>
                                                     </Tooltip>
                                                     <Tooltip title="Delete" placement="top">
                                                         <Button mini color="secondary" variant="fab" onClick={() => this.deletePod(s.metadata.name)}><DeleteIcon /></Button>

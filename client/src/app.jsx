@@ -15,11 +15,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
+import Input from '@material-ui/icons/Input';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import Build from '@material-ui/icons/Build';
 import GroupWork from '@material-ui/icons/GroupWork';
 import Services from './services';
 import Deployments from './deployments';
+import Ingresses from './ingresses';
 import Pods from './pods';
 import Configmaps from './configmaps';
 import Jobs from './jobs';
@@ -122,6 +124,14 @@ class App extends Component {
                       <ListItemText primary="Services" />
                     </ListItem>
                   </Link>
+                  <Link to="/ingresses" style={{ textDecoration: 'none' }}>
+                    <ListItem button>
+                      <ListItemIcon>
+                        <Input />
+                      </ListItemIcon>
+                      <ListItemText primary="Ingresses" />
+                    </ListItem>
+                  </Link>                  
                   <Link to="/configmaps" style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
@@ -139,6 +149,7 @@ class App extends Component {
                 <div className={classes.toolbar} />
                 <Route path="/deployments" component={Deployments} />
                 <Route path="/services" component={Services} />
+                <Route path="/ingresses" component={Ingresses} />
                 <Route path="/pods" component={Pods} />
                 <Route path="/jobs" component={Jobs} />
                 <Route path="/configmaps" component={Configmaps} />
