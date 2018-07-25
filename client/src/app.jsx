@@ -133,7 +133,7 @@ class App extends Component {
                       <ListItemText primary="Ingresses" />
                     </ListItem>
                   </Link>
-                  <Link to={{ pathname: '/sconfigmaps', search: window.location.search }} style={{ textDecoration: 'none' }}>
+                  <Link to={{ pathname: '/configmaps', search: window.location.search }} style={{ textDecoration: 'none' }}>
                     <ListItem button>
                       <ListItemIcon>
                         <DescriptionIcon />
