@@ -22,10 +22,8 @@ It also allows you to perform some basic actions:
 - [ ] Apply manifest
 
 ## How to use
-1. Run `kubectl config use-context <context>` to set default context
-2. `npm install && npm start`
-3. Open browser to http://localhost:6888/?#/pods
-4. Update namespace on the up right corner as needed
+1. `npm install && npm start`
+2. Open browser to http://localhost:6888
 
 ## How to develop
 1. Install [minikube](https://github.com/kubernetes/minikube)
