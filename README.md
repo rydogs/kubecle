@@ -27,9 +27,10 @@ It also allows you to perform some basic actions:
 
 ## How to develop
 1. Install [minikube](https://github.com/kubernetes/minikube)
-2. Run `npm run watch` to start server
-3. Run `npm --prefix client start` to start client
-4. Open http://localhost:3001
+2. Install [helm](https://github.com/helm/helm) and deploy something, for example, [Wordpress](https://github.com/helm/charts/tree/master/stable/wordpress)
+3. Run `npm run watch` to start server
+4. Run `npm --prefix client start` to start client
+5. Open http://localhost:3001
 
 ## Stack
 * React
