@@ -64,7 +64,7 @@ class Pods extends React.Component {
                 content: {},
             }
         };
-        this.intervalID = setInterval(() => this.tick(), 5000);
+        this.intervalID = setInterval(() => this.tick(), 10000);
     }
 
     componentDidMount() {
