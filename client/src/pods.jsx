@@ -1,34 +1,34 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Moment from "react-moment";
-import { connect } from "react-redux";
-import axios from "axios";
-import copy from "copy-to-clipboard";
-import humanize from "string-humanize";
-import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Tooltip from "@material-ui/core/Tooltip";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import DeleteIcon from "@material-ui/icons/Delete";
-import InfoIcon from "@material-ui/icons/Info";
-import ScreenShare from "@material-ui/icons/ScreenShare";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Moment from 'react-moment';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import copy from 'copy-to-clipboard';
+import humanize from 'string-humanize';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import InfoIcon from '@material-ui/icons/Info';
+import ScreenShare from '@material-ui/icons/ScreenShare';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
-import LogViewer from "./logViewer";
-import Editor from "./editor";
+import LogViewer from './logViewer';
+import Editor from './editor';
 
 const styles = theme => ({
     root: {
-        width: "100%",
-        overflowX: "auto"
+        width: '100%',
+        overflowX: 'auto'
     },
     table: {
         minWidth: 700
@@ -38,7 +38,7 @@ const styles = theme => ({
         paddingBottom: theme.spacing.unit * 2
     },
     centered: {
-        textAlign: "center"
+        textAlign: 'center'
     }
 });
 
@@ -55,7 +55,7 @@ class Pods extends React.Component {
             time: new Date(),
             logViewer: {
                 open: false,
-                logUrl: ""
+                logUrl: ''
             },
             editor: {
                 open: false,
@@ -91,7 +91,7 @@ class Pods extends React.Component {
         axios
             .get(`/api/namespace/${currentNs}/pods`, {
                 headers: {
-                    "k8s-context": currentContext
+                    'k8s-context': currentContext
                 }
             })
             .then(res => {
@@ -130,7 +130,7 @@ class Pods extends React.Component {
         axios
             .delete(`/api/namespace/${currentNs}/pods/${podName}`, {
                 headers: {
-                    "k8s-context": currentContext
+                    'k8s-context': currentContext
                 }
             })
             .then(this.tick);
@@ -141,7 +141,7 @@ class Pods extends React.Component {
             let status = statusObj.containerStatuses[i];
 
             if (!status) {
-                return "Unknown";
+                return 'Unknown';
             } else if (status.state && status.state.running) {
                 if (status.ready) {
                     return (
@@ -179,10 +179,10 @@ class Pods extends React.Component {
                     </Button>
                 );
             } else {
-                return "Unknown";
+                return 'Unknown';
             }
         } else {
-            const phaseReason = statusObj ? `${statusObj.phase} - ${statusObj.reason}` : "Unknown phase/reason";
+            const phaseReason = statusObj ? `${statusObj.phase} - ${statusObj.reason}` : 'Unknown phase/reason';
 
             return (
                 <Button fullWidth size="small" color="secondary">
@@ -193,9 +193,9 @@ class Pods extends React.Component {
     }
 
     imageName(image) {
-        const imgStr = image.includes("/") ? image.split("/")[1] : image;
+        const imgStr = image.includes('/') ? image.split('/')[1] : image;
 
-        const parts = imgStr.split(":");
+        const parts = imgStr.split(':');
         const part = parts.length > 1 ? parts[1] : parts[0];
 
         return <span>{part}</span>;
@@ -261,8 +261,8 @@ class Pods extends React.Component {
                                                     <Typography
                                                         color={
                                                             pod.status.containerStatuses[i].restartCount > 0
-                                                                ? "error"
-                                                                : "primary"
+                                                                ? 'error'
+                                                                : 'primary'
                                                         }
                                                     >
                                                         {pod.status.containerStatuses[i].restartCount}
@@ -275,8 +275,8 @@ class Pods extends React.Component {
                                             <TableCell padding="dense" scope="row">
                                                 <div
                                                     style={{
-                                                        display: "flex",
-                                                        flexDirection: "row"
+                                                        display: 'flex',
+                                                        flexDirection: 'row'
                                                     }}
                                                 >
                                                     <Tooltip title="Describe" placement="top">

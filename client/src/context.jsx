@@ -1,19 +1,19 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import { connect } from "react-redux";
-import { changeContext } from "./actions";
-import axios from "axios";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import { connect } from 'react-redux';
+import { changeContext } from './actions';
+import axios from 'axios';
 
 const styles = theme => ({
     container: {
-        display: "flex",
-        flexWrap: "wrap"
+        display: 'flex',
+        flexWrap: 'wrap'
     },
     textField: {
         marginLeft: theme.spacing.unit,
@@ -26,10 +26,10 @@ const styles = theme => ({
         marginTop: 16,
         marginBottom: 8,
         width: 300,
-        color: "white"
+        color: 'white'
     },
     white: {
-        color: "white"
+        color: 'white'
     }
 });
 
@@ -66,7 +66,7 @@ class Context extends React.Component {
                         value={context}
                         onChange={this.handleChangeContext}
                         className={classes.white}
-                        inputProps={{ name: "context", id: "context-select" }}
+                        inputProps={{ name: 'context', id: 'context-select' }}
                     >
                         {this.state.contexts &&
                             this.state.contexts.map(ctx => (
@@ -97,7 +97,7 @@ class Context extends React.Component {
     }
 
     loadContext() {
-        axios.get(`/api/contexts`).then(res => {
+        axios.get('/api/contexts').then(res => {
             this.setState({ contexts: res.data.contexts, context: this.state.context || res.data.currentContext });
         });
     }
@@ -109,7 +109,7 @@ class Context extends React.Component {
     handleChangeContext(event) {
         this.setState(
             {
-                namespace: "default",
+                namespace: 'default',
                 context: event.target.value
             },
             () => this.props.changeContext(this.state.namespace, event.target.value)
@@ -117,7 +117,7 @@ class Context extends React.Component {
     }
 
     handleEnter(e) {
-        if (e.key === "Enter") {
+        if (e.key === 'Enter') {
             this.props.changeContext(this.state.namespace, this.state.context);
             event.preventDefault();
         }

@@ -1,28 +1,28 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Moment from "react-moment";
-import Button from "@material-ui/core/Button";
-import BuildIcon from "@material-ui/icons/Build";
-import Tooltip from "@material-ui/core/Tooltip";
-import Editor from "./editor";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Moment from 'react-moment';
+import Button from '@material-ui/core/Button';
+import BuildIcon from '@material-ui/icons/Build';
+import Tooltip from '@material-ui/core/Tooltip';
+import Editor from './editor';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
-import axios from "axios";
+import axios from 'axios';
 
 const styles = theme => ({
     root: {
-        width: "100%",
-        overflowX: "auto"
+        width: '100%',
+        overflowX: 'auto'
     },
     table: {
         minWidth: 700
@@ -70,7 +70,7 @@ class Services extends React.Component {
         axios
             .get(`/api/namespace/${currentNs}/services`, {
                 headers: {
-                    "k8s-context": currentContext
+                    'k8s-context': currentContext
                 }
             })
             .then(res => {
@@ -87,9 +87,7 @@ class Services extends React.Component {
             editor: {
                 open: true,
                 content,
-                editUrl: `/api/namespace/${currentNs}/services/${
-                    content.metadata.name
-                }`
+                editUrl: `/api/namespace/${currentNs}/services/${content.metadata.name}`
             }
         });
     }
@@ -121,53 +119,30 @@ class Services extends React.Component {
                             {services.map(service => {
                                 return (
                                     <TableRow key={service.metadata.uid}>
+                                        <TableCell scope="row">{service.metadata.name}</TableCell>
+                                        <TableCell scope="row">{service.spec.type}</TableCell>
+                                        <TableCell scope="row">{service.spec.externalName}</TableCell>
                                         <TableCell scope="row">
-                                            {service.metadata.name}
+                                            {service.spec.ports && service.spec.ports[0].port + ':'}
+                                            {service.spec.ports && service.spec.ports[0].targetPort}
+                                            {service.spec.ports && '/' + service.spec.ports[0].protocol}
                                         </TableCell>
                                         <TableCell scope="row">
-                                            {service.spec.type}
-                                        </TableCell>
-                                        <TableCell scope="row">
-                                            {service.spec.externalName}
-                                        </TableCell>
-                                        <TableCell scope="row">
-                                            {service.spec.ports &&
-                                                service.spec.ports[0].port +
-                                                    ":"}
-                                            {service.spec.ports &&
-                                                service.spec.ports[0]
-                                                    .targetPort}
-                                            {service.spec.ports &&
-                                                "/" +
-                                                    service.spec.ports[0]
-                                                        .protocol}
-                                        </TableCell>
-                                        <TableCell scope="row">
-                                            <Moment fromNow>
-                                                {
-                                                    service.metadata
-                                                        .creationTimestamp
-                                                }
-                                            </Moment>
+                                            <Moment fromNow>{service.metadata.creationTimestamp}</Moment>
                                         </TableCell>
                                         <TableCell scope="row">
                                             <div
                                                 style={{
-                                                    display: "flex",
-                                                    flexDirection: "row"
+                                                    display: 'flex',
+                                                    flexDirection: 'row'
                                                 }}
                                             >
-                                                <Tooltip
-                                                    title="Edit"
-                                                    placement="top"
-                                                >
+                                                <Tooltip title="Edit" placement="top">
                                                     <Button
                                                         mini
                                                         color="primary"
                                                         variant="fab"
-                                                        onClick={() =>
-                                                            this.edit(service)
-                                                        }
+                                                        onClick={() => this.edit(service)}
                                                     >
                                                         <BuildIcon />
                                                     </Button>
@@ -185,9 +160,7 @@ class Services extends React.Component {
                         editUrl={editor.editUrl}
                         readOnly={true}
                         open={editor.open}
-                        onClose={() =>
-                            this.setState({ editor: { open: false } })
-                        }
+                        onClose={() => this.setState({ editor: { open: false } })}
                     />
                 </Paper>
             </div>

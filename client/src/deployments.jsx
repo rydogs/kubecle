@@ -1,27 +1,27 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Tooltip from "@material-ui/core/Tooltip";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Moment from "react-moment";
-import Button from "@material-ui/core/Button";
-import BuildIcon from "@material-ui/icons/Build";
-import { connect } from "react-redux";
-import Editor from "./editor";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Tooltip from '@material-ui/core/Tooltip';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Moment from 'react-moment';
+import Button from '@material-ui/core/Button';
+import BuildIcon from '@material-ui/icons/Build';
+import { connect } from 'react-redux';
+import Editor from './editor';
 
-import axios from "axios";
+import axios from 'axios';
 
 const styles = theme => ({
     root: {
-        width: "100%",
-        overflowX: "auto"
+        width: '100%',
+        overflowX: 'auto'
     },
     table: {
         minWidth: 700
@@ -44,7 +44,7 @@ class Deployments extends React.Component {
             deployments: [],
             editor: {
                 open: false,
-                editUrl: "",
+                editUrl: '',
                 content: {}
             }
         };
@@ -70,7 +70,7 @@ class Deployments extends React.Component {
         axios
             .get(`/api/namespace/${currentNs}/deployments`, {
                 headers: {
-                    "k8s-context": currentContext
+                    'k8s-context': currentContext
                 }
             })
             .then(res => {
@@ -123,14 +123,18 @@ class Deployments extends React.Component {
                                             <TableCell scope="row">{container.name}</TableCell>
                                             <TableCell scope="row">{deployment.spec.replicas}</TableCell>
                                             <TableCell scope="row">
-                                                {container.image.includes("/") ? container.image.split("/")[1] : container.image}
+                                                {container.image.includes('/')
+                                                    ? container.image.split('/')[1]
+                                                    : container.image}
                                             </TableCell>
-                                            <TableCell scope="row">{container.ports && container.ports[0].containerPort}</TableCell>
+                                            <TableCell scope="row">
+                                                {container.ports && container.ports[0].containerPort}
+                                            </TableCell>
                                             <TableCell scope="row">
                                                 <Moment fromNow>{deployment.metadata.creationTimestamp}</Moment>
                                             </TableCell>
                                             <TableCell scope="row">
-                                                <div style={{ display: "flex", flexDirection: "row" }}>
+                                                <div style={{ display: 'flex', flexDirection: 'row' }}>
                                                     <Tooltip title="Edit" placement="top">
                                                         <Button
                                                             mini

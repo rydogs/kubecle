@@ -1,10 +1,10 @@
-import { CHANGE_CONTEXT } from "./actions";
-import history from "./history";
+import { CHANGE_CONTEXT } from './actions';
+import history from './history';
 
 const searchParams = new URLSearchParams(window.location.search);
 const initialState = {
-    currentNs: searchParams.get("namesapce") || "default",
-    currentContext: searchParams.get("context") || ""
+    currentNs: searchParams.get('namesapce') || 'default',
+    currentContext: searchParams.get('context') || ''
 };
 
 export const rootReducer = (state = initialState, action) => {

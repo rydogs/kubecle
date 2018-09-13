@@ -1,31 +1,31 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Moment from "react-moment";
-import Button from "@material-ui/core/Button";
-import BuildIcon from "@material-ui/icons/Build";
-import Tooltip from "@material-ui/core/Tooltip";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Editor from "./editor";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Moment from 'react-moment';
+import Button from '@material-ui/core/Button';
+import BuildIcon from '@material-ui/icons/Build';
+import Tooltip from '@material-ui/core/Tooltip';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Editor from './editor';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
-import axios from "axios";
+import axios from 'axios';
 
 const styles = theme => ({
     root: {
-        width: "100%",
-        overflowX: "auto"
+        width: '100%',
+        overflowX: 'auto'
     },
     table: {
         minWidth: 700
@@ -73,7 +73,7 @@ class ConfigMaps extends React.Component {
         axios
             .get(`/api/namespace/${currentNs}/configmaps`, {
                 headers: {
-                    "k8s-context": currentContext
+                    'k8s-context': currentContext
                 }
             })
             .then(res => {
@@ -135,7 +135,7 @@ class ConfigMaps extends React.Component {
                                             <Moment fromNow>{configMap.metadata.creationTimestamp}</Moment>
                                         </TableCell>
                                         <TableCell component="th" scope="row">
-                                            <div style={{ display: "flex", flexDirection: "row" }}>
+                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
                                                 <Tooltip title="Edit" placement="top">
                                                     <Button
                                                         mini

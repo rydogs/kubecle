@@ -1,22 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import AceEditor from "react-ace";
-import beautify from "json-beautify";
-import "brace/mode/json";
-import "brace/theme/monokai";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import AceEditor from 'react-ace';
+import beautify from 'json-beautify';
+import 'brace/mode/json';
+import 'brace/theme/monokai';
 
-import axios from "axios";
+import axios from 'axios';
 
 class Editor extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
+            error: null
         };
         this.editedContent = null;
         this.onChange = this.onChange.bind(this);
@@ -26,7 +26,7 @@ class Editor extends React.Component {
     render() {
         const { context, content, editUrl, open, onClose } = this.props;
         const { error } = this.state;
-    
+
         return (
             <Dialog fullWidth={true} maxWidth="md" open={open} onClose={onClose}>
                 <DialogTitle id="simple-dialog-title">Describe</DialogTitle>
@@ -72,7 +72,7 @@ class Editor extends React.Component {
             axios
                 .post(editUrl, json, {
                     headers: {
-                        "k8s-context": context
+                        'k8s-context': context
                     }
                 })
                 .then(onClose)

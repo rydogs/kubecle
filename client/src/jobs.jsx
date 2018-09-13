@@ -1,29 +1,29 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Moment from "react-moment";
-import Button from "@material-ui/core/Button";
-import BuildIcon from "@material-ui/icons/Build";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Tooltip from "@material-ui/core/Tooltip";
-import Editor from "./editor";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Moment from 'react-moment';
+import Button from '@material-ui/core/Button';
+import BuildIcon from '@material-ui/icons/Build';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Tooltip from '@material-ui/core/Tooltip';
+import Editor from './editor';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
-import axios from "axios";
+import axios from 'axios';
 
 const styles = theme => ({
     root: {
-        width: "100%",
-        overflowX: "auto"
+        width: '100%',
+        overflowX: 'auto'
     },
     table: {
         minWidth: 700
@@ -33,7 +33,7 @@ const styles = theme => ({
         paddingBottom: theme.spacing.unit * 2
     },
     centered: {
-        textAlign: "center"
+        textAlign: 'center'
     }
 });
 
@@ -73,7 +73,7 @@ class Jobs extends React.Component {
 
         axios
             .get(`/api/namespace/${currentNs}/jobs`, {
-                headers: { "k8s-context": currentContext }
+                headers: { 'k8s-context': currentContext }
             })
             .then(res => {
                 if (res && res.data && res.data.body) {
@@ -100,9 +100,10 @@ class Jobs extends React.Component {
         axios
             .delete(`/api/namespace/${currentNs}/jobs/${jobName}`, {
                 headers: {
-                    "k8s-context": currentContext
+                    'k8s-context': currentContext
                 }
-            }).then(this.fetchJobs);
+            })
+            .then(this.fetchJobs);
     }
 
     getStatus(job) {
@@ -113,7 +114,7 @@ class Jobs extends React.Component {
                 </Button>
             );
         }
-        let color = job.status.conditions[0].type === "Failed" ? "secondary" : "primary";
+        let color = job.status.conditions[0].type === 'Failed' ? 'secondary' : 'primary';
         if (job.status.conditions[0].message) {
             return (
                 <Tooltip title={job.status.conditions[0].message} placement="top">
@@ -154,13 +155,13 @@ class Jobs extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {this.state.jobs.map(job =>
+                            {this.state.jobs.map(job => (
                                 <TableRow key={job.metadata.uid}>
                                     <TableCell scope="row">{job.metadata.name}</TableCell>
                                     <TableCell scope="row">
                                         {job.spec.template.spec.containers[0] &&
-                                        job.spec.template.spec.containers[0].image.includes("/")
-                                            ? job.spec.template.spec.containers[0].image.split("/")[1]
+                                        job.spec.template.spec.containers[0].image.includes('/')
+                                            ? job.spec.template.spec.containers[0].image.split('/')[1]
                                             : job.spec.template.spec.containers[0].image}
                                     </TableCell>
                                     <TableCell scope="row">{this.getStatus(job)}</TableCell>
@@ -168,7 +169,7 @@ class Jobs extends React.Component {
                                         <Moment fromNow>{job.metadata.creationTimestamp}</Moment>
                                     </TableCell>
                                     <TableCell scope="row">
-                                        <div style={{ display: "flex", flexDirection: "row" }}>
+                                        <div style={{ display: 'flex', flexDirection: 'row' }}>
                                             <Tooltip title="Edit" placement="top">
                                                 <Button
                                                     mini
@@ -192,7 +193,7 @@ class Jobs extends React.Component {
                                         </div>
                                     </TableCell>
                                 </TableRow>
-                            )}
+                            ))}
                         </TableBody>
                     </Table>
                     <Editor

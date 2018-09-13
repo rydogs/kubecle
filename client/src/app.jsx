@@ -1,35 +1,35 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { MuiThemeProvider, createMuiTheme, withStyles } from "@material-ui/core/styles";
-import { createStore, applyMiddleware } from "redux";
-import { Provider } from "react-redux";
-import { createLogger } from "redux-logger";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import DescriptionIcon from "@material-ui/icons/Description";
-import SettingsEthernet from "@material-ui/icons/SettingsEthernet";
-import Input from "@material-ui/icons/Input";
-import ScheduleIcon from "@material-ui/icons/Schedule";
-import Build from "@material-ui/icons/Build";
-import GroupWork from "@material-ui/icons/GroupWork";
-import Services from "./services";
-import Deployments from "./deployments";
-import Ingresses from "./ingresses";
-import Pods from "./pods";
-import Configmaps from "./configmaps";
-import Jobs from "./jobs";
-import Context from "./context";
-import history from "./history";
-import thunk from "redux-thunk";
-import { rootReducer } from "./reducer";
-import { Route, Redirect, Link, Router } from "react-router-dom";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import { createLogger } from 'redux-logger';
+import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import DescriptionIcon from '@material-ui/icons/Description';
+import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
+import Input from '@material-ui/icons/Input';
+import ScheduleIcon from '@material-ui/icons/Schedule';
+import Build from '@material-ui/icons/Build';
+import GroupWork from '@material-ui/icons/GroupWork';
+import Services from './services';
+import Deployments from './deployments';
+import Ingresses from './ingresses';
+import Pods from './pods';
+import Configmaps from './configmaps';
+import Jobs from './jobs';
+import Context from './context';
+import history from './history';
+import thunk from 'redux-thunk';
+import { rootReducer } from './reducer';
+import { Route, Redirect, Link, Router } from 'react-router-dom';
 
 const drawerWidth = 200;
 
@@ -37,9 +37,9 @@ const styles = theme => ({
     root: {
         flexGrow: 1,
         zIndex: 1,
-        overflow: "hidden",
-        position: "relative",
-        display: "flex"
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'flex'
     },
     appBar: {
         zIndex: theme.zIndex.drawer + 1
@@ -50,7 +50,7 @@ const styles = theme => ({
         width: 50
     },
     drawerPaper: {
-        position: "relative",
+        position: 'relative',
         width: drawerWidth
     },
     content: {
@@ -94,8 +94,8 @@ class App extends Component {
                                 <div className={classes.toolbar} />
                                 <List className={classes.menu}>
                                     <Link
-                                        to={{ pathname: "/deployments", search: window.location.search }}
-                                        style={{ textDecoration: "none" }}
+                                        to={{ pathname: '/deployments', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
                                     >
                                         <ListItem button>
                                             <ListItemIcon>
@@ -105,8 +105,8 @@ class App extends Component {
                                         </ListItem>
                                     </Link>
                                     <Link
-                                        to={{ pathname: "/pods", search: window.location.search }}
-                                        style={{ textDecoration: "none" }}
+                                        to={{ pathname: '/pods', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
                                     >
                                         <ListItem button>
                                             <ListItemIcon>
@@ -116,8 +116,8 @@ class App extends Component {
                                         </ListItem>
                                     </Link>
                                     <Link
-                                        to={{ pathname: "/jobs", search: window.location.search }}
-                                        style={{ textDecoration: "none" }}
+                                        to={{ pathname: '/jobs', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
                                     >
                                         <ListItem button>
                                             <ListItemIcon>
@@ -127,8 +127,8 @@ class App extends Component {
                                         </ListItem>
                                     </Link>
                                     <Link
-                                        to={{ pathname: "/services", search: window.location.search }}
-                                        style={{ textDecoration: "none" }}
+                                        to={{ pathname: '/services', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
                                     >
                                         <ListItem button>
                                             <ListItemIcon>
@@ -138,8 +138,8 @@ class App extends Component {
                                         </ListItem>
                                     </Link>
                                     <Link
-                                        to={{ pathname: "/ingresses", search: window.location.search }}
-                                        style={{ textDecoration: "none" }}
+                                        to={{ pathname: '/ingresses', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
                                     >
                                         <ListItem button>
                                             <ListItemIcon>
@@ -149,8 +149,8 @@ class App extends Component {
                                         </ListItem>
                                     </Link>
                                     <Link
-                                        to={{ pathname: "/configmaps", search: window.location.search }}
-                                        style={{ textDecoration: "none" }}
+                                        to={{ pathname: '/configmaps', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
                                     >
                                         <ListItem button>
                                             <ListItemIcon>

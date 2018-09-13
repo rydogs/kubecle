@@ -17,6 +17,7 @@
         "react"
     ],
     "rules": {
-        "no-console": "off"
+        "no-console": "off",
+        "quotes": ["warn", "single"]
     }
 }

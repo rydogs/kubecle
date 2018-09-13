@@ -1,28 +1,28 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import Moment from "react-moment";
-import Button from "@material-ui/core/Button";
-import BuildIcon from "@material-ui/icons/Build";
-import Tooltip from "@material-ui/core/Tooltip";
-import Editor from "./editor";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Moment from 'react-moment';
+import Button from '@material-ui/core/Button';
+import BuildIcon from '@material-ui/icons/Build';
+import Tooltip from '@material-ui/core/Tooltip';
+import Editor from './editor';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
-import axios from "axios";
+import axios from 'axios';
 
 const styles = theme => ({
     root: {
-        width: "100%",
-        overflowX: "auto"
+        width: '100%',
+        overflowX: 'auto'
     },
     table: {
         minWidth: 700
@@ -67,7 +67,7 @@ class Ingresses extends React.Component {
     fetchIngresses() {
         axios
             .get(`/api/namespace/${this.props.currentNs}/ingresses`, {
-                headers: { "k8s-context": this.props.currentContext }
+                headers: { 'k8s-context': this.props.currentContext }
             })
             .then(res => {
                 this.setState({ ingresses: res.data.body.items });
@@ -116,13 +116,13 @@ class Ingresses extends React.Component {
                                                 .map(h => {
                                                     return h.host;
                                                 })
-                                                .join(", ")}
+                                                .join(', ')}
                                         </TableCell>
                                         <TableCell scope="row">
                                             <Moment fromNow>{ingress.metadata.creationTimestamp}</Moment>
                                         </TableCell>
                                         <TableCell scope="row">
-                                            <div style={{ display: "flex", flexDirection: "row" }}>
+                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
                                                 <Tooltip title="Edit" placement="top">
                                                     <Button
                                                         mini
