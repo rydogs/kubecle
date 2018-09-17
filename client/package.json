@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --mode development --open",
     "test": "jest",
-    "pretest": "eslint --ignore-path .gitignore .",
+    "pretest": "eslint .",
     "build": "webpack --mode production"
   },
   "keywords": [
