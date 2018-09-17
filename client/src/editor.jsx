@@ -1,6 +1,5 @@
-import React from 'react'
+import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,34 +12,35 @@ import 'brace/theme/monokai';
 
 import axios from 'axios';
 
-const styles = theme => ({
-});
-
-
 class Editor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
-        this.error = null;
+        this.state = {
+            error: null
+        };
         this.editedContent = null;
+        this.onChange = this.onChange.bind(this);
+        this.save = this.save.bind(this);
     }
 
     render() {
-        const { classes, title, context, content, editUrl, open, onClose } = this.props;
+        const { context, content, editUrl, open, onClose } = this.props;
+        const { error } = this.state;
+
         return (
             <Dialog fullWidth={true} maxWidth="md" open={open} onClose={onClose}>
                 <DialogTitle id="simple-dialog-title">Describe</DialogTitle>
                 <AceEditor
                     height="400px"
-                    width="100%"                  
+                    width="100%"
                     mode="json"
                     theme="monokai"
                     name="editor"
-                    onChange={(n) => this.onChange(n)}
-                    editorProps={{$blockScrolling: true}}
+                    onChange={this.onChange}
+                    editorProps={{ $blockScrolling: true }}
                     value={beautify(content, null, 2, 80)}
                 />
-                { editUrl && 
+                {editUrl && (
                     <DialogActions>
                         <Button onClick={onClose} color="primary">
                             Cancel
@@ -49,16 +49,16 @@ class Editor extends React.Component {
                             Save
                         </Button>
                     </DialogActions>
-                }
+                )}
                 <div>
-                    { this.error && 
+                    {error && (
                         <Typography color="error" variant="body1" align="center">
-                            {this.error.toString()}
+                            {error.toString()}
                         </Typography>
-                    }
+                    )}
                 </div>
             </Dialog>
-        )
+        );
     }
 
     onChange(newValue) {
@@ -69,23 +69,28 @@ class Editor extends React.Component {
         try {
             let json = JSON.parse(this.editedContent);
             delete json.status;
-            axios.post(editUrl, json, {headers: {'k8s-context': context}}).then(res => {
-                onClose();
-            }).catch((e) => {
-                this.error = e;
-            });
-        } catch (e) {
-            this.error = e;
+            axios
+                .post(editUrl, json, {
+                    headers: {
+                        'k8s-context': context
+                    }
+                })
+                .then(onClose)
+                .catch(error => {
+                    this.setState({ error });
+                });
+        } catch (error) {
+            this.setState({ error });
         }
     }
 }
 
 Editor.propTypes = {
-    classes: PropTypes.object.isRequired,
     onClose: PropTypes.func,
+    open: PropTypes.bool,
     editUrl: PropTypes.string,
     content: PropTypes.object,
-    context: PropTypes.string,
+    context: PropTypes.string
 };
 
-export default withStyles(styles)(Editor);
+export default Editor;

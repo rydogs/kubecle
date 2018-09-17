@@ -1,5 +1,4 @@
-
-import React from 'react'
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -16,17 +15,17 @@ import BuildIcon from '@material-ui/icons/Build';
 import Tooltip from '@material-ui/core/Tooltip';
 import Editor from './editor';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 import axios from 'axios';
 
 const styles = theme => ({
     root: {
         width: '100%',
-        overflowX: 'auto',
+        overflowX: 'auto'
     },
     table: {
-        minWidth: 700,
+        minWidth: 700
     },
     title: {
         paddingTop: theme.spacing.unit * 2,
@@ -34,9 +33,10 @@ const styles = theme => ({
     }
 });
 
-const mapStateToProps = state => {
-    return { currentNs: state.currentNs, currentContext: state.currentContext };
-};
+const mapStateToProps = ({ currentNs, currentContext }) => ({
+    currentNs,
+    currentContext
+});
 
 class Ingresses extends React.Component {
     constructor(props) {
@@ -45,30 +45,49 @@ class Ingresses extends React.Component {
             ingresses: [],
             editor: {
                 open: false,
-                content: {},
+                content: {}
             }
         };
+        this.fetchIngresses = this.fetchIngresses.bind(this);
     }
 
     componentDidMount() {
-        axios.get(`/api/namespace/${this.props.currentNs}/ingresses`, {headers: {'k8s-context': this.props.currentContext}})
+        this.fetchIngresses();
+    }
+
+    componentDidUpdate(prevProps) {
+        const { currentNs, currentContext } = this.props;
+        const { currentNs: prevNs, currentContext: prevContext } = prevProps;
+
+        if (currentNs !== prevNs || currentContext !== prevContext) {
+            this.fetchIngresses();
+        }
+    }
+
+    fetchIngresses() {
+        axios
+            .get(`/api/namespace/${this.props.currentNs}/ingresses`, {
+                headers: { 'k8s-context': this.props.currentContext }
+            })
             .then(res => {
                 this.setState({ ingresses: res.data.body.items });
             });
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.currentNs !== prevProps.currentNs || this.props.currentContext !== prevProps.currentContext) {
-            this.componentDidMount();
-        }
-    }
-
-    edit(c) {
-        this.setState({editor: {open: true, content: c, editUrl: `/api/namespace/${this.props.currentNs}/ingresses/${c.metadata.name}`}});
+    edit(ingress) {
+        const { currentNs } = this.props;
+        this.setState({
+            editor: {
+                open: true,
+                content: ingress,
+                editUrl: `/api/namespace/${currentNs}/ingresses/${ingress.metadata.name}`
+            }
+        });
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, currentContext } = this.props;
+        const { editor, ingresses } = this.state;
 
         return (
             <div>
@@ -88,31 +107,53 @@ class Ingresses extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {this.state.ingresses.map(s => {
+                            {ingresses.map(ingress => {
                                 return (
-                                    <TableRow key={s.metadata.uid}>
+                                    <TableRow key={ingress.metadata.uid}>
+                                        <TableCell scope="row">{ingress.metadata.name}</TableCell>
                                         <TableCell scope="row">
-                                            {s.metadata.name}
+                                            {ingress.spec.rules
+                                                .map(h => {
+                                                    return h.host;
+                                                })
+                                                .join(', ')}
                                         </TableCell>
                                         <TableCell scope="row">
-                                            {s.spec.rules.map(h => {return h.host}).join(", ")}
+                                            <Moment fromNow>{ingress.metadata.creationTimestamp}</Moment>
                                         </TableCell>
                                         <TableCell scope="row">
-                                            <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
-                                        </TableCell>
-                                        <TableCell scope="row">
-                                                <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <Tooltip title="Edit" placement="top">
-                                                        <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
-                                                    </Tooltip>
-                                                </div>
+                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                                <Tooltip title="Edit" placement="top">
+                                                    <Button
+                                                        mini
+                                                        color="primary"
+                                                        variant="fab"
+                                                        onClick={() => this.edit(ingress)}
+                                                    >
+                                                        <BuildIcon />
+                                                    </Button>
+                                                </Tooltip>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 );
                             })}
                         </TableBody>
                     </Table>
-                    <Editor context={this.props.currentContext} content={this.state.editor.content} editUrl={this.state.editor.editUrl} readOnly={true} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
+                    <Editor
+                        context={currentContext}
+                        content={editor.content}
+                        editUrl={editor.editUrl}
+                        readOnly={true}
+                        open={editor.open}
+                        onClose={() =>
+                            this.setState({
+                                editor: {
+                                    open: false
+                                }
+                            })
+                        }
+                    />
                 </Paper>
             </div>
         );
@@ -121,6 +162,8 @@ class Ingresses extends React.Component {
 
 Ingresses.propTypes = {
     classes: PropTypes.object.isRequired,
+    currentContext: PropTypes.string,
+    currentNs: PropTypes.string.isRequired
 };
 
-export default withStyles(styles)(connect(mapStateToProps)(Ingresses));
+export default connect(mapStateToProps)(withStyles(styles)(Ingresses));

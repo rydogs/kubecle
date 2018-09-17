@@ -1,5 +1,4 @@
-
-import React from 'react'
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -14,7 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
 import Button from '@material-ui/core/Button';
 import BuildIcon from '@material-ui/icons/Build';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 import Editor from './editor';
 
 import axios from 'axios';
@@ -22,10 +21,10 @@ import axios from 'axios';
 const styles = theme => ({
     root: {
         width: '100%',
-        overflowX: 'auto',
+        overflowX: 'auto'
     },
     table: {
-        minWidth: 700,
+        minWidth: 700
     },
     title: {
         paddingTop: theme.spacing.unit * 2,
@@ -33,9 +32,10 @@ const styles = theme => ({
     }
 });
 
-const mapStateToProps = state => {
-    return { currentNs: state.currentNs, currentContext: state.currentContext };
-};
+const mapStateToProps = ({ currentNs, currentContext }) => ({
+    currentNs,
+    currentContext
+});
 
 class Deployments extends React.Component {
     constructor(props) {
@@ -44,35 +44,61 @@ class Deployments extends React.Component {
             deployments: [],
             editor: {
                 open: false,
-                editUrl: "",
-                content: {},
+                editUrl: '',
+                content: {}
             }
         };
+        this.fetchDeployments = this.fetchDeployments.bind(this);
     }
 
     componentDidMount() {
-        axios.get(`/api/namespace/${this.props.currentNs}/deployments`, {headers: {'k8s-context': this.props.currentContext}})
-            .then(res => {
-                this.setState({ deployments: res.data.body.items });
-            });
+        this.fetchDeployments();
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.currentNs !== prevProps.currentNs || this.props.currentContext !== prevProps.currentContext) {
-            this.componentDidMount();
+    componentDidUpdate(prevProps) {
+        const { currentNs, currentContext } = this.props;
+        const { currentNs: prevNs, currentContext: prevContext } = prevProps;
+
+        if (currentNs !== prevNs || currentContext !== prevContext) {
+            this.fetchDeployments();
         }
     }
 
-    edit(c) {
-        this.setState({editor: {open: true, content: c, editUrl: `/api/namespace/${this.props.currentNs}/deployments/${c.metadata.name}`}});
+    fetchDeployments() {
+        const { currentContext, currentNs } = this.props;
+
+        axios
+            .get(`/api/namespace/${currentNs}/deployments`, {
+                headers: {
+                    'k8s-context': currentContext
+                }
+            })
+            .then(res => {
+                if (res && res.data && res.data.body) {
+                    this.setState({ deployments: res.data.body.items });
+                }
+            });
+    }
+
+    edit(deployment) {
+        const { currentNs } = this.props;
+
+        this.setState({
+            editor: {
+                open: true,
+                content: deployment,
+                editUrl: `/api/namespace/${currentNs}/deployments/${deployment.metadata.name}`
+            }
+        });
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, currentContext } = this.props;
+        const { deployments, editor } = this.state;
 
         return (
             <div>
-                <Grid >
+                <Grid>
                     <Typography variant="title" className={classes.title}>
                         Deployments
                     </Typography>
@@ -90,39 +116,50 @@ class Deployments extends React.Component {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {this.state.deployments.map(s => {
-                                return s.spec.template.spec.containers.map(c => {
+                            {deployments.map(deployment => {
+                                return deployment.spec.template.spec.containers.map(container => {
                                     return (
-                                        <TableRow key={s.metadata.uid + c.name}>
+                                        <TableRow key={deployment.metadata.uid + container.name}>
+                                            <TableCell scope="row">{container.name}</TableCell>
+                                            <TableCell scope="row">{deployment.spec.replicas}</TableCell>
                                             <TableCell scope="row">
-                                                {c.name}
+                                                {container.image.includes('/')
+                                                    ? container.image.split('/')[1]
+                                                    : container.image}
                                             </TableCell>
                                             <TableCell scope="row">
-                                                {s.spec.replicas}
+                                                {container.ports && container.ports[0].containerPort}
                                             </TableCell>
                                             <TableCell scope="row">
-                                                {c.image.includes("/") ? c.image.split("/")[1] : c.image}
+                                                <Moment fromNow>{deployment.metadata.creationTimestamp}</Moment>
                                             </TableCell>
                                             <TableCell scope="row">
-                                                {c.ports && c.ports[0].containerPort}
-                                            </TableCell>
-                                            <TableCell scope="row">
-                                                <Moment fromNow>{s.metadata.creationTimestamp}</Moment>
-                                            </TableCell>
-                                            <TableCell scope="row">
-                                                <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                <div style={{ display: 'flex', flexDirection: 'row' }}>
                                                     <Tooltip title="Edit" placement="top">
-                                                        <Button mini color="primary" variant="fab" onClick={() => this.edit(s)}><BuildIcon /></Button>
+                                                        <Button
+                                                            mini
+                                                            color="primary"
+                                                            variant="fab"
+                                                            onClick={() => this.edit(deployment)}
+                                                        >
+                                                            <BuildIcon />
+                                                        </Button>
                                                     </Tooltip>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
                                     );
-                                })
+                                });
                             })}
                         </TableBody>
                     </Table>
-                    <Editor context={this.props.currentContext} content={this.state.editor.content} editUrl={this.state.editor.editUrl} open={this.state.editor.open} onClose={() => this.setState({editor: {open: false}})} />
+                    <Editor
+                        context={currentContext}
+                        content={editor.content}
+                        editUrl={editor.editUrl}
+                        open={editor.open}
+                        onClose={() => this.setState({ editor: { open: false } })}
+                    />
                 </Paper>
             </div>
         );
@@ -131,6 +168,8 @@ class Deployments extends React.Component {
 
 Deployments.propTypes = {
     classes: PropTypes.object.isRequired,
+    currentContext: PropTypes.string,
+    currentNs: PropTypes.string.isRequired
 };
 
-export default withStyles(styles)(connect(mapStateToProps)(Deployments));
+export default connect(mapStateToProps)(withStyles(styles)(Deployments));

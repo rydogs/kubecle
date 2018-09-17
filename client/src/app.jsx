@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 import { createStore, applyMiddleware } from 'redux';
@@ -28,146 +28,161 @@ import Jobs from './jobs';
 import Context from './context';
 import history from './history';
 import thunk from 'redux-thunk';
-import { rootReducer, initialState } from './reducer';
-import { Route, Redirect, Link, Router } from "react-router-dom";
+import { rootReducer } from './reducer';
+import { Route, Redirect, Link, Router } from 'react-router-dom';
 
 const drawerWidth = 200;
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    zIndex: 1,
-    overflow: 'hidden',
-    position: 'relative',
-    display: 'flex',
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  logo: {
-    paddingRight: 10,
-    height: 50,
-    width: 50,
-  },
-  drawerPaper: {
-    position: 'relative',
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
-    minWidth: 0, // So the Typography noWrap works
-  },
-  menu: {
-    paddingTop: theme.spacing.unit * 3
-  },
-  toolbar: theme.mixins.toolbar,
+    root: {
+        flexGrow: 1,
+        zIndex: 1,
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'flex'
+    },
+    appBar: {
+        zIndex: theme.zIndex.drawer + 1
+    },
+    logo: {
+        paddingRight: 10,
+        height: 50,
+        width: 50
+    },
+    drawerPaper: {
+        position: 'relative',
+        width: drawerWidth
+    },
+    content: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.default,
+        padding: theme.spacing.unit * 3,
+        minWidth: 0 // So the Typography noWrap works
+    },
+    menu: {
+        paddingTop: theme.spacing.unit * 3
+    },
+    toolbar: theme.mixins.toolbar
 });
 
 const theme = createMuiTheme();
 const logger = createLogger();
-const store = createStore(rootReducer, initialState, applyMiddleware(thunk, logger));
+const store = createStore(rootReducer, undefined, applyMiddleware(thunk, logger));
 
 class App extends Component {
-  render() {
-    const { classes } = this.props;
+    render() {
+        const { classes } = this.props;
 
-    console.log(window.location.search);
-    return (
-      <Provider store={store}>
-        <MuiThemeProvider theme={theme}>
-          <Router history={history}>
-            <div className={classes.root}>
-              <AppBar position="absolute" className={classes.appBar}>
-                <Toolbar>
-                  <img src="images/kubecle-logo.png" className={classes.logo} />
-                  <Typography variant="title" color="inherit" noWrap style={{ flex: 1 }}>
-                    Kubecle
-                </Typography>
-                  <div >
-                    <Context />
-                  </div>
-                </Toolbar>
-              </AppBar>
-              <Drawer variant="permanent" classes={{ paper: classes.drawerPaper }}>
-                <div className={classes.toolbar} />
-                <List className={classes.menu}>
-                  <Link to={{ pathname: '/deployments', search: window.location.search }} style={{ textDecoration: 'none' }}>
-                    <ListItem button>
-                      <ListItemIcon>
-                        <Build />
-                      </ListItemIcon>
-                      <ListItemText primary="Deployments" />
-                    </ListItem>
-                  </Link>
-                  <Link to={{ pathname: '/pods', search: window.location.search }} style={{ textDecoration: 'none' }}>
-                    <ListItem button>
-                      <ListItemIcon>
-                        <GroupWork />
-                      </ListItemIcon>
-                      <ListItemText primary="Pods" />
-                    </ListItem>
-                  </Link>
-                  <Link to={{ pathname: '/jobs', search: window.location.search }} style={{ textDecoration: 'none' }}>
-                    <ListItem button>
-                      <ListItemIcon>
-                        <ScheduleIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Jobs" />
-                    </ListItem>
-                  </Link>
-                  <Link to={{ pathname: '/services', search: window.location.search }} style={{ textDecoration: 'none' }}>
-                    <ListItem button>
-                      <ListItemIcon>
-                        <SettingsEthernet />
-                      </ListItemIcon>
-                      <ListItemText primary="Services" />
-                    </ListItem>
-                  </Link>
-                  <Link to={{ pathname: '/ingresses', search: window.location.search }} style={{ textDecoration: 'none' }}>
-                    <ListItem button>
-                      <ListItemIcon>
-                        <Input />
-                      </ListItemIcon>
-                      <ListItemText primary="Ingresses" />
-                    </ListItem>
-                  </Link>
-                  <Link to={{ pathname: '/configmaps', search: window.location.search }} style={{ textDecoration: 'none' }}>
-                    <ListItem button>
-                      <ListItemIcon>
-                        <DescriptionIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Configmaps" />
-                    </ListItem>
-                  </Link>
-                </List>
-                <Divider />
-                <List>
-                </List>
-              </Drawer>
-              <main className={classes.content}>
-                <div className={classes.toolbar} />
-                <Route path="/deployments" component={Deployments} />
-                <Route path="/services" component={Services} />
-                <Route path="/ingresses" component={Ingresses} />
-                <Route path="/pods" component={Pods} />
-                <Route path="/jobs" component={Jobs} />
-                <Route path="/configmaps" component={Configmaps} />
-                <Route exact path="/" render={() => (
-                  <Redirect to="/pods" />
-                )} />
-              </main>
-            </div>
-          </Router>
-        </MuiThemeProvider>
-      </Provider>
-    );
-  }
+        console.log(window.location.search);
+        return (
+            <Provider store={store}>
+                <MuiThemeProvider theme={theme}>
+                    <Router history={history}>
+                        <div className={classes.root}>
+                            <AppBar position="absolute" className={classes.appBar}>
+                                <Toolbar>
+                                    <img src="images/kubecle-logo.png" className={classes.logo} />
+                                    <Typography variant="title" color="inherit" noWrap style={{ flex: 1 }}>
+                                        Kubecle
+                                    </Typography>
+                                    <div>
+                                        <Context />
+                                    </div>
+                                </Toolbar>
+                            </AppBar>
+                            <Drawer variant="permanent" classes={{ paper: classes.drawerPaper }}>
+                                <div className={classes.toolbar} />
+                                <List className={classes.menu}>
+                                    <Link
+                                        to={{ pathname: '/deployments', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <ListItem button>
+                                            <ListItemIcon>
+                                                <Build />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Deployments" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link
+                                        to={{ pathname: '/pods', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <ListItem button>
+                                            <ListItemIcon>
+                                                <GroupWork />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Pods" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link
+                                        to={{ pathname: '/jobs', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <ListItem button>
+                                            <ListItemIcon>
+                                                <ScheduleIcon />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Jobs" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link
+                                        to={{ pathname: '/services', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <ListItem button>
+                                            <ListItemIcon>
+                                                <SettingsEthernet />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Services" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link
+                                        to={{ pathname: '/ingresses', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <ListItem button>
+                                            <ListItemIcon>
+                                                <Input />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Ingresses" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link
+                                        to={{ pathname: '/configmaps', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <ListItem button>
+                                            <ListItemIcon>
+                                                <DescriptionIcon />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Configmaps" />
+                                        </ListItem>
+                                    </Link>
+                                </List>
+                                <Divider />
+                                <List />
+                            </Drawer>
+                            <main className={classes.content}>
+                                <div className={classes.toolbar} />
+                                <Route path="/deployments" component={Deployments} />
+                                <Route path="/services" component={Services} />
+                                <Route path="/ingresses" component={Ingresses} />
+                                <Route path="/pods" component={Pods} />
+                                <Route path="/jobs" component={Jobs} />
+                                <Route path="/configmaps" component={Configmaps} />
+                                <Route exact path="/" render={() => <Redirect to="/pods" />} />
+                            </main>
+                        </div>
+                    </Router>
+                </MuiThemeProvider>
+            </Provider>
+        );
+    }
 }
 
 App.propTypes = {
-  classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(App);
