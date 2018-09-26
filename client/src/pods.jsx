@@ -136,9 +136,26 @@ class Pods extends React.Component {
             .then(this.tick);
     }
 
-    formatPodStatus(statusObj, i) {
+    formatPodRestartCount(containerName, status) {
+        if (status && status.containerStatuses) {
+            var podStatus = status.containerStatuses.find(s => s.name === containerName);
+            return (
+                <Typography
+                    color={
+                        podStatus.restartCount > 0 ? 'error' : 'primary'
+                    }
+                >
+                    {podStatus.restartCount}
+                </Typography>
+            )
+        }
+    }
+
+
+
+    formatPodStatus(containerName, statusObj) {
         if (statusObj && statusObj.containerStatuses) {
-            let status = statusObj.containerStatuses[i];
+            var status = statusObj.containerStatuses.find(s => s.name === containerName);
 
             if (!status) {
                 return 'Unknown';
@@ -254,20 +271,10 @@ class Pods extends React.Component {
                                                 {this.imageName(container.image)}
                                             </TableCell>
                                             <TableCell padding="dense" scope="row">
-                                                {this.formatPodStatus(pod.status, i)}
+                                                {this.formatPodStatus(container.name, pod.status)}
                                             </TableCell>
                                             <TableCell padding="dense" scope="row">
-                                                {pod.status.containerStatuses && (
-                                                    <Typography
-                                                        color={
-                                                            pod.status.containerStatuses[i].restartCount > 0
-                                                                ? 'error'
-                                                                : 'primary'
-                                                        }
-                                                    >
-                                                        {pod.status.containerStatuses[i].restartCount}
-                                                    </Typography>
-                                                )}
+                                                {this.formatPodRestartCount(container.name, pod.status)}
                                             </TableCell>
                                             <TableCell padding="dense" scope="row">
                                                 <Moment fromNow>{pod.metadata.creationTimestamp}</Moment>
