@@ -111,7 +111,7 @@ class Deployments extends React.Component {
                                 <TableCell>Replicas</TableCell>
                                 <TableCell>Image</TableCell>
                                 <TableCell>Port</TableCell>
-                                <TableCell>Created</TableCell>
+                                <TableCell>Last Updated</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -131,7 +131,7 @@ class Deployments extends React.Component {
                                                 {container.ports && container.ports[0].containerPort}
                                             </TableCell>
                                             <TableCell scope="row">
-                                                <Moment fromNow>{deployment.metadata.creationTimestamp}</Moment>
+                                                <Moment fromNow>{deployment.status.conditions[0].lastUpdateTime}</Moment>
                                             </TableCell>
                                             <TableCell scope="row">
                                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
