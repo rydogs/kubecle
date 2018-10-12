@@ -122,7 +122,7 @@ class ConfigMaps extends React.Component {
                                         </TableCell>
                                         <TableCell component="th" scope="row">
                                             <List dense>
-                                                {Object.keys(configMap.data).map(k => {
+                                                {configMap.data && Object.keys(configMap.data).map(k => {
                                                     return (
                                                         <ListItem key={k} disableGutters>
                                                             <ListItemText primary={`${k}: ${configMap.data[k]}`} />
