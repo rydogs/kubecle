@@ -87,6 +87,7 @@ class Pods extends React.Component {
     }
 
     fetchPods() {
+        if (document.visibilityState !== 'visible') { return }
         const { currentContext, currentNs } = this.props;
         axios
             .get(`/api/namespace/${currentNs}/pods`, {
