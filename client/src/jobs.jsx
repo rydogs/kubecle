@@ -139,7 +139,7 @@ class Jobs extends React.Component {
         return (
             <div>
                 <Grid>
-                    <Typography variant="title" className={classes.title}>
+                    <Typography variant="h6" className={classes.title}>
                         Jobs
                     </Typography>
                 </Grid>
@@ -171,24 +171,22 @@ class Jobs extends React.Component {
                                     <TableCell scope="row">
                                         <div style={{ display: 'flex', flexDirection: 'row' }}>
                                             <Tooltip title="Edit" placement="top">
-                                                <Button
-                                                    mini
+                                                <Fab
+                                                    size="small"
                                                     color="primary"
-                                                    variant="fab"
                                                     onClick={() => this.edit(job)}
                                                 >
                                                     <BuildIcon />
-                                                </Button>
+                                                </Fab>
                                             </Tooltip>
                                             <Tooltip title="Delete" placement="top">
-                                                <Button
-                                                    mini
+                                                <Fab
+                                                    size="small"
                                                     color="secondary"
-                                                    variant="fab"
                                                     onClick={() => this.delete(job.metadata.name)}
                                                 >
                                                     <DeleteIcon />
-                                                </Button>
+                                                </Fab>
                                             </Tooltip>
                                         </div>
                                     </TableCell>

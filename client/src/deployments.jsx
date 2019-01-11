@@ -11,7 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import BuildIcon from '@material-ui/icons/Build';
 import { connect } from 'react-redux';
 import Editor from './editor';
@@ -99,7 +99,7 @@ class Deployments extends React.Component {
         return (
             <div>
                 <Grid>
-                    <Typography variant="title" className={classes.title}>
+                    <Typography variant="h6" className={classes.title}>
                         Deployments
                     </Typography>
                 </Grid>
@@ -117,10 +117,12 @@ class Deployments extends React.Component {
                         </TableHead>
                         <TableBody>
                             {deployments.map(deployment => {
-                                return deployment.spec.template.spec.containers.map(container => {
+                                return deployment.spec.template.spec.containers.map((container, i) => {
                                     return (
                                         <TableRow key={deployment.metadata.uid + container.name}>
-                                            <TableCell scope="row">{container.name}</TableCell>
+                                            <TableCell scope="row">
+                                                { i == 0 && (deployment.metadata.name) }
+                                            </TableCell>
                                             <TableCell scope="row">{deployment.spec.replicas}</TableCell>
                                             <TableCell scope="row">
                                                 {container.image.includes('/')
@@ -136,14 +138,12 @@ class Deployments extends React.Component {
                                             <TableCell scope="row">
                                                 <div style={{ display: 'flex', flexDirection: 'row' }}>
                                                     <Tooltip title="Edit" placement="top">
-                                                        <Button
-                                                            mini
+                                                        <Fab
+                                                            size="small"
                                                             color="primary"
-                                                            variant="fab"
-                                                            onClick={() => this.edit(deployment)}
-                                                        >
+                                                            onClick={() => this.edit(deployment)}>
                                                             <BuildIcon />
-                                                        </Button>
+                                                        </Fab>
                                                     </Tooltip>
                                                 </div>
                                             </TableCell>

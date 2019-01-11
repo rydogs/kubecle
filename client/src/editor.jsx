@@ -52,7 +52,7 @@ class Editor extends React.Component {
                 )}
                 <div>
                     {error && (
-                        <Typography color="error" variant="body1" align="center">
+                        <Typography color="error" align="center">
                             {error.toString()}
                         </Typography>
                     )}

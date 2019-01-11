@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InfoIcon from '@material-ui/icons/Info';
 import ScreenShare from '@material-ui/icons/ScreenShare';
@@ -52,7 +53,6 @@ class Pods extends React.Component {
         super(props);
         this.state = {
             pods: [],
-            time: new Date(),
             logViewer: {
                 open: false,
                 logUrl: ''
@@ -63,8 +63,7 @@ class Pods extends React.Component {
             }
         };
         this.fetchPods = this.fetchPods.bind(this);
-        this.tick = this.tick.bind(this);
-        this.intervalID = setInterval(this.tick, 10000);
+        this.intervalID = setInterval(this.fetchPods, 10000);
     }
 
     componentDidMount() {
@@ -74,10 +73,7 @@ class Pods extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const { currentNs, currentContext } = this.props;
         const { currentNs: prevNs, currentContext: prevContext } = prevProps;
-        const { time } = this.state;
-        const { time: prevTime } = prevState;
-
-        if (currentNs !== prevNs || currentContext !== prevContext || time !== prevTime) {
+        if (currentNs !== prevNs || currentContext !== prevContext) {
             this.fetchPods();
         }
     }
@@ -233,11 +229,10 @@ class Pods extends React.Component {
     render() {
         const { classes, currentContext } = this.props;
         const { editor, logViewer } = this.state;
-
         return (
             <div>
                 <Grid>
-                    <Typography variant="title" className={classes.title}>
+                    <Typography variant="h6" className={classes.title}>
                         Pods
                     </Typography>
                 </Grid>
@@ -263,7 +258,7 @@ class Pods extends React.Component {
                                     return (
                                         <TableRow key={pod.metadata.uid + container.name}>
                                             <TableCell padding="dense" scope="row">
-                                                {pod.metadata.name}
+                                                { i == 0 && (pod.metadata.name) }
                                             </TableCell>
                                             <TableCell padding="dense" scope="row">
                                                 {container.name}
@@ -288,32 +283,29 @@ class Pods extends React.Component {
                                                     }}
                                                 >
                                                     <Tooltip title="Describe" placement="top">
-                                                        <Button
-                                                            mini
+                                                        <Fab
+                                                            size="small"
                                                             color="primary"
-                                                            variant="fab"
                                                             onClick={() => this.showInfo(pod)}
                                                         >
                                                             <InfoIcon />
-                                                        </Button>
+                                                        </Fab>
                                                     </Tooltip>
                                                     <Tooltip title="Log" placement="top">
-                                                        <Button
-                                                            mini
+                                                        <Fab
+                                                            size="small"
                                                             color="primary"
-                                                            variant="fab"
                                                             onClick={() =>
                                                                 this.viewLog(pod.metadata.name, container.name)
                                                             }
                                                         >
                                                             <AssignmentIcon />
-                                                        </Button>
+                                                        </Fab>
                                                     </Tooltip>
                                                     <Tooltip title="Copy Shell Command" placement="top">
-                                                        <Button
-                                                            mini
+                                                        <Fab
+                                                            size="small"
                                                             color="primary"
-                                                            variant="fab"
                                                             onClick={() =>
                                                                 this.copySshToClipboard(
                                                                     pod.metadata.name,
@@ -322,17 +314,16 @@ class Pods extends React.Component {
                                                             }
                                                         >
                                                             <ScreenShare />
-                                                        </Button>
+                                                        </Fab>
                                                     </Tooltip>
                                                     <Tooltip title="Delete" placement="top">
-                                                        <Button
-                                                            mini
+                                                        <Fab
+                                                            size="small"
                                                             color="secondary"
-                                                            variant="fab"
                                                             onClick={() => this.deletePod(pod.metadata.name)}
                                                         >
                                                             <DeleteIcon />
-                                                        </Button>
+                                                        </Fab>
                                                     </Tooltip>
                                                 </div>
                                             </TableCell>

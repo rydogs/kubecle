@@ -65,15 +65,17 @@ const styles = theme => ({
     toolbar: theme.mixins.toolbar
 });
 
-const theme = createMuiTheme();
+const theme = createMuiTheme({
+    typography: {
+        useNextVariants: true,
+    }
+});
 const logger = createLogger();
 const store = createStore(rootReducer, undefined, applyMiddleware(thunk, logger));
 
 class App extends Component {
     render() {
         const { classes } = this.props;
-
-        console.log(window.location.search);
         return (
             <Provider store={store}>
                 <MuiThemeProvider theme={theme}>
@@ -82,7 +84,7 @@ class App extends Component {
                             <AppBar position="absolute" className={classes.appBar}>
                                 <Toolbar>
                                     <img src="images/kubecle-logo.png" className={classes.logo} />
-                                    <Typography variant="title" color="inherit" noWrap style={{ flex: 1 }}>
+                                    <Typography variant="h6" color="inherit" noWrap style={{ flex: 1 }}>
                                         Kubecle
                                     </Typography>
                                     <div>

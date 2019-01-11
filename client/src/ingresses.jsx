@@ -10,7 +10,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import BuildIcon from '@material-ui/icons/Build';
 import Tooltip from '@material-ui/core/Tooltip';
 import Editor from './editor';
@@ -92,7 +92,7 @@ class Ingresses extends React.Component {
         return (
             <div>
                 <Grid>
-                    <Typography variant="title" className={classes.title}>
+                    <Typography variant="h6" className={classes.title}>
                         Ingresses
                     </Typography>
                 </Grid>
@@ -124,14 +124,13 @@ class Ingresses extends React.Component {
                                         <TableCell scope="row">
                                             <div style={{ display: 'flex', flexDirection: 'row' }}>
                                                 <Tooltip title="Edit" placement="top">
-                                                    <Button
-                                                        mini
+                                                    <Fab
+                                                        size="small"
                                                         color="primary"
-                                                        variant="fab"
                                                         onClick={() => this.edit(ingress)}
                                                     >
                                                         <BuildIcon />
-                                                    </Button>
+                                                    </Fab>
                                                 </Tooltip>
                                             </div>
                                         </TableCell>
