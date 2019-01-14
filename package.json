@@ -14,12 +14,32 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "NODE_ENV=development nodemon server/index",
     "client-build": "npm --prefix client run build && git add client/dist/bundle.js",
-    "client-test": "npm --prefix client run test"
+    "client-test": "npm --prefix client run test",
+    "dist": "npm install && npm run client-build && build"
   },
   "pre-commit": [
     "client-test",
     "client-build"
   ],
+  "build": {
+    "appId": "com.rydogs.kubecle",
+    "productName": "Kubecle",
+    "dmg": {
+      "icon": "build/icon.png",
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  },
   "keywords": [
     "kubernettes",
     "k8s"
@@ -36,6 +56,7 @@
     "url-parse": "^1.4.3"
   },
   "devDependencies": {
+    "electron-builder": "^20.38.4",
     "nodemon": "^1.17.5",
     "pre-commit": "^1.2.2"
   }
