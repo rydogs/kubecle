@@ -22,8 +22,11 @@ It also allows you to perform some basic actions:
 - [ ] Apply manifest
 
 ## How to use
-1. `npm install && npm start`
-2. Open browser to http://localhost:6888
+* Download binary
+  * [MacOS](https://github.com/rydogs/kubecle/releases/download/v1.0.0/Kubecle-1.0.0.dmg)
+* Run locallly
+  1. `npm install && npm start`
+  2. Open browser to http://localhost:6888
 
 ## How to develop
 1. Install [minikube](https://github.com/kubernetes/minikube)
