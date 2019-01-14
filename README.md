@@ -23,7 +23,7 @@ It also allows you to perform some basic actions:
 
 ## How to use
 * Download binary
-  * [MacOS](https://github.com/rydogs/kubecle/releases/download/v1.0.0/Kubecle-1.0.0.dmg)
+  * [MacOS](https://github.com/rydogs/kubecle/releases/latest)
 * Run locallly
   1. `npm install && npm start`
   2. Open browser to http://localhost:6888
