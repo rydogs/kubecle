@@ -15,7 +15,7 @@
     "watch": "NODE_ENV=development nodemon server/index",
     "client-build": "npm --prefix client run build && git add client/dist/bundle.js",
     "client-test": "npm --prefix client run test",
-    "dist": "npm install && npm run client-build && build"
+    "dist": "rm -rf dist && npm install && npm run client-build && build"
   },
   "pre-commit": [
     "client-test",
@@ -23,6 +23,7 @@
   ],
   "build": {
     "appId": "com.rydogs.kubecle",
+    "artifactName": "${productName}.${ext}",
     "productName": "Kubecle",
     "dmg": {
       "icon": "build/icon.png",
