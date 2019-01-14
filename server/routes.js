@@ -28,24 +28,27 @@ router.get('/api/namespace/:namespace/pods', asyncHandler(async (req, res) => {
 }));
 
 router.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandler(async (req, res) => {
-  const logs = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.get({
-    qs: { container: req.params.containerName }
+  const stream = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.getStream({
+    qs: { tailLines: 100, follow: true, container: req.params.containerName }
   });
-  if (typeof logs.body === 'string') {
-    lines = logs.body.split('\n').map(s => {
+
+  res.writeHead(200, {
+    'Content-Type': 'text/plain',
+    'Transfer-Encoding': 'chunked'
+  });
+
+  stream.on('data', data => {
+    lines = data.toString().split('\n').map(s => {
       try {
         return beautify(JSON.parse(s), null, 2, 80);
       } catch (e) {
         return s;
       }
     });
-    res.contentType("application/text");
-    res.send(lines.join('\n'));
-  } else {
-    res.contentType("application/text");
-    res.send(logs.body);
-  }
+    res.write(lines.join('\n'));
+  });
 }));
+
 
 router.delete('/api/namespace/:namespace/pods/:podname', asyncHandler(async (req, res) => {
   const pods = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.podname).delete();
