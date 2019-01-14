@@ -1,0 +1,4 @@
+owner: rydogs
+repo: kubecle
+provider: github
+updaterCacheDirName: kubecle-updater

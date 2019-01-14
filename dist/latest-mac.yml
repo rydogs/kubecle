@@ -1,0 +1,12 @@
+version: 1.0.0
+files:
+  - url: Kubecle-1.0.0-mac.zip
+    sha512: dyfFRh/yVf9lzJhi8fQ0fxUo5jzIk07FDDYuC0uSwcw4NnRGIlaPdrQGV9Joyq7SlJR/F87l6yurjvl8FQFQ5Q==
+    size: 54201382
+    blockMapSize: 57188
+  - url: Kubecle-1.0.0.dmg
+    sha512: yp7P5aVLbNyd8e1BYrCrsf/0voYuFsowuij3BYdY10gaW/ST0ZYzWEyx9GEN6PdHVboDoXofJNYU4p2Vdn2I/w==
+    size: 55956369
+path: Kubecle-1.0.0-mac.zip
+sha512: dyfFRh/yVf9lzJhi8fQ0fxUo5jzIk07FDDYuC0uSwcw4NnRGIlaPdrQGV9Joyq7SlJR/F87l6yurjvl8FQFQ5Q==
+releaseDate: '2019-01-14T02:59:48.043Z'
