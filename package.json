@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Useful ui for kubernettes",
   "repository": "https://github.com/rydogs/kubecle",
-  "main": "index.js",
+  "main": "electron.js",
   "engineStrict": true,
   "engines": {
     "node": ">=8.0.0",
@@ -24,7 +24,7 @@
   "build": {
     "appId": "com.rydogs.kubecle",
     "artifactName": "${productName}.${ext}",
-    "productName": "Kubecle",
+    "productName": "kubecle",
     "dmg": {
       "icon": "build/icon.png",
       "contents": [

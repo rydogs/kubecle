@@ -42,6 +42,7 @@ const styles = theme => ({
         display: 'flex'
     },
     appBar: {
+        '-webkit-app-region': 'drag',
         zIndex: theme.zIndex.drawer + 1
     },
     logo: {
