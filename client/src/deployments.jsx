@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import MaterialTable from 'material-table';
+import MUIDataTable from "mui-datatables";
 import Tooltip from '@material-ui/core/Tooltip';
 import Moment from 'react-moment';
 import Fab from '@material-ui/core/Fab';
@@ -107,14 +107,14 @@ class Deployments extends React.Component {
 
         return (
             <div style={{ maxWidth: '100%' }}>
-                <MaterialTable
+                <MUIDataTable
                     columns={[
-                        { title: 'Name', render: rowData => rowData.metadata.name },
-                        { title: 'Replicas', render: rowData => rowData.spec.replicas },
-                        { title: 'Containers', render: rowData => (<SimpleList data={fmt.containerImageNames(rowData.spec.template.spec.containers)} />) },
-                        { title: 'Ports', render: rowData => (<SimpleList data={fmt.containerPorts(rowData.spec.template.spec.containers)} />) },
-                        { title: 'Last Updated', render: rowData => (<Moment fromNow>{rowData.status.conditions[0].lastUpdateTime}</Moment>) },
-                        { title: 'Action', render: rowData => this.actions(rowData) }
+                        { name: 'Name', customBodyRender: rowData => rowData.metadata.name },
+                        { name: 'Replicas', customBodyRender: rowData => rowData.spec.replicas },
+                        { name: 'Containers', customBodyRender: rowData => (<SimpleList data={fmt.containerImageNames(rowData.spec.template.spec.containers)} />) },
+                        { name: 'Ports', customBodyRender: rowData => (<SimpleList data={fmt.containerPorts(rowData.spec.template.spec.containers)} />) },
+                        { name: 'Last Updated', customBodyRender: rowData => (<Moment fromNow>{rowData.status.conditions[0].lastUpdateTime}</Moment>) },
+                        { name: 'Action', customBodyRender: rowData => this.actions(rowData) }
                     ]}
                     data={deployments}
                     title='Deployments'
