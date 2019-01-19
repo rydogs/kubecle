@@ -1,21 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import MaterialTable from 'material-table';
 import Tooltip from '@material-ui/core/Tooltip';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
 import Fab from '@material-ui/core/Fab';
 import BuildIcon from '@material-ui/icons/Build';
 import { connect } from 'react-redux';
 import Editor from './editor';
-
+import fmt from './fmt';
+import ArrayList from './arrayList';
 import axios from 'axios';
 
 const styles = theme => ({
@@ -92,75 +86,47 @@ class Deployments extends React.Component {
         });
     }
 
+    actions(deployment) {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <Tooltip title="Edit" placement="top">
+                    <Fab
+                        size="small"
+                        color="primary"
+                        onClick={() => this.edit(deployment)}>
+                        <BuildIcon />
+                    </Fab>
+                </Tooltip>
+            </div>
+        );
+    }
+
     render() {
         const { classes, currentContext } = this.props;
         const { deployments, editor } = this.state;
 
         return (
-            <div>
-                <Grid>
-                    <Typography variant="h6" className={classes.title}>
-                        Deployments
-                    </Typography>
-                </Grid>
-                <Paper className={classes.root}>
-                    <Table className={classes.table}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Replicas</TableCell>
-                                <TableCell>Image</TableCell>
-                                <TableCell>Port</TableCell>
-                                <TableCell>Last Updated</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {deployments.map(deployment => {
-                                return deployment.spec.template.spec.containers.map((container, i) => {
-                                    return (
-                                        <TableRow key={deployment.metadata.uid + container.name}>
-                                            <TableCell scope="row">
-                                                { i == 0 && (deployment.metadata.name) }
-                                            </TableCell>
-                                            <TableCell scope="row">{deployment.spec.replicas}</TableCell>
-                                            <TableCell scope="row">
-                                                {container.image.includes('/')
-                                                    ? container.image.split('/')[1]
-                                                    : container.image}
-                                            </TableCell>
-                                            <TableCell scope="row">
-                                                {container.ports && container.ports[0].containerPort}
-                                            </TableCell>
-                                            <TableCell scope="row">
-                                                <Moment fromNow>{deployment.status.conditions[0].lastUpdateTime}</Moment>
-                                            </TableCell>
-                                            <TableCell scope="row">
-                                                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                                    <Tooltip title="Edit" placement="top">
-                                                        <Fab
-                                                            size="small"
-                                                            color="primary"
-                                                            onClick={() => this.edit(deployment)}>
-                                                            <BuildIcon />
-                                                        </Fab>
-                                                    </Tooltip>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                });
-                            })}
-                        </TableBody>
-                    </Table>
-                    <Editor
-                        context={currentContext}
-                        content={editor.content}
-                        editUrl={editor.editUrl}
-                        open={editor.open}
-                        onClose={() => this.setState({ editor: { open: false } })}
-                    />
-                </Paper>
+            <div style={{ maxWidth: '100%' }}>
+                <MaterialTable
+                    columns={[
+                        { title: 'Name', render: rowData => rowData.metadata.name },
+                        { title: 'Replicas', render: rowData => rowData.spec.replicas },
+                        { title: 'Containers', render: rowData => (<ArrayList data={fmt.containerImageNames(rowData.spec.template.spec.containers)} />) },
+                        { title: 'Ports', render: rowData => (<ArrayList data={fmt.containerPorts(rowData.spec.template.spec.containers)} />) },
+                        { title: 'Last Updated', render: rowData => (<Moment fromNow>{rowData.status.conditions[0].lastUpdateTime}</Moment>) },
+                        { title: 'Action', render: rowData => this.actions(rowData) }
+                    ]}
+                    data={deployments}
+                    title='Deployments'
+                    options={{paging: false, search: false, sorting: false}}
+                />
+                <Editor
+                    context={currentContext}
+                    content={editor.content}
+                    editUrl={editor.editUrl}
+                    open={editor.open}
+                    onClose={() => this.setState({ editor: { open: false } })}
+                />
             </div>
         );
     }

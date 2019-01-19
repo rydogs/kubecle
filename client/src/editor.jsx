@@ -28,10 +28,10 @@ class Editor extends React.Component {
         const { error } = this.state;
 
         return (
-            <Dialog fullWidth={true} maxWidth="md" open={open} onClose={onClose}>
+            <Dialog fullWidth={true} maxWidth="lg" open={open} onClose={onClose}>
                 <DialogTitle id="simple-dialog-title">Describe</DialogTitle>
                 <AceEditor
-                    height="400px"
+                    height="600px"
                     width="100%"
                     mode="json"
                     theme="monokai"

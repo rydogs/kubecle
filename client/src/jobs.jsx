@@ -1,14 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import MaterialTable from 'material-table';
 import Moment from 'react-moment';
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
@@ -16,7 +9,7 @@ import BuildIcon from '@material-ui/icons/Build';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import Editor from './editor';
-
+import fmt from './fmt';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
@@ -133,83 +126,61 @@ class Jobs extends React.Component {
         }
     }
 
+    actions(job) {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <Tooltip title="Edit" placement="top">
+                    <Fab
+                        size="small"
+                        color="primary"
+                        onClick={() => this.edit(job)}>
+                        <BuildIcon />
+                    </Fab>
+                </Tooltip>
+                <Tooltip title="Delete" placement="top">
+                    <Fab
+                        size="small"
+                        color="secondary"
+                        onClick={() => this.delete(job.metadata.name)}>
+                        <DeleteIcon />
+                    </Fab>
+                </Tooltip>
+            </div>
+        );
+    }
+
     render() {
         const { classes, currentContext } = this.props;
-        const { editor } = this.state;
+        const { jobs, editor } = this.state;
 
         return (
-            <div>
-                <Grid>
-                    <Typography variant="h6" className={classes.title}>
-                        Jobs
-                    </Typography>
-                </Grid>
-                <Paper className={classes.root}>
-                    <Table className={classes.table}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Image Version</TableCell>
-                                <TableCell className={classes.centered}>Status</TableCell>
-                                <TableCell>Created</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {this.state.jobs.map(job => (
-                                <TableRow key={job.metadata.uid}>
-                                    <TableCell scope="row">{job.metadata.name}</TableCell>
-                                    <TableCell scope="row">
-                                        {job.spec.template.spec.containers[0] &&
-                                        job.spec.template.spec.containers[0].image.includes('/')
-                                            ? job.spec.template.spec.containers[0].image.split('/')[1]
-                                            : job.spec.template.spec.containers[0].image}
-                                    </TableCell>
-                                    <TableCell scope="row">{this.getStatus(job)}</TableCell>
-                                    <TableCell scope="row">
-                                        <Moment fromNow>{job.metadata.creationTimestamp}</Moment>
-                                    </TableCell>
-                                    <TableCell scope="row">
-                                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                            <Tooltip title="Edit" placement="top">
-                                                <Fab
-                                                    size="small"
-                                                    color="primary"
-                                                    onClick={() => this.edit(job)}
-                                                >
-                                                    <BuildIcon />
-                                                </Fab>
-                                            </Tooltip>
-                                            <Tooltip title="Delete" placement="top">
-                                                <Fab
-                                                    size="small"
-                                                    color="secondary"
-                                                    onClick={() => this.delete(job.metadata.name)}
-                                                >
-                                                    <DeleteIcon />
-                                                </Fab>
-                                            </Tooltip>
-                                        </div>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                    <Editor
-                        context={currentContext}
-                        content={editor.content}
-                        editUrl={editor.editUrl}
-                        readOnly={true}
-                        open={editor.open}
-                        onClose={() =>
-                            this.setState({
-                                editor: {
-                                    open: false
-                                }
-                            })
-                        }
-                    />
-                </Paper>
+            <div style={{ maxWidth: '100%' }}>
+                <MaterialTable
+                    columns={[
+                        { title: 'Name', render: rowData => rowData.metadata.name },
+                        { title: 'Image', render: rowData => fmt.imageName(rowData.spec.template.spec.containers[0].image) },
+                        { title: 'Status', render: rowData => this.getStatus(rowData) },
+                        { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
+                        { title: 'Actions', render: rowData => this.actions(rowData)},
+                    ]}
+                    data={jobs}
+                    title='Jobs'
+                    options={{paging: false, search: false, sorting: false}}
+                />
+                <Editor
+                    context={currentContext}
+                    content={editor.content}
+                    editUrl={editor.editUrl}
+                    readOnly={true}
+                    open={editor.open}
+                    onClose={() =>
+                        this.setState({
+                            editor: {
+                                open: false
+                            }
+                        })
+                    }
+                />
             </div>
         );
     }

@@ -27,6 +27,11 @@ router.get('/api/namespace/:namespace/pods', asyncHandler(async (req, res) => {
   res.json(pods);
 }));
 
+router.get('/api/namespace/:namespace/pods/:pods/metrics', asyncHandler(async (req, res) => {
+  const pods = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.pods);
+  res.json(pods);
+}));
+
 router.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandler(async (req, res) => {
   const stream = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.getStream({
     qs: { tailLines: 100, follow: true, container: req.params.containerName }

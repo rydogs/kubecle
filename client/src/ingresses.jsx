@@ -1,20 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
 import Fab from '@material-ui/core/Fab';
 import BuildIcon from '@material-ui/icons/Build';
 import Tooltip from '@material-ui/core/Tooltip';
 import Editor from './editor';
-
+import MaterialTable from 'material-table';
+import fmt from './fmt';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
@@ -85,75 +78,53 @@ class Ingresses extends React.Component {
         });
     }
 
+    actions(ingress) {
+        return (
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <Tooltip title="Edit" placement="top">
+                <Fab
+                    size="small"
+                    color="primary"
+                    onClick={() => this.edit(ingress)}
+                >
+                    <BuildIcon />
+                </Fab>
+            </Tooltip>
+            </div>
+        );
+    }
+
     render() {
         const { classes, currentContext } = this.props;
         const { editor, ingresses } = this.state;
 
         return (
-            <div>
-                <Grid>
-                    <Typography variant="h6" className={classes.title}>
-                        Ingresses
-                    </Typography>
-                </Grid>
-                <Paper className={classes.root}>
-                    <Table className={classes.table}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Hosts</TableCell>
-                                <TableCell>Created</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {ingresses.map(ingress => {
-                                return (
-                                    <TableRow key={ingress.metadata.uid}>
-                                        <TableCell scope="row">{ingress.metadata.name}</TableCell>
-                                        <TableCell scope="row">
-                                            {ingress.spec.rules
-                                                .map(h => {
-                                                    return h.host;
-                                                })
-                                                .join(', ')}
-                                        </TableCell>
-                                        <TableCell scope="row">
-                                            <Moment fromNow>{ingress.metadata.creationTimestamp}</Moment>
-                                        </TableCell>
-                                        <TableCell scope="row">
-                                            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                                                <Tooltip title="Edit" placement="top">
-                                                    <Fab
-                                                        size="small"
-                                                        color="primary"
-                                                        onClick={() => this.edit(ingress)}
-                                                    >
-                                                        <BuildIcon />
-                                                    </Fab>
-                                                </Tooltip>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                    <Editor
-                        context={currentContext}
-                        content={editor.content}
-                        editUrl={editor.editUrl}
-                        readOnly={true}
-                        open={editor.open}
-                        onClose={() =>
-                            this.setState({
-                                editor: {
-                                    open: false
-                                }
-                            })
-                        }
-                    />
-                </Paper>
+            <div style={{ maxWidth: '100%' }}>
+                <MaterialTable
+                    columns={[
+                        { title: 'Name', render: rowData => rowData.metadata.name },
+                        { title: 'Hosts', render: rowData => fmt.ingressHost(rowData.spec.rules) },
+                        { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
+                        { title: 'Actions', render: rowData => this.actions(rowData)},
+                    ]}
+                    data={ingresses}
+                    title='Ingresses'
+                    options={{paging: false, search: false, sorting: false}}
+                />
+`               <Editor
+                    context={currentContext}
+                    content={editor.content}
+                    editUrl={editor.editUrl}
+                    readOnly={true}
+                    open={editor.open}
+                    onClose={() =>
+                        this.setState({
+                            editor: {
+                                open: false
+                            }
+                        })
+                    }
+                />
             </div>
         );
     }
