@@ -9,7 +9,7 @@ import Editor from './editor';
 import MaterialTable from 'material-table';
 import fmt from './fmt';
 import { connect } from 'react-redux';
-import ArrayList from './arrayList';
+import SimpleList from './simpleList';
 
 import axios from 'axios';
 
@@ -115,8 +115,8 @@ class Services extends React.Component {
                     columns={[
                         { title: 'Name', render: rowData => rowData.metadata.name },
                         { title: 'Type', render: rowData => rowData.spec.type },
-                        { title: 'External Name', render: rowData => rowData.externalName },
-                        { title: 'Ports', render: rowData => (<ArrayList data={fmt.servicePorts(rowData.spec.ports)} />) },
+                        { title: 'Selectors', render: rowData => <SimpleList data={rowData.spec.selector} /> },
+                        { title: 'Ports', render: rowData => (<SimpleList data={fmt.servicePorts(rowData.spec.ports)} />) },
                         { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
                         { title: 'Actions', render: rowData => this.actions(rowData)},
                     ]}

@@ -9,7 +9,7 @@ import BuildIcon from '@material-ui/icons/Build';
 import { connect } from 'react-redux';
 import Editor from './editor';
 import fmt from './fmt';
-import ArrayList from './arrayList';
+import SimpleList from './simpleList';
 import axios from 'axios';
 
 const styles = theme => ({
@@ -111,8 +111,8 @@ class Deployments extends React.Component {
                     columns={[
                         { title: 'Name', render: rowData => rowData.metadata.name },
                         { title: 'Replicas', render: rowData => rowData.spec.replicas },
-                        { title: 'Containers', render: rowData => (<ArrayList data={fmt.containerImageNames(rowData.spec.template.spec.containers)} />) },
-                        { title: 'Ports', render: rowData => (<ArrayList data={fmt.containerPorts(rowData.spec.template.spec.containers)} />) },
+                        { title: 'Containers', render: rowData => (<SimpleList data={fmt.containerImageNames(rowData.spec.template.spec.containers)} />) },
+                        { title: 'Ports', render: rowData => (<SimpleList data={fmt.containerPorts(rowData.spec.template.spec.containers)} />) },
                         { title: 'Last Updated', render: rowData => (<Moment fromNow>{rowData.status.conditions[0].lastUpdateTime}</Moment>) },
                         { title: 'Action', render: rowData => this.actions(rowData) }
                     ]}

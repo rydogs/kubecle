@@ -5,12 +5,9 @@ import Moment from 'react-moment';
 import Fab from '@material-ui/core/Fab';
 import BuildIcon from '@material-ui/icons/Build';
 import Tooltip from '@material-ui/core/Tooltip';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Editor from './editor';
 import MaterialTable from 'material-table';
-import fmt from './fmt';
+import SimpleList from './simpleList';
 
 import { connect } from 'react-redux';
 
@@ -101,20 +98,6 @@ class ConfigMaps extends React.Component {
         );
     }
 
-    configmapValue(configMap) {
-        return (
-            <List dense>
-                {configMap.data && Object.keys(configMap.data).map(k => {
-                    return (
-                        <ListItem key={k} disableGutters>
-                            <ListItemText primary={`${k}: ${configMap.data[k]}`} />
-                        </ListItem>
-                    );
-                })}
-            </List>
-        );
-    }
-
     render() {
         const { classes, currentContext } = this.props;
         const { configmaps, editor } = this.state;
@@ -124,7 +107,7 @@ class ConfigMaps extends React.Component {
                 <MaterialTable
                     columns={[
                         { title: 'Name', render: rowData => rowData.metadata.name },
-                        { title: 'Values', render: rowData => this.configmapValue(rowData) },
+                        { title: 'Values', render: rowData => (<SimpleList data={rowData.data} />) },
                         { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
                         { title: 'Actions', render: rowData => this.actions(rowData)},
                     ]}
