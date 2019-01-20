@@ -23,8 +23,8 @@
   ],
   "build": {
     "appId": "com.rydogs.kubecle",
-    "artifactName": "${productName}.${ext}",
-    "productName": "kubecle",
+    "artifactName": "kubecle.${ext}",
+    "productName": "Kubecle",
     "dmg": {
       "icon": "build/icon.png",
       "contents": [
