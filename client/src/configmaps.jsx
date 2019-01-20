@@ -68,8 +68,15 @@ class ConfigMaps extends React.Component {
                 }
             })
             .then(res => {
-                this.setState({ configmaps: res.data.body.items });
+                this.setState({ configmaps: this.transform(res.data.body.items) });
             });
+    }
+
+    transform(data) {
+        return data.map(d => {
+            d.name = d.metadata.name;
+            return d;
+        });
     }
 
     edit(configMap) {
@@ -101,19 +108,24 @@ class ConfigMaps extends React.Component {
     render() {
         const { classes, currentContext } = this.props;
         const { configmaps, editor } = this.state;
+        const columns = [
+            { title: 'Name', field: 'name' },
+            { title: 'Values', field: 'data', render: rowData => (<SimpleList data={rowData.data} />) },
+            { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
+            { title: 'Actions', render: rowData => this.actions(rowData)},
+        ].map(c => {
+            c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
+            c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
+            return c;
+        });
 
         return (
             <div style={{ maxWidth: '100%' }}>
                 <MaterialTable
-                    columns={[
-                        { title: 'Name', render: rowData => rowData.metadata.name },
-                        { title: 'Values', render: rowData => (<SimpleList data={rowData.data} />) },
-                        { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
-                        { title: 'Actions', render: rowData => this.actions(rowData)},
-                    ]}
+                    columns={columns}
                     data={configmaps}
                     title='Config Maps'
-                    options={{paging: false, search: false, sorting: false}}
+                    options={{paging: false, sorting: false}}
                 />
                 <Editor
                     context={currentContext}

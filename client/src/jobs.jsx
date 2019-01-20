@@ -13,6 +13,7 @@ import fmt from './fmt';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
+import SimpleList from './simpleList';
 
 const styles = theme => ({
     root: {
@@ -71,9 +72,17 @@ class Jobs extends React.Component {
             })
             .then(res => {
                 if (res && res.data && res.data.body) {
-                    this.setState({ jobs: res.data.body.items });
+                    this.setState({ jobs: this.transform(res.data.body.items) });
                 }
             });
+    }
+
+    transform(data) {
+        return data.map(d => {
+            d.name = d.metadata.name;
+            d.imageNames = fmt.containerImageNames(d.spec.template.spec.containers);
+            return d;
+        });
     }
 
     edit(job) {
@@ -152,20 +161,25 @@ class Jobs extends React.Component {
     render() {
         const { classes, currentContext } = this.props;
         const { jobs, editor } = this.state;
+        const columns = [
+            { title: 'Name', field: 'name' },
+            { title: 'Image', field: 'imageNames', render: rowData => (<SimpleList data={rowData.imageNames} />) },
+            { title: 'Status', headerStyle: {textAlign: 'center'}, render: rowData => this.getStatus(rowData) },
+            { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
+            { title: 'Actions', render: rowData => this.actions(rowData)},
+        ].map(c => {
+            c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
+            c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
+            return c;
+        });
 
         return (
             <div style={{ maxWidth: '100%' }}>
                 <MaterialTable
-                    columns={[
-                        { title: 'Name', render: rowData => rowData.metadata.name },
-                        { title: 'Image', render: rowData => fmt.imageName(rowData.spec.template.spec.containers[0].image) },
-                        { title: 'Status', render: rowData => this.getStatus(rowData) },
-                        { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
-                        { title: 'Actions', render: rowData => this.actions(rowData)},
-                    ]}
+                    columns={columns}
                     data={jobs}
                     title='Jobs'
-                    options={{paging: false, search: false, sorting: false}}
+                    options={{paging: false, sorting: false}}
                 />
                 <Editor
                     context={currentContext}

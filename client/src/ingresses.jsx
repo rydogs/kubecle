@@ -8,6 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Editor from './editor';
 import MaterialTable from 'material-table';
 import fmt from './fmt';
+import SimpleList from './simpleList';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
@@ -63,8 +64,16 @@ class Ingresses extends React.Component {
                 headers: { 'k8s-context': this.props.currentContext }
             })
             .then(res => {
-                this.setState({ ingresses: res.data.body.items });
+                this.setState({ ingresses: this.transform(res.data.body.items) });
             });
+    }
+
+    transform(data) {
+        return data.map(d => {
+            d.name = d.metadata.name;
+            d.hosts = fmt.ingressHost(d.spec.rules);
+            return d;
+        });
     }
 
     edit(ingress) {
@@ -97,19 +106,24 @@ class Ingresses extends React.Component {
     render() {
         const { classes, currentContext } = this.props;
         const { editor, ingresses } = this.state;
+        const columns = [
+            { title: 'Name', field: 'name' },
+            { title: 'Hosts', field: 'hosts', render: rowData => (<SimpleList data={rowData.hosts} />) },
+            { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
+            { title: 'Actions', render: rowData => this.actions(rowData)},
+        ].map(c => {
+            c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
+            c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
+            return c;
+        });
 
         return (
             <div style={{ maxWidth: '100%' }}>
                 <MaterialTable
-                    columns={[
-                        { title: 'Name', render: rowData => rowData.metadata.name },
-                        { title: 'Hosts', render: rowData => fmt.ingressHost(rowData.spec.rules) },
-                        { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
-                        { title: 'Actions', render: rowData => this.actions(rowData)},
-                    ]}
+                    columns={columns}
                     data={ingresses}
                     title='Ingresses'
-                    options={{paging: false, search: false, sorting: false}}
+                    options={{paging: false, sorting: false}}
                 />
 `               <Editor
                     context={currentContext}

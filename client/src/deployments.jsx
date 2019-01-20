@@ -69,9 +69,19 @@ class Deployments extends React.Component {
             })
             .then(res => {
                 if (res && res.data && res.data.body) {
-                    this.setState({ deployments: res.data.body.items });
+                    this.setState({ deployments: this.transform(res.data.body.items) });
                 }
             });
+    }
+
+    transform(data) {
+        return data.map(d => {
+            d.name = d.metadata.name;
+            d.imageNames = fmt.containerImageNames(d.spec.template.spec.containers);
+            d.cpu = fmt.cpu(d.spec.template.spec.containers);
+            d.memory = fmt.memory(d.spec.template.spec.containers);
+            return d;
+        });
     }
 
     edit(deployment) {
@@ -104,21 +114,28 @@ class Deployments extends React.Component {
     render() {
         const { classes, currentContext } = this.props;
         const { deployments, editor } = this.state;
+        const columns = [
+            { title: 'Name', field: 'name'},
+            { title: 'Replicas', render: rowData => rowData.spec.replicas },
+            { title: 'Image Names', field: 'imageNames', render: rowData => (<SimpleList data={rowData.imageNames} />) },
+            { title: 'CPU', field: 'cpu', render: rowData => (<SimpleList data={rowData.cpu} />) },
+            { title: 'Memory', field: 'memory', render: rowData => (<SimpleList data={rowData.memory} />) },
+            { title: 'Ports', render: rowData => (<SimpleList data={fmt.containerPorts(rowData.spec.template.spec.containers)} />) },
+            { title: 'Last Updated', render: rowData => (<Moment fromNow>{rowData.status.conditions[0].lastUpdateTime}</Moment>) },
+            { title: 'Action', render: rowData => this.actions(rowData) }
+        ].map(c => {
+            c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
+            c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
+            return c;
+        });
 
         return (
             <div style={{ maxWidth: '100%' }}>
                 <MaterialTable
-                    columns={[
-                        { title: 'Name', render: rowData => rowData.metadata.name },
-                        { title: 'Replicas', render: rowData => rowData.spec.replicas },
-                        { title: 'Containers', render: rowData => (<SimpleList data={fmt.containerImageNames(rowData.spec.template.spec.containers)} />) },
-                        { title: 'Ports', render: rowData => (<SimpleList data={fmt.containerPorts(rowData.spec.template.spec.containers)} />) },
-                        { title: 'Last Updated', render: rowData => (<Moment fromNow>{rowData.status.conditions[0].lastUpdateTime}</Moment>) },
-                        { title: 'Action', render: rowData => this.actions(rowData) }
-                    ]}
+                    columns={columns}
                     data={deployments}
                     title='Deployments'
-                    options={{paging: false, search: false, sorting: false}}
+                    options={{paging: false, sorting: false}}
                 />
                 <Editor
                     context={currentContext}

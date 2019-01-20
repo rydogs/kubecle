@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 module.exports = {
     imageVersion: function(image) {
         const imgStr = image.includes('/') ? image.split('/')[1] : image;
@@ -9,7 +11,7 @@ module.exports = {
         return image.includes('/') ? image.split('/')[1]:image;
     },
     ports: function(ports) {
-        return ports && ports.map(p => p.containerPort + '/' + p.protocol);
+        return ports && ports.map(p => p && p.containerPort + '/' + p.protocol);
     },
     containerImageNames: function(containers) {
         return containers && containers.map(c => this.imageName(c.image));
@@ -18,9 +20,15 @@ module.exports = {
         return containers && containers.flatMap(c => this.ports(c.ports));
     },
     ingressHost: function(rules) {
-        return rules.map(r => r.host).join(', ');
+        return rules.map(r => r.host);
     },
     servicePorts: function(ports) {
-        return ports && ports.map(p => p.port + ':' + p.targetPort + '/' + p.protocol);
-    }
+        return ports && ports.map(p => p && p.port + ':' + p.targetPort + '/' + p.protocol);
+    },
+    cpu: function(containers) {
+        return containers && containers.map(c => [_.get(c, 'resources.requests.cpu'), _.get(c, 'resources.limits.cpu')].join('/'));
+    },
+    memory: function(containers) {
+        return containers && containers.map(c => [_.get(c, 'resources.requests.memory'), _.get(c, 'resources.limits.memory')].join('/'));
+    },
 }

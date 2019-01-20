@@ -30,6 +30,7 @@
     "axios": "^0.18.0",
     "copy-to-clipboard": "^3.0.8",
     "json-beautify": "^1.0.1",
+    "lodash": "^4.17.11",
     "material-table": "^1.13.0",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21",
