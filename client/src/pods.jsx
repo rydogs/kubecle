@@ -20,6 +20,7 @@ import MaterialTable from 'material-table';
 import fmt from './fmt';
 import LogViewer from './logViewer';
 import Editor from './editor';
+import * as _ from 'lodash';
 
 const styles = theme => ({
     root: {
@@ -92,7 +93,7 @@ class Pods extends React.Component {
     }
 
     transform(data) {
-        return data.flatMap(p => p.spec.containers.map(c => {
+        return _.flatMap(data, p => p.spec.containers.map(c => {
             c.podName = p.metadata.name;
             c.imageVersion = fmt.imageVersion(c.image);
             c.status = this.getPodStatus(c.name, p.status);

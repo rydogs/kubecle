@@ -17,7 +17,7 @@ module.exports = {
         return containers && containers.map(c => this.imageName(c.image));
     },
     containerPorts: function(containers) {
-        return containers && containers.flatMap(c => this.ports(c.ports));
+        return containers && _.flatMap(containers, c => this.ports(c.ports));
     },
     ingressHost: function(rules) {
         return rules.map(r => r.host);
