@@ -9,6 +9,7 @@ Kubecle is a web ui running locally that provides useful information about your 
 - [x] Config map
 - [x] Jobs
 - [x] Ingress
+- [ ] HPA
 - [ ] Endpoints
 - [ ] Accounts
 - [ ] Secrets
@@ -35,12 +36,16 @@ It also allows you to perform some basic actions:
 4. Run `npm --prefix client start` to start client
 5. Open http://localhost:3001
 
+## How to release
+This project uses (release-it)[https://github.com/webpro/release-it].  Make sure it is installed globally and run `release-it` to create a draft release.
+
 ## Stack
 * React
 * [Material UI](https://material-ui.com/)
 * [kubernetes-client](https://github.com/godaddy/kubernetes-client)
 * [react-ace](https://github.com/securingsincity/react-ace) editor
 * [react-lazylog](https://github.com/mozilla-frontend-infra/react-lazylog) log viewer
+* [material-table](https://github.com/mbrn/material-table)
 
 ## Screenshots
 ![Pods](/screenshot/pods.png)

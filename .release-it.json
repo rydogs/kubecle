@@ -1,0 +1,22 @@
+{
+    "scripts": {
+        "afterBump": "npm run dist"
+    },
+    "git": {
+      "tag": false,
+      "commitMessage": "Release v${version}",
+      "commitArgs": "--no-verify"
+    },
+    "github": {
+      "release": true,
+      "draft": true,
+      "releaseName": "v${version}",
+      "tokenRef": "GH_TOKEN",
+      "assets": [
+        "dist/kubecle.dmg"
+      ]
+    },
+    "npm": {
+        "publish": false
+    }
+}
