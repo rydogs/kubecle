@@ -37,7 +37,7 @@ It also allows you to perform some basic actions:
 5. Open http://localhost:3001
 
 ## How to release
-This project uses (release-it)[https://github.com/webpro/release-it].  Make sure it is installed globally and run `release-it` to create a draft release.
+This project uses [release-it](https://github.com/webpro/release-it).  Make sure it is installed globally and run `release-it` to create a draft release.
 
 ## Stack
 * React
