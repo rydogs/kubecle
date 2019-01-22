@@ -44,7 +44,7 @@ module.exports = {
         proxy: [
             {
                 context: '/api',
-                target: `http://localhost:6888`,
+                target: `http://localhost:23333`,
                 logLevel: 'debug',
             }
         ]

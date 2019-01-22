@@ -9,7 +9,7 @@ app.on("window-all-closed", function(){
 
 app.on("ready", function () {
     mainWindow = new BrowserWindow({ width: 1400, height: 1000, frame: false });
-    mainWindow.loadURL('http://localhost:6888');
+    mainWindow.loadURL('http://localhost:23333');
     mainWindow.on("closed", function () {
         mainWindow =  null;
     });

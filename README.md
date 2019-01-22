@@ -27,7 +27,7 @@ It also allows you to perform some basic actions:
   * [MacOS](https://github.com/rydogs/kubecle/releases/latest)
 * Run locallly
   1. `npm install && npm start`
-  2. Open browser to http://localhost:6888
+  2. Open browser to http://localhost:23333
 
 ## How to develop
 1. Install [minikube](https://github.com/kubernetes/minikube)
