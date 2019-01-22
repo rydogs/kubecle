@@ -9,7 +9,7 @@ app.use(express.static(path.join(__dirname, '/../client/dist')));
 app.use(bodyParser.json());
 app.use('/', routes)
 
-var server = app.listen(process.env.PORT || 6888, async () => {
+var server = app.listen(process.env.PORT || 6888, '127.0.0.1', async () => {
   var host = server.address().address;
   var port = server.address().port;
   console.log('Kubecle listening at http://%s:%s', host, port);
