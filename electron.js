@@ -50,12 +50,12 @@ autoUpdater.on('update-available', info => {
     dialog.showMessageBox({
         type: 'info',
         title: 'Found Updates',
-        message: `New version ${info.releaseName} found, do you download it from github?`,
+        message: `New version ${info.releaseName} found, do you want to download it from github?`,
         buttons: ['Sure', 'No']
         }, (buttonIndex) => {
         if (buttonIndex === 0) {
             shell.openExternal('https://github.com/rydogs/kubecle/releases/latest');
-            updater.enabled = true;
+            app.quit();
         } else {
             updater.enabled = true;
             updater = null;
