@@ -4,8 +4,10 @@
     },
     "git": {
       "tag": false,
+      "tagName": "v${version}",
       "commitMessage": "Release v${version}",
-      "commitArgs": "--no-verify"
+      "commitArgs": "--no-verify",
+      "push": true
     },
     "github": {
       "release": true,
@@ -13,7 +15,8 @@
       "releaseName": "v${version}",
       "tokenRef": "GH_TOKEN",
       "assets": [
-        "dist/kubecle.dmg"
+        "dist/kubecle.dmg",
+        "dist/latest-mac.yml"
       ]
     },
     "npm": {
