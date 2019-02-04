@@ -49,11 +49,12 @@ class Deployments extends React.Component {
         this.fetchDeployments();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevStats) {
         const { currentNs, currentContext } = this.props;
         const { currentNs: prevNs, currentContext: prevContext } = prevProps;
-
-        if (currentNs !== prevNs || currentContext !== prevContext) {
+        const { editor: prevEditor }  = prevStats;
+        const { editor: currentEditor }  = this.state;
+        if (currentNs !== prevNs || currentContext !== prevContext || currentEditor.open !== prevEditor.open) {
             this.fetchDeployments();
         }
     }

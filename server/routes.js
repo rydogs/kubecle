@@ -27,9 +27,18 @@ router.get('/api/namespace/:namespace/pods', asyncHandler(async (req, res) => {
   res.json(pods);
 }));
 
-router.get('/api/namespace/:namespace/pods/:pods/metrics', asyncHandler(async (req, res) => {
-  const pods = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.pods);
+router.get('/api/namespace/:namespace/hpas', asyncHandler(async (req, res) => {
+  const pods = await getClient(req).apis.autoscaling.v1.namespaces(req.params.namespace).hpa().get();
   res.json(pods);
+}));
+
+router.post('/api/namespace/:namespace/hpas/:hpa', asyncHandler(async (req, res) => {
+  try {
+    const updated = await  getClient(req).apis.autoscaling.v1.namespaces(req.params.namespace).hpa(req.params.hpa).put({ body: req.body });
+    res.json(updated);
+  } catch (err) {
+    if (err.statusCode !== 409) throw err;
+  }
 }));
 
 router.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandler(async (req, res) => {

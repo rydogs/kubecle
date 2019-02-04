@@ -49,11 +49,13 @@ class Ingresses extends React.Component {
         this.fetchIngresses();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevStats) {
         const { currentNs, currentContext } = this.props;
         const { currentNs: prevNs, currentContext: prevContext } = prevProps;
+        const { editor: prevEditor }  = prevStats;
+        const { editor: currentEditor }  = this.state;
 
-        if (currentNs !== prevNs || currentContext !== prevContext) {
+        if (currentNs !== prevNs || currentContext !== prevContext || currentEditor.open !== prevEditor.open) {
             this.fetchIngresses();
         }
     }

@@ -7,7 +7,6 @@ import BuildIcon from '@material-ui/icons/Build';
 import Tooltip from '@material-ui/core/Tooltip';
 import Editor from './editor';
 import MaterialTable from 'material-table';
-import fmt from './fmt';
 import { connect } from 'react-redux';
 import SimpleList from './simpleList';
 
@@ -32,21 +31,21 @@ const mapStateToProps = ({ currentNs, currentContext }) => ({
     currentContext
 });
 
-class Services extends React.Component {
+class HPAs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            services: [],
+            hpas: [],
             editor: {
                 open: false,
                 content: {}
             }
         };
-        this.fetchServices = this.fetchServices.bind(this);
+        this.fetchHPAs = this.fetchHPAs.bind(this);
     }
 
     componentDidMount() {
-        this.fetchServices();
+        this.fetchHPAs();
     }
 
     componentDidUpdate(prevProps, prevStats) {
@@ -54,23 +53,23 @@ class Services extends React.Component {
         const { currentNs: prevNs, currentContext: prevContext } = prevProps;
         const { editor: prevEditor }  = prevStats;
         const { editor: currentEditor }  = this.state;
+
         if (currentNs !== prevNs || currentContext !== prevContext || currentEditor.open !== prevEditor.open) {
-            this.fetchServices();
+            this.fetchHPAs();
         }
     }
 
-    fetchServices() {
+    fetchHPAs() {
         const { currentNs, currentContext } = this.props;
-
         axios
-            .get(`/api/namespace/${currentNs}/services`, {
+            .get(`/api/namespace/${currentNs}/hpas`, {
                 headers: {
                     'k8s-context': currentContext
                 }
             })
             .then(res => {
                 if (res && res.data && res.data.body) {
-                    this.setState({ services: this.transform(res.data.body.items) });
+                    this.setState({ hpas: this.transform(res.data.body.items) });
                 }
             });
     }
@@ -78,9 +77,7 @@ class Services extends React.Component {
     transform(data) {
         return data.map(d => {
             d.name = d.metadata.name;
-            d.type = d.spec.type;
-            d.selectors = d.spec.selector;
-            d.ports = fmt.servicePorts(d.spec.ports);
+            d.target = d.spec.scaleTargetRef.kind + ':' + d.spec.scaleTargetRef.name;
             return d;
         });
     }
@@ -92,12 +89,22 @@ class Services extends React.Component {
             editor: {
                 open: true,
                 content,
-                editUrl: `/api/namespace/${currentNs}/services/${content.metadata.name}`
+                editUrl: `/api/namespace/${currentNs}/hpas/${content.metadata.name}`
             }
         });
     }
 
-    actions(service) {
+    replicaInfo(hpa) {
+        let data = [
+            `Min: ${hpa.spec.minReplicas} Max: ${hpa.spec.maxReplicas}`,
+            `Current: ${hpa.status.currentReplicas} Desired: ${hpa.status.desiredReplicas}`
+        ];
+        return (
+            <SimpleList data={data} />
+        );
+    }
+
+    actions(hpa) {
        return (
             <div
                 style={{
@@ -108,7 +115,7 @@ class Services extends React.Component {
                     <Fab
                         size="small"
                         color="primary"
-                        onClick={() => this.edit(service)}>
+                        onClick={() => this.edit(hpa)}>
                         <BuildIcon />
                     </Fab>
                 </Tooltip>
@@ -118,12 +125,12 @@ class Services extends React.Component {
 
     render() {
         const { classes, currentContext } = this.props;
-        const { editor, services } = this.state;
+        const { editor, hpas } = this.state;
         const columns = [
             { title: 'Name', field: 'name' },
-            { title: 'Type', field: 'type' },
-            { title: 'Selectors', field: 'selectors', render: rowData => <SimpleList data={rowData.selectors} /> },
-            { title: 'Ports', field: 'ports', render: rowData => (<SimpleList data={rowData.ports} />) },
+            { title: 'Target', field: 'target' },
+            { title: 'Replicas', render: rowData => `${rowData.spec.minReplicas}/${rowData.spec.maxReplicas}`},
+            { title: 'Status', render: rowData => `${rowData.status.currentReplicas}/${rowData.status.desiredReplicas}`},
             { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
             { title: 'Actions', render: rowData => this.actions(rowData)},
         ].map(c => {
@@ -135,8 +142,8 @@ class Services extends React.Component {
             <div style={{ maxWidth: '100%' }}>
                 <MaterialTable
                     columns={columns}
-                    data={services}
-                    title='Services'
+                    data={hpas}
+                    title='Horizontal Pod Autoscaler'
                     options={{paging: false, sorting: false}}
                 />
                 <Editor
@@ -152,10 +159,10 @@ class Services extends React.Component {
     }
 }
 
-Services.propTypes = {
+HPAs.propTypes = {
     classes: PropTypes.object.isRequired,
     currentContext: PropTypes.string,
     currentNs: PropTypes.string.isRequired
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Services));
+export default connect(mapStateToProps)(withStyles(styles)(HPAs));

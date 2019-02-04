@@ -54,11 +54,12 @@ class Jobs extends React.Component {
         this.fetchJobs();
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevStats) {
         const { currentContext, currentNs } = this.props;
         const { currentContext: prevContext, currentNs: prevNs } = prevProps;
-
-        if (currentNs !== prevNs || currentContext !== prevContext) {
+        const { editor: prevEditor }  = prevStats;
+        const { editor: currentEditor }  = this.state;
+        if (currentNs !== prevNs || currentContext !== prevContext || currentEditor.open !== prevEditor.open) {
             this.fetchJobs();
         }
     }

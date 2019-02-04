@@ -15,6 +15,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
+import TrendingUp from '@material-ui/icons/TrendingUp';
 import Input from '@material-ui/icons/Input';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import Build from '@material-ui/icons/Build';
@@ -25,6 +26,7 @@ import Ingresses from './ingresses';
 import Pods from './pods';
 import Configmaps from './configmaps';
 import Jobs from './jobs';
+import HPAs from './hpas';
 import Context from './context';
 import history from './history';
 import thunk from 'redux-thunk';
@@ -141,6 +143,17 @@ class App extends Component {
                                         </ListItem>
                                     </Link>
                                     <Link
+                                        to={{ pathname: '/hpas', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <ListItem button>
+                                            <ListItemIcon>
+                                                <TrendingUp />
+                                            </ListItemIcon>
+                                            <ListItemText primary="HPAs" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link
                                         to={{ pathname: '/ingresses', search: window.location.search }}
                                         style={{ textDecoration: 'none' }}
                                     >
@@ -170,6 +183,7 @@ class App extends Component {
                                 <div className={classes.toolbar} />
                                 <Route path="/deployments" component={Deployments} />
                                 <Route path="/services" component={Services} />
+                                <Route path="/hpas" component={HPAs} />
                                 <Route path="/ingresses" component={Ingresses} />
                                 <Route path="/pods" component={Pods} />
                                 <Route path="/jobs" component={Jobs} />
