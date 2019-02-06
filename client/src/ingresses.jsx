@@ -96,8 +96,7 @@ class Ingresses extends React.Component {
                 <Fab
                     size="small"
                     color="primary"
-                    onClick={() => this.edit(ingress)}
-                >
+                    onClick={() => this.edit(ingress)}>
                     <BuildIcon />
                 </Fab>
             </Tooltip>
@@ -127,7 +126,7 @@ class Ingresses extends React.Component {
                     title='Ingresses'
                     options={{paging: false, sorting: false}}
                 />
-`               <Editor
+                <Editor
                     context={currentContext}
                     content={editor.content}
                     editUrl={editor.editUrl}
