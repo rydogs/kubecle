@@ -96,7 +96,10 @@ class Pods extends React.Component {
         return _.flatMap(data, p => p.spec.containers.map(c => {
             c.podName = p.metadata.name;
             c.imageVersion = fmt.imageVersion(c.image);
-            c.status = this.getPodStatus(c.name, p.status);
+            if (p.status.containerStatuses) {
+                c.status = p.status.containerStatuses.find(s => s.name === c.name);
+            }
+            c.statusText = this.getContainerStatusText(c.status, p.status);
             c.restartCount = this.getContainerRestartCount(c.name, p.status);
             c.creationTimestamp = p.metadata.creationTimestamp;
             return c;
@@ -143,10 +146,10 @@ class Pods extends React.Component {
         }
     }
 
-    getPodStatus(containerName, statusObj) {
-        if (statusObj && statusObj.containerStatuses) {
-            var status = statusObj.containerStatuses.find(s => s.name === containerName);
+    getContainerStatus
 
+    getContainerStatusText(status, podStatus) {
+        if (podStatus && status) {
             if (!status) {
                 return 'Unknown';
             } else if (status.state && status.state.running) {
@@ -167,8 +170,7 @@ class Pods extends React.Component {
                 return 'Unknown';
             }
         } else {
-            const phaseReason = statusObj ? `${statusObj.phase} - ${statusObj.reason}` : 'Unknown phase/reason';
-            return phaseReason;
+            return podStatus ? `${podStatus.phase} - ${podStatus.reason}` : 'Unknown phase/reason';
         }
     }
 
@@ -233,8 +235,8 @@ class Pods extends React.Component {
             { title: 'Name', field: 'podName' },
             { title: 'Container Name', field: 'name' },
             { title: 'Image Version', field: 'imageVersion' },
-            { title: 'Status', field: 'status', headerStyle: {textAlign: 'center'},
-                render: rowData => (<Button fullWidth size="small" color={rowData.status === 'Ready' ? 'primary' : 'secondary'}>{rowData.status}</Button>)
+            { title: 'Status', field: 'statusText', headerStyle: {textAlign: 'center'},
+                render: rowData => (<Button fullWidth size="small" color={rowData.statusText === 'Ready' ? 'primary' : 'secondary'}>{rowData.statusText}</Button>)
             },
             { title: 'Restart Count', field: 'restartCount',
                 render: rowData => (<Typography color={rowData.restartCount > 0 ? 'error' : 'primary'}>{rowData.restartCount}</Typography>)
