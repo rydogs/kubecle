@@ -70,6 +70,10 @@ autoUpdater.on('update-not-available', () => {
             title: 'Update not available',
             message: `Update not available, v${app.getVersion()} is the latest version.`,
             buttons: ['Close']
+        }, () => {
+            if (updater) {
+                updater.enabled = true;
+            }
         });
     } else {
         appReadyCheck = false;
