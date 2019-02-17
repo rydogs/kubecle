@@ -5,12 +5,13 @@ import Moment from 'react-moment';
 import Fab from '@material-ui/core/Fab';
 import BuildIcon from '@material-ui/icons/Build';
 import Tooltip from '@material-ui/core/Tooltip';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Editor from './editor';
 import MaterialTable from 'material-table';
 import { connect } from 'react-redux';
 import SimpleList from './simpleList';
-
 import axios from 'axios';
+import AlertDialog from './alertDialog';
 
 const styles = theme => ({
     root: {
@@ -118,6 +119,15 @@ class HPAs extends React.Component {
                         onClick={() => this.edit(hpa)}>
                         <BuildIcon />
                     </Fab>
+                </Tooltip>
+                <Tooltip title="Delete" placement="top">
+                    <Fab
+                        size="small"
+                        color="secondary"
+                        onClick={() => this.delete(hpa)} >
+                        <DeleteIcon />
+                    </Fab>
+                    <AlertDialog title="Hello" text="World!!!!"></AlertDialog>
                 </Tooltip>
             </div>
        );
