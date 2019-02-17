@@ -41,7 +41,8 @@ const styles = theme => ({
         zIndex: 1,
         overflow: 'hidden',
         position: 'relative',
-        display: 'flex'
+        display: 'flex',
+        minHeight: '800px'
     },
     appBar: {
         '-webkit-app-region': 'drag',
