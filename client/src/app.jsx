@@ -18,6 +18,7 @@ import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
 import TrendingUp from '@material-ui/icons/TrendingUp';
 import Input from '@material-ui/icons/Input';
 import ScheduleIcon from '@material-ui/icons/Schedule';
+import TimerIcon from '@material-ui/icons/Timer';
 import Build from '@material-ui/icons/Build';
 import GroupWork from '@material-ui/icons/GroupWork';
 import Services from './services';
@@ -26,6 +27,7 @@ import Ingresses from './ingresses';
 import Pods from './pods';
 import Configmaps from './configmaps';
 import Jobs from './jobs';
+import Cronjobs from './cronjobs';
 import HPAs from './hpas';
 import Context from './context';
 import history from './history';
@@ -133,6 +135,17 @@ class App extends Component {
                                         </ListItem>
                                     </Link>
                                     <Link
+                                        to={{ pathname: '/cronjobs', search: window.location.search }}
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <ListItem button>
+                                            <ListItemIcon>
+                                                <TimerIcon />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Cron Jobs" />
+                                        </ListItem>
+                                    </Link>
+                                    <Link
                                         to={{ pathname: '/services', search: window.location.search }}
                                         style={{ textDecoration: 'none' }}
                                     >
@@ -188,6 +201,7 @@ class App extends Component {
                                 <Route path="/ingresses" component={Ingresses} />
                                 <Route path="/pods" component={Pods} />
                                 <Route path="/jobs" component={Jobs} />
+                                <Route path="/cronjobs" component={Cronjobs} />
                                 <Route path="/configmaps" component={Configmaps} />
                                 <Route exact path="/" render={() => <Redirect to="/pods" />} />
                             </main>

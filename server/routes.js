@@ -107,6 +107,25 @@ router.delete('/api/namespace/:namespace/jobs/:job', asyncHandler(async (req, re
   res.json(job);
 }));
 
+router.get('/api/namespace/:namespace/cronjobs', asyncHandler(async (req, res) => {
+  const jobs = await getClient(req).apis.batch.v1beta1.namespaces(req.params.namespace).cronjobs().get();
+  res.json(jobs);
+}));
+
+router.post('/api/namespace/:namespace/cronjobs/:cronjob', asyncHandler(async (req, res) => {
+  try {
+    const updated = await getClient(req).apis.batch.v1beta1.namespaces(req.params.namespace).cronjobs(req.params.cronjob).put({ body: req.body });
+    res.json(updated);
+  } catch (err) {
+    if (err.statusCode !== 409) throw err;
+  }
+}));
+
+router.delete('/api/namespace/:namespace/cronjobs/:cronjob', asyncHandler(async (req, res) => {
+  const pods = await getClient(req).apis.batch.v1beta1.namespaces(req.params.namespace).pods(req.params.cronjob).delete();
+  res.json(pods);
+}));
+
 router.get('/api/namespace/:namespace/ingresses', asyncHandler(async (req, res) => {
   const ingresses = await getClient(req).apis.extensions.v1beta1.namespaces(req.params.namespace).ingresses().get();
   res.json(ingresses);
@@ -137,15 +156,20 @@ function getClient(req) {
     return contextMap[contextKey];
   } else {
     if (contextHeader) {
-      let client = new Client({ config: config.fromKubeconfig(null, contextHeader), version: '1.9' });
+      let client = createClient(contextHeader);
       contextMap[contextKey] = client;
       return client;
     } else {
-      let client = new Client({ config: config.fromKubeconfig(), version: '1.9' });
+      let client = createClient(null);
       contextMap['k8s-default'] = client;
       return client;
     }
   }
+}
+
+function createClient(context) {
+  let client = new Client({ config: config.fromKubeconfig(null, context), version: '1.10'});
+  return client;
 }
 
 module.exports = router
