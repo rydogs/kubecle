@@ -99,7 +99,7 @@ class Pods extends React.Component {
             if (p.status.containerStatuses) {
                 c.status = p.status.containerStatuses.find(s => s.name === c.name);
             }
-            c.statusText = this.getContainerStatusText(c.status, p.status);
+            c.statusText = this.getContainerStatusText(c.status, p.status, p.metadata);
             c.restartCount = this.getContainerRestartCount(c.name, p.status);
             c.creationTimestamp = p.metadata.creationTimestamp;
             return c;
@@ -146,9 +146,10 @@ class Pods extends React.Component {
         }
     }
 
-    getContainerStatus
-
-    getContainerStatusText(status, podStatus) {
+    getContainerStatusText(status, podStatus, metadata) {
+        if (metadata && metadata.deletionTimestamp) {
+            return `Terminating`;
+        }
         if (podStatus && status) {
             if (!status) {
                 return 'Unknown';
