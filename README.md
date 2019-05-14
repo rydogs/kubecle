@@ -30,7 +30,7 @@ It also allows you to perform some basic actions:
   2. Open browser to http://localhost:23333
 
 ## How to develop
-1. Install [minikube](https://github.com/kubernetes/minikube)
+1. Install kubernetes for Docker (18.06 or above) [MacOS](https://docs.docker.com/docker-for-mac/#kubernetes) [Windows](https://docs.docker.com/docker-for-windows/kubernetes/).  Alternatively, install [minikube](https://github.com/kubernetes/minikube)
 2. Install [helm](https://github.com/helm/helm) and deploy something, for example, [Wordpress](https://github.com/helm/charts/tree/master/stable/wordpress)
 3. Run `npm run watch` to start server
 4. Run `npm --prefix client start` to start client
