@@ -142,7 +142,7 @@ router.post('/api/namespace/:namespace/ingresses/:ingresses', asyncHandler(async
 
 router.get('/api/contexts', asyncHandler(async (req, res) => {
   const k8sConfig = config.loadKubeconfig();
-  res.json({"currentContext": k8sConfig['current-context'], "contexts": k8sConfig.clusters.map(c => c.name)});
+  res.json({"currentContext": k8sConfig['current-context'], "contexts": k8sConfig.contexts.map(c => c.name)});
 }));
 
 router.get('/*', function(req, res) { 
