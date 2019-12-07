@@ -6,6 +6,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Moment from 'react-moment';
 import Fab from '@material-ui/core/Fab';
 import BuildIcon from '@material-ui/icons/Build';
+import HistoryIcon from '@material-ui/icons/History';
 import { connect } from 'react-redux';
 import Editor from './editor';
 import fmt from './fmt';
@@ -97,6 +98,10 @@ class Deployments extends React.Component {
         });
     }
 
+
+    history(deployment) {
+    }
+
     actions(deployment) {
         return (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -106,6 +111,14 @@ class Deployments extends React.Component {
                         color="primary"
                         onClick={() => this.edit(deployment)}>
                         <BuildIcon />
+                    </Fab>
+                </Tooltip>
+                <Tooltip title="History" placement="top">
+                    <Fab
+                        size="small"
+                        color="primary"
+                        onClick={() => this.history(deployment)}>
+                        <HistoryIcon />
                     </Fab>
                 </Tooltip>
             </div>
