@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
+import copy from 'copy-to-clipboard';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import HistoryIcon from '@material-ui/icons/History';
 import { diff as DiffEditor } from "react-ace";
 import beautify from 'json-beautify';
 import Moment from 'moment';
@@ -17,6 +19,7 @@ import 'brace/mode/json';
 import 'brace/theme/monokai';
 import * as _ from 'lodash';
 import axios from 'axios';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const styles = theme => ({
     root: {
@@ -63,12 +66,23 @@ class HistoryViewer extends React.Component {
         });
     }
 
+    copyRollbackToClipboard(rs) {
+        const { context, ns, deployment } = this.props;
+        const revision = this.revision(rs);
+        let copyCmd = `kubectl rollout undo deployment.v1.apps/${deployment.metadata.name} -n ${ns} --context ${context} --to-revision=${revision}`;
+        copy(copyCmd);
+    }
+
     diffText(rs) {
         return (rs && rs.spec) ? beautify(rs.spec.template, null, 2, 80) : "";
     }
 
-    diffVersion(rs) {
-        return (rs && rs.metadata) ? `Revision ${rs.metadata.annotations["deployment.kubernetes.io/revision"]} on ${Moment(rs.metadata.creationTimestamp).fromNow()}` : "";
+    revisionText(rs) {
+        return (rs && rs.metadata) ? `Revision ${this.revision(rs)} on ${Moment(rs.metadata.creationTimestamp).fromNow()}` : "";
+    }
+
+    revision(rs) {
+        return (rs && rs.metadata) ? rs.metadata.annotations["deployment.kubernetes.io/revision"] : null;
     }
 
     render() {
@@ -78,19 +92,22 @@ class HistoryViewer extends React.Component {
         const right = histories && histories.length > rightIdx ? histories[rightIdx] : {};
         return (
             <Dialog fullWidth={true} maxWidth="lg" open={open} onClose={onClose}>
-                <DialogTitle id="simple-dialog-title">Deployment History</DialogTitle>
+                <DialogTitle id="simple-dialog-title">History</DialogTitle>
                 <div className={classes.root}>
                     <Grid container spacing={24}>
                         <Grid item xs={6}>
                             <Paper elevation={0} className={classes.paper}>
-                                {this.diffVersion(left)}
+                                {this.revisionText(left)}
                             </Paper>
                         </Grid>
                         <Grid item xs={6}>
                             <Paper elevation={0} className={classes.paper}>
                                 <Button disabled={rightIdx <= 1} size="small" onClick={() => this.setState({rightIdx:rightIdx-1})}><ChevronLeftIcon /></Button>
-                                {this.diffVersion(right)}
+                                {this.revisionText(right)}
                                 <Button size="small" disabled={histories && rightIdx + 1 >= histories.length} onClick={() => this.setState({rightIdx:rightIdx+1})}><ChevronRightIcon /></Button>
+                                <Tooltip title="Copy Rollback Command" placement="top">
+                                    <Button size="small" color="secondary" variant="contained" onClick={() => this.copyRollbackToClipboard(right)}><HistoryIcon /></Button>
+                                </Tooltip>
                             </Paper>
                         </Grid>
                     </Grid>
@@ -121,7 +138,8 @@ HistoryViewer.propTypes = {
     open: PropTypes.bool,
     historyUrl: PropTypes.string,
     deployment: PropTypes.object,
-    context: PropTypes.string
+    context: PropTypes.string,
+    ns: PropTypes.string
 };
 
 export default withStyles(styles)(HistoryViewer);

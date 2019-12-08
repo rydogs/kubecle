@@ -139,7 +139,7 @@ class Deployments extends React.Component {
     }
 
     render() {
-        const { classes, currentContext } = this.props;
+        const { classes, currentContext, currentNs } = this.props;
         const { deployments, editor, historyViewer } = this.state;
         const columns = [
             { title: 'Name', field: 'name'},
@@ -173,6 +173,7 @@ class Deployments extends React.Component {
                 />
                 <HistoryViewer
                     context={currentContext}
+                    ns={currentNs}
                     deployment={historyViewer.deployment}
                     historyUrl={historyViewer.historyUrl}
                     open={historyViewer.open}
