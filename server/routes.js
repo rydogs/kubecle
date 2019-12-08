@@ -12,6 +12,14 @@ router.get('/api/namespace/:namespace/deployments', asyncHandler(async (req, res
   const deployments = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).deployments().get();
   res.json(deployments);
 }));
+
+router.get('/api/namespace/:namespace/deployments/:deployment/history', asyncHandler(async (req, res) => {
+  const deployment = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).deployments(req.params.deployment).get();
+  const replicaSets = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).replicasets.get(
+    {qs: {labelSelector:labelsToQuery(deployment.body.metadata.labels)}}
+  );
+  res.json(replicaSets);
+}));
   
 router.post('/api/namespace/:namespace/deployments/:deployment', asyncHandler(async (req, res) => {
   try {
@@ -170,6 +178,10 @@ function getClient(req) {
 function createClient(context) {
   let client = new Client({ config: config.fromKubeconfig(null, context), version: '1.10'});
   return client;
+}
+
+function labelsToQuery(labels) {
+  return Object.keys(labels).map(label => `${label}=${labels[label]}`).join(',')
 }
 
 module.exports = router

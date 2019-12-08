@@ -6,8 +6,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Moment from 'react-moment';
 import Fab from '@material-ui/core/Fab';
 import BuildIcon from '@material-ui/icons/Build';
+import HistoryIcon from '@material-ui/icons/History';
 import { connect } from 'react-redux';
 import Editor from './editor';
+import HistoryViewer from './historyviewer';
 import fmt from './fmt';
 import SimpleList from './simpleList';
 import axios from 'axios';
@@ -40,6 +42,11 @@ class Deployments extends React.Component {
                 open: false,
                 editUrl: '',
                 content: {}
+            },
+            historyViewer: {
+                open: false,
+                historyUrl: '',
+                deployment: {}
             }
         };
         this.fetchDeployments = this.fetchDeployments.bind(this);
@@ -87,12 +94,23 @@ class Deployments extends React.Component {
 
     edit(deployment) {
         const { currentNs } = this.props;
-
         this.setState({
             editor: {
                 open: true,
                 content: deployment,
                 editUrl: `/api/namespace/${currentNs}/deployments/${deployment.metadata.name}`
+            }
+        });
+    }
+
+
+    history(deployment) {
+        const { currentNs } = this.props;
+        this.setState({
+            historyViewer: {
+                open: true,
+                deployment: deployment,
+                historyUrl: `/api/namespace/${currentNs}/deployments/${deployment.metadata.name}/history`
             }
         });
     }
@@ -108,13 +126,21 @@ class Deployments extends React.Component {
                         <BuildIcon />
                     </Fab>
                 </Tooltip>
+                <Tooltip title="History" placement="top">
+                    <Fab
+                        size="small"
+                        color="primary"
+                        onClick={() => this.history(deployment)}>
+                        <HistoryIcon />
+                    </Fab>
+                </Tooltip>
             </div>
         );
     }
 
     render() {
-        const { classes, currentContext } = this.props;
-        const { deployments, editor } = this.state;
+        const { classes, currentContext, currentNs } = this.props;
+        const { deployments, editor, historyViewer } = this.state;
         const columns = [
             { title: 'Name', field: 'name'},
             { title: 'Replicas', render: rowData => rowData.spec.replicas },
@@ -144,6 +170,14 @@ class Deployments extends React.Component {
                     editUrl={editor.editUrl}
                     open={editor.open}
                     onClose={() => this.setState({ editor: { open: false } })}
+                />
+                <HistoryViewer
+                    context={currentContext}
+                    ns={currentNs}
+                    deployment={historyViewer.deployment}
+                    historyUrl={historyViewer.historyUrl}
+                    open={historyViewer.open}
+                    onClose={() => this.setState({ historyViewer: { open: false } })}
                 />
             </div>
         );
