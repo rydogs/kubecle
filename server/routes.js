@@ -18,7 +18,6 @@ router.get('/api/namespace/:namespace/deployments/:deployment/history', asyncHan
   const replicaSets = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).replicasets.get(
     {qs: {labelSelector:labelsToQuery(deployment.body.metadata.labels)}}
   );
-  console.log(deployment.body.metadata.labels);
   res.json(replicaSets);
 }));
   

@@ -35,7 +35,7 @@
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21",
     "react": "^16.5.2",
-    "react-ace": "^6.1.4",
+    "react-ace": "^7.0.0",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.5.2",
     "react-lazylog": "^4.5.0",

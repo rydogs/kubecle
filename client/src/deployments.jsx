@@ -9,6 +9,7 @@ import BuildIcon from '@material-ui/icons/Build';
 import HistoryIcon from '@material-ui/icons/History';
 import { connect } from 'react-redux';
 import Editor from './editor';
+import HistoryViewer from './historyviewer';
 import fmt from './fmt';
 import SimpleList from './simpleList';
 import axios from 'axios';
@@ -41,6 +42,11 @@ class Deployments extends React.Component {
                 open: false,
                 editUrl: '',
                 content: {}
+            },
+            historyViewer: {
+                open: false,
+                historyUrl: '',
+                deployment: {}
             }
         };
         this.fetchDeployments = this.fetchDeployments.bind(this);
@@ -88,7 +94,6 @@ class Deployments extends React.Component {
 
     edit(deployment) {
         const { currentNs } = this.props;
-
         this.setState({
             editor: {
                 open: true,
@@ -100,6 +105,14 @@ class Deployments extends React.Component {
 
 
     history(deployment) {
+        const { currentNs } = this.props;
+        this.setState({
+            historyViewer: {
+                open: true,
+                deployment: deployment,
+                historyUrl: `/api/namespace/${currentNs}/deployments/${deployment.metadata.name}/history`
+            }
+        });
     }
 
     actions(deployment) {
@@ -127,7 +140,7 @@ class Deployments extends React.Component {
 
     render() {
         const { classes, currentContext } = this.props;
-        const { deployments, editor } = this.state;
+        const { deployments, editor, historyViewer } = this.state;
         const columns = [
             { title: 'Name', field: 'name'},
             { title: 'Replicas', render: rowData => rowData.spec.replicas },
@@ -157,6 +170,13 @@ class Deployments extends React.Component {
                     editUrl={editor.editUrl}
                     open={editor.open}
                     onClose={() => this.setState({ editor: { open: false } })}
+                />
+                <HistoryViewer
+                    context={currentContext}
+                    deployment={historyViewer.deployment}
+                    historyUrl={historyViewer.historyUrl}
+                    open={historyViewer.open}
+                    onClose={() => this.setState({ historyViewer: { open: false } })}
                 />
             </div>
         );
