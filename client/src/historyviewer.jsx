@@ -8,6 +8,8 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { diff as DiffEditor } from "react-ace";
 import beautify from 'json-beautify';
 import Moment from 'moment';
@@ -31,7 +33,9 @@ class HistoryViewer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null
+            error: null,
+            leftIdx: 0,
+            rightIdx: 1
         };
         this.histories = [];
     }
@@ -40,6 +44,8 @@ class HistoryViewer extends React.Component {
         const { historyUrl: currentUrl } = this.props;
         const { historyUrl: previousUrl } = prevProps;
         if (currentUrl && currentUrl !== previousUrl) {
+            this.state.leftIdx = 0;
+            this.state.rightIdx = 1;
             this.fetchHistory();
         }
     }
@@ -67,19 +73,25 @@ class HistoryViewer extends React.Component {
 
     render() {
         const { context, historyUrl, open, onClose, classes } = this.props;
-        const { error, histories } = this.state;
-        const left = histories && histories.length ? histories[0] : {};
-        const right = histories && histories.length > 1 ? histories[1] : {};
+        const { error, histories, leftIdx, rightIdx } = this.state;
+        const left = histories && histories.length > leftIdx? histories[leftIdx] : {};
+        const right = histories && histories.length > rightIdx ? histories[rightIdx] : {};
         return (
             <Dialog fullWidth={true} maxWidth="lg" open={open} onClose={onClose}>
-                <DialogTitle id="simple-dialog-title">History</DialogTitle>
+                <DialogTitle id="simple-dialog-title">Deployment History</DialogTitle>
                 <div className={classes.root}>
                     <Grid container spacing={24}>
                         <Grid item xs={6}>
-                            <Paper elevation={0} className={classes.paper}>{this.diffVersion(left)}</Paper>
+                            <Paper elevation={0} className={classes.paper}>
+                                {this.diffVersion(left)}
+                            </Paper>
                         </Grid>
                         <Grid item xs={6}>
-                            <Paper elevation={0} className={classes.paper}>{this.diffVersion(right)}</Paper>
+                            <Paper elevation={0} className={classes.paper}>
+                                <Button disabled={rightIdx <= 1} size="small" onClick={() => this.setState({rightIdx:rightIdx-1})}><ChevronLeftIcon /></Button>
+                                {this.diffVersion(right)}
+                                <Button size="small" disabled={histories && rightIdx + 1 >= histories.length} onClick={() => this.setState({rightIdx:rightIdx+1})}><ChevronRightIcon /></Button>
+                            </Paper>
                         </Grid>
                     </Grid>
                     <DiffEditor
