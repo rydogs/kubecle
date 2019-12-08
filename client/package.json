@@ -27,7 +27,7 @@
   "dependencies": {
     "@material-ui/core": "^3.8.0",
     "@material-ui/icons": "^3.0.0",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "copy-to-clipboard": "^3.0.8",
     "json-beautify": "^1.0.1",
     "lodash": "^4.17.13",
