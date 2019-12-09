@@ -19,6 +19,7 @@ app.on("ready", function () {
         submenu: [
             { label: "Check for Update", click: checkForUpdates },
             { label: "About Application", selector: "orderFrontStandardAboutPanel:" },
+            { label: "Open Dev Console", click: function() { mainWindow.webContents.openDevTools(); }},
             { type: "separator" },
             { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
         ]}, {
