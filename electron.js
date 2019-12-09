@@ -54,7 +54,7 @@ autoUpdater.on('update-available', info => {
         buttons: ['Sure', 'No']
         }, (buttonIndex) => {
         if (buttonIndex === 0) {
-            shell.openExternal('https://github.com/rydogs/kubecle/releases/latest');
+            shell.openExternalSync('https://github.com/rydogs/kubecle/releases/latest');
             app.quit();
         } else {
             updater.enabled = true;

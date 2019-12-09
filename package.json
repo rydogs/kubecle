@@ -13,9 +13,10 @@
     "start": "NODE_ENV=production node server/index",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "NODE_ENV=development nodemon server/index",
-    "client-build": "npm --prefix client run build && git add client/dist/bundle.js",
+    "client-build": "npm --prefix client run build",
     "client-test": "npm --prefix client run test",
-    "dist": "rm -rf dist && electron-builder"
+    "build": "electron-builder",
+    "dist": "rm -rf dist && npm run client-build && npm run build"
   },
   "pre-commit": [
     "client-test",
@@ -70,7 +71,7 @@
   },
   "devDependencies": {
     "electron-builder": "^21.2.0",
-    "electron": "7.1.2",
+    "electron": "6.1.5",
     "nodemon": "^1.17.5",
     "pre-commit": "^1.2.2"
   }
