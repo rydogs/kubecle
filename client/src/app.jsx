@@ -62,11 +62,11 @@ const styles = theme => ({
     content: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.default,
-        padding: theme.spacing.unit * 3,
+        padding: theme.spacing(3),
         minWidth: 0 // So the Typography noWrap works
     },
     menu: {
-        paddingTop: theme.spacing.unit * 3
+        paddingTop: theme.spacing(3)
     },
     toolbar: theme.mixins.toolbar
 });
@@ -82,6 +82,16 @@ const store = createStore(rootReducer, undefined, applyMiddleware(thunk, logger)
 class App extends Component {
     render() {
         const { classes } = this.props;
+        const menus = [
+            {text: "Deployments", path: "/deployments", icon: <Build />, component: Deployments},
+            {text: "Pods", path: "/pods", icon: <GroupWork />, component: Pods},
+            {text: "Jobs", path: "/jobs", icon: <ScheduleIcon />, component: Jobs},
+            {text: "Cron Jobs", path: "/cronjobs", icon: <TimerIcon />, component: Cronjobs},
+            {text: "Services", path: "/services", icon: <SettingsEthernet />, component: Services},
+            {text: "HPAs", path: "/hpas", icon: <TrendingUp />, component: HPAs},
+            {text: "Ingresses", path: "/ingresses", icon: <Input />, component: Ingresses},
+            {text: "Configmaps", path: "/configmaps", icon: <DescriptionIcon />, component: Configmaps},
+        ];
         return (
             <Provider store={store}>
                 <MuiThemeProvider theme={theme}>
@@ -90,7 +100,7 @@ class App extends Component {
                             <AppBar position="absolute" className={classes.appBar}>
                                 <Toolbar>
                                     <img src="images/kubecle-logo.png" className={classes.logo} />
-                                    <Typography variant="h6" color="inherit" noWrap style={{ flex: 1 }}>
+                                    <Typography variant="h6" color="primary" noWrap style={{ flex: 1 }}>
                                         Kubecle
                                     </Typography>
                                     <div>
@@ -101,108 +111,23 @@ class App extends Component {
                             <Drawer variant="permanent" classes={{ paper: classes.drawerPaper }}>
                                 <div className={classes.toolbar} />
                                 <List className={classes.menu}>
-                                    <Link
-                                        to={{ pathname: '/deployments', search: window.location.search }}
-                                        style={{ textDecoration: 'none' }}
-                                    >
-                                        <ListItem button>
+                                    {menus.map((item) => (
+                                        <ListItem button component={Link} to={{ pathname: item.path, search: window.location.search }}>
                                             <ListItemIcon>
-                                                <Build />
+                                                {item.icon}
                                             </ListItemIcon>
-                                            <ListItemText primary="Deployments" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link
-                                        to={{ pathname: '/pods', search: window.location.search }}
-                                        style={{ textDecoration: 'none' }}
-                                    >
-                                        <ListItem button>
-                                            <ListItemIcon>
-                                                <GroupWork />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Pods" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link
-                                        to={{ pathname: '/jobs', search: window.location.search }}
-                                        style={{ textDecoration: 'none' }}
-                                    >
-                                        <ListItem button>
-                                            <ListItemIcon>
-                                                <ScheduleIcon />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Jobs" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link
-                                        to={{ pathname: '/cronjobs', search: window.location.search }}
-                                        style={{ textDecoration: 'none' }}
-                                    >
-                                        <ListItem button>
-                                            <ListItemIcon>
-                                                <TimerIcon />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Cron Jobs" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link
-                                        to={{ pathname: '/services', search: window.location.search }}
-                                        style={{ textDecoration: 'none' }}
-                                    >
-                                        <ListItem button>
-                                            <ListItemIcon>
-                                                <SettingsEthernet />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Services" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link
-                                        to={{ pathname: '/hpas', search: window.location.search }}
-                                        style={{ textDecoration: 'none' }}
-                                    >
-                                        <ListItem button>
-                                            <ListItemIcon>
-                                                <TrendingUp />
-                                            </ListItemIcon>
-                                            <ListItemText primary="HPAs" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link
-                                        to={{ pathname: '/ingresses', search: window.location.search }}
-                                        style={{ textDecoration: 'none' }}
-                                    >
-                                        <ListItem button>
-                                            <ListItemIcon>
-                                                <Input />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Ingresses" />
-                                        </ListItem>
-                                    </Link>
-                                    <Link
-                                        to={{ pathname: '/configmaps', search: window.location.search }}
-                                        style={{ textDecoration: 'none' }}
-                                    >
-                                        <ListItem button>
-                                            <ListItemIcon>
-                                                <DescriptionIcon />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Configmaps" />
-                                        </ListItem>
-                                    </Link>
+                                            <ListItemText primary={item.text} />
+                                        </ListItem> 
+                                    ))}
                                 </List>
                                 <Divider />
                                 <List />
                             </Drawer>
                             <main className={classes.content}>
                                 <div className={classes.toolbar} />
-                                <Route path="/deployments" component={Deployments} />
-                                <Route path="/services" component={Services} />
-                                <Route path="/hpas" component={HPAs} />
-                                <Route path="/ingresses" component={Ingresses} />
-                                <Route path="/pods" component={Pods} />
-                                <Route path="/jobs" component={Jobs} />
-                                <Route path="/cronjobs" component={Cronjobs} />
-                                <Route path="/configmaps" component={Configmaps} />
+                                {menus.map((item) => (
+                                    <Route path={item.path} component={item.component} />
+                                ))}
                                 <Route exact path="/" render={() => <Redirect to="/pods" />} />
                             </main>
                         </div>
