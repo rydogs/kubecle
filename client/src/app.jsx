@@ -125,8 +125,8 @@ class App extends Component {
                             </Drawer>
                             <main className={classes.content}>
                                 <div className={classes.toolbar} />
-                                {menus.map((item) => (
-                                    <Route path={item.path} component={item.component} />
+                                {menus.map((item, i) => (
+                                    <Route key={i} path={item.path} component={item.component} />
                                 ))}
                                 <Route exact path="/" render={() => <Redirect to="/pods" />} />
                             </main>
