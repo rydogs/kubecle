@@ -16,13 +16,13 @@ const styles = theme => ({
         flexWrap: 'wrap'
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
         width: 250
     },
     formControl: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
         marginTop: 16,
         marginBottom: 8,
         width: 300,
@@ -69,8 +69,8 @@ class Context extends React.Component {
                         inputProps={{ name: 'context', id: 'context-select' }}
                     >
                         {this.state.contexts &&
-                            this.state.contexts.map(ctx => (
-                                <MenuItem key={ctx} value={ctx}>
+                            this.state.contexts.map((ctx, i) => (
+                                <MenuItem key={i} value={ctx}>
                                     {ctx}
                                 </MenuItem>
                             ))}
