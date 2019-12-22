@@ -22,8 +22,8 @@ const styles = theme => ({
         minWidth: 700
     },
     title: {
-        paddingTop: theme.spacing.unit * 2,
-        paddingBottom: theme.spacing.unit * 2
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2)
     }
 });
 

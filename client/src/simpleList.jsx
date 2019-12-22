@@ -15,9 +15,9 @@ const SimpleList = function(props) {
                         </ListItem>
                     )
                 }):
-                data && Object.keys(data).map(k => {
+                data && Object.keys(data).map((k, i) => {
                     return (
-                        <ListItem key={k} disableGutters>
+                        <ListItem key={i} disableGutters>
                             <ListItemText primary={`${k}: ${data[k]}`} />
                         </ListItem>
                     )

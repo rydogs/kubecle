@@ -111,8 +111,8 @@ class App extends Component {
                             <Drawer variant="permanent" classes={{ paper: classes.drawerPaper }}>
                                 <div className={classes.toolbar} />
                                 <List className={classes.menu}>
-                                    {menus.map((item) => (
-                                        <ListItem button component={Link} to={{ pathname: item.path, search: window.location.search }}>
+                                    {menus.map((item, i) => (
+                                        <ListItem key={i} button component={Link} to={{ pathname: item.path, search: window.location.search }}>
                                             <ListItemIcon>
                                                 {item.icon}
                                             </ListItemIcon>
