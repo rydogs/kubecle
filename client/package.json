@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "pretest": "eslint .",
     "build": "webpack --mode production"
   },
@@ -42,7 +42,7 @@
     "react-lazylog": "^4.5.0",
     "react-moment": "^0.7.9",
     "react-redux": "^5.0.7",
-    "react-router-dom": "^4.3.1",
+    "react-router-dom": "^5.1.2",
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
