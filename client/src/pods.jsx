@@ -235,7 +235,7 @@ class Pods extends React.Component {
         const columns = [
             { title: 'Name', field: 'podName' },
             { title: 'Container Name', field: 'name' },
-            { title: 'Image Version', field: 'imageVersion' },
+            { title: 'Image Version', field: 'imageVersion', cellStyle: {whiteSpace: "normal",wordBreak: "break-word"}},
             { title: 'Status', field: 'statusText', headerStyle: {textAlign: 'center'},
                 render: rowData => (<Button fullWidth size="small" color={rowData.statusText === 'Ready' ? 'primary' : 'secondary'}>{rowData.statusText}</Button>)
             },
