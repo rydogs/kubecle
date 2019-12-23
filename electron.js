@@ -1,7 +1,11 @@
 const { app, BrowserWindow, Menu, dialog, shell} = require('electron');
 const { autoUpdater } = require('electron-updater');
 const { server } = require("./server");
+const log = require("electron-log");
+const htmlToText = require('html-to-text');
 
+// Fix path issue with k8s client auth
+require('fix-path')();
 var mainWindow = null;
 app.on("window-all-closed", function(){
     app.quit();
@@ -39,7 +43,7 @@ app.on("ready", function () {
 });
 
 autoUpdater.autoDownload = false;
-autoUpdater.logger = require("electron-log");
+autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
 var appReadyCheck = true;
 
@@ -52,6 +56,7 @@ autoUpdater.on('update-available', info => {
         type: 'info',
         title: 'Found Updates',
         message: `New version ${info.releaseName} found, do you want to download it from github?`,
+        detail: htmlToText.fromString(info.releaseNotes, {ignoreHref: true}),
         buttons: ['Sure', 'No']
         }, (buttonIndex) => {
         if (buttonIndex === 0) {
