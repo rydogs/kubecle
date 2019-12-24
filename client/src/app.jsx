@@ -100,7 +100,7 @@ class App extends Component {
                             <AppBar position="absolute" className={classes.appBar}>
                                 <Toolbar>
                                     <img src="images/kubecle-logo.png" className={classes.logo} />
-                                    <Typography variant="h6" color="primary" noWrap style={{ flex: 1 }}>
+                                    <Typography variant="h6" color="inherit" noWrap style={{ flex: 1 }}>
                                         Kubecle
                                     </Typography>
                                     <div>
