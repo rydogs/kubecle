@@ -6,14 +6,23 @@ const Client = require('kubernetes-client').Client;
 const config = require('kubernetes-client').config;
 const contextMap = {};
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/api/namespace/:namespace/deployments', asyncHandler(async (req, res) => {
+function handleAsync(fn) {
+  return (req, res, next) => {
+    fn(req, res, next).catch((error) => {
+      console.error(error);
+      res.status(500).json({ message: error.message });
+    });
+  };
+}
+
+router.get('/api/namespace/:namespace/deployments', handleAsync(async (req, res) => {
   const deployments = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).deployments().get();
   res.json(deployments);
 }));
 
-router.get('/api/namespace/:namespace/deployments/:deployment/history', asyncHandler(async (req, res) => {
+router.get('/api/namespace/:namespace/deployments/:deployment/history', handleAsync(async (req, res) => {
   const deployment = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).deployments(req.params.deployment).get();
   const replicaSets = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).replicasets.get(
     {qs: {labelSelector:labelsToQuery(deployment.body.metadata.labels)}}
@@ -21,7 +30,7 @@ router.get('/api/namespace/:namespace/deployments/:deployment/history', asyncHan
   res.json(replicaSets);
 }));
   
-router.post('/api/namespace/:namespace/deployments/:deployment', asyncHandler(async (req, res) => {
+router.post('/api/namespace/:namespace/deployments/:deployment', handleAsync(async (req, res) => {
   try {
     const updated = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).deployments(req.params.deployment).put({ body: req.body });
     res.json(updated);
@@ -30,26 +39,26 @@ router.post('/api/namespace/:namespace/deployments/:deployment', asyncHandler(as
   }
 }));
 
-router.get('/api/namespace/:namespace/pods', asyncHandler(async (req, res) => {
+router.get('/api/namespace/:namespace/pods', handleAsync(async (req, res) => {
   const pods = await getClient(req).api.v1.namespaces(req.params.namespace).pods().get();
   res.json(pods);
 }));
 
-router.get('/api/namespace/:namespace/hpas', asyncHandler(async (req, res) => {
+router.get('/api/namespace/:namespace/hpas', handleAsync(async (req, res) => {
   const pods = await getClient(req).apis.autoscaling.v1.namespaces(req.params.namespace).hpa().get();
   res.json(pods);
 }));
 
-router.post('/api/namespace/:namespace/hpas/:hpa', asyncHandler(async (req, res) => {
+router.post('/api/namespace/:namespace/hpas/:hpa', handleAsync(async (req, res) => {
   try {
-    const updated = await  getClient(req).apis.autoscaling.v1.namespaces(req.params.namespace).hpa(req.params.hpa).put({ body: req.body });
+    const updated = await getClient(req).apis.autoscaling.v1.namespaces(req.params.namespace).hpa(req.params.hpa).put({ body: req.body });
     res.json(updated);
   } catch (err) {
     if (err.statusCode !== 409) throw err;
   }
 }));
 
-router.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHandler(async (req, res) => {
+router.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', handleAsync(async (req, res) => {
   const stream = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.pods).log.getStream({
     qs: { tailLines: 100, follow: true, container: req.params.containerName }
   });
@@ -72,17 +81,17 @@ router.get('/api/namespace/:namespace/pods/:pods/logs/:containerName?', asyncHan
 }));
 
 
-router.delete('/api/namespace/:namespace/pods/:podname', asyncHandler(async (req, res) => {
+router.delete('/api/namespace/:namespace/pods/:podname', handleAsync(async (req, res) => {
   const pods = await getClient(req).api.v1.namespaces(req.params.namespace).pods(req.params.podname).delete();
   res.json(pods);
 }));
 
-router.get('/api/namespace/:namespace/services', asyncHandler(async (req, res) => {
+router.get('/api/namespace/:namespace/services', handleAsync(async (req, res) => {
   const services = await getClient(req).api.v1.namespaces(req.params.namespace).services().get();
   res.json(services);
 }));
 
-router.post('/api/namespace/:namespace/services/:service', asyncHandler(async (req, res) => {
+router.post('/api/namespace/:namespace/services/:service', handleAsync(async (req, res) => {
   try {
     const updated = await getClient(req).api.v1.namespaces(req.params.namespace).services(req.params.service).put({ body: req.body });
     res.json(updated);
@@ -91,12 +100,12 @@ router.post('/api/namespace/:namespace/services/:service', asyncHandler(async (r
   }
 }));
 
-router.get('/api/namespace/:namespace/configmaps', asyncHandler(async (req, res) => {
+router.get('/api/namespace/:namespace/configmaps', handleAsync(async (req, res) => {
   const configmaps = await getClient(req).api.v1.namespaces(req.params.namespace).configmaps().get();
   res.json(configmaps);
 }));
 
-router.post('/api/namespace/:namespace/configmaps/:configmap', asyncHandler(async (req, res) => {
+router.post('/api/namespace/:namespace/configmaps/:configmap', handleAsync(async (req, res) => {
   try {
     const updated = await getClient(req).api.v1.namespaces(req.params.namespace).configmaps(req.params.configmap).put({ body: req.body });
     res.json(updated);
@@ -105,22 +114,22 @@ router.post('/api/namespace/:namespace/configmaps/:configmap', asyncHandler(asyn
   }
 }));
 
-router.get('/api/namespace/:namespace/jobs', asyncHandler(async (req, res) => {
+router.get('/api/namespace/:namespace/jobs', handleAsync(async (req, res) => {
   const jobs = await getClient(req).apis.batch.v1.namespaces(req.params.namespace).jobs().get();
   res.json(jobs);
 }));
 
-router.delete('/api/namespace/:namespace/jobs/:job', asyncHandler(async (req, res) => {
+router.delete('/api/namespace/:namespace/jobs/:job', handleAsync(async (req, res) => {
   const job = await getClient(req).apis.batch.v1.namespaces(req.params.namespace).jobs(req.params.job).delete();
   res.json(job);
 }));
 
-router.get('/api/namespace/:namespace/cronjobs', asyncHandler(async (req, res) => {
+router.get('/api/namespace/:namespace/cronjobs', handleAsync(async (req, res) => {
   const jobs = await getClient(req).apis.batch.v1beta1.namespaces(req.params.namespace).cronjobs().get();
   res.json(jobs);
 }));
 
-router.post('/api/namespace/:namespace/cronjobs/:cronjob', asyncHandler(async (req, res) => {
+router.post('/api/namespace/:namespace/cronjobs/:cronjob', handleAsync(async (req, res) => {
   try {
     const updated = await getClient(req).apis.batch.v1beta1.namespaces(req.params.namespace).cronjobs(req.params.cronjob).put({ body: req.body });
     res.json(updated);
@@ -129,17 +138,17 @@ router.post('/api/namespace/:namespace/cronjobs/:cronjob', asyncHandler(async (r
   }
 }));
 
-router.delete('/api/namespace/:namespace/cronjobs/:cronjob', asyncHandler(async (req, res) => {
+router.delete('/api/namespace/:namespace/cronjobs/:cronjob', handleAsync(async (req, res) => {
   const pods = await getClient(req).apis.batch.v1beta1.namespaces(req.params.namespace).pods(req.params.cronjob).delete();
   res.json(pods);
 }));
 
-router.get('/api/namespace/:namespace/ingresses', asyncHandler(async (req, res) => {
+router.get('/api/namespace/:namespace/ingresses', handleAsync(async (req, res) => {
   const ingresses = await getClient(req).apis.extensions.v1beta1.namespaces(req.params.namespace).ingresses().get();
   res.json(ingresses);
 }));
 
-router.post('/api/namespace/:namespace/ingresses/:ingresses', asyncHandler(async (req, res) => {
+router.post('/api/namespace/:namespace/ingresses/:ingresses', handleAsync(async (req, res) => {
   try {
     const updated = await getClient(req).apis.extensions.v1beta1.namespaces(req.params.namespace).ingresses(req.params.ingresses).put({ body: req.body });
     res.json(updated);
@@ -148,7 +157,7 @@ router.post('/api/namespace/:namespace/ingresses/:ingresses', asyncHandler(async
   }
 }));
 
-router.get('/api/contexts', asyncHandler(async (req, res) => {
+router.get('/api/contexts', handleAsync(async (req, res) => {
   const k8sConfig = config.loadKubeconfig();
   res.json({"currentContext": k8sConfig['current-context'], "contexts": k8sConfig.contexts.map(c => c.name)});
 }));

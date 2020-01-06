@@ -21,6 +21,8 @@ import ScheduleIcon from '@material-ui/icons/Schedule';
 import TimerIcon from '@material-ui/icons/Timer';
 import Build from '@material-ui/icons/Build';
 import GroupWork from '@material-ui/icons/GroupWork';
+import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Services from './services';
 import Deployments from './deployments';
 import Ingresses from './ingresses';
@@ -34,6 +36,7 @@ import history from './history';
 import thunk from 'redux-thunk';
 import { rootReducer } from './reducer';
 import { Route, Redirect, Link, Router } from 'react-router-dom';
+import axios from 'axios';
 
 const drawerWidth = 200;
 
@@ -80,8 +83,30 @@ const logger = createLogger();
 const store = createStore(rootReducer, undefined, applyMiddleware(thunk, logger));
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null
+        };
+        this.formatError = this.formatError.bind(this);
+        axios.interceptors.response.use((response) => {
+            return response;
+        }, (error) => {
+            this.setState({error});
+            return Promise.reject(error);
+        });
+    }
+
+    formatError(error) {
+        if (error) {
+            return error.response.data.message || error.response.data;
+        }
+        return "Unexpected error!";
+    }
+
     render() {
         const { classes } = this.props;
+        const { error } = this.state;
         const menus = [
             {text: "Deployments", path: "/deployments", icon: <Build />, component: Deployments},
             {text: "Pods", path: "/pods", icon: <GroupWork />, component: Pods},
@@ -100,7 +125,7 @@ class App extends Component {
                             <AppBar position="absolute" className={classes.appBar}>
                                 <Toolbar>
                                     <img src="images/kubecle-logo.png" className={classes.logo} />
-                                    <Typography variant="h6" color="primary" noWrap style={{ flex: 1 }}>
+                                    <Typography variant="h6" color="inherit" noWrap style={{ flex: 1 }}>
                                         Kubecle
                                     </Typography>
                                     <div>
@@ -132,6 +157,9 @@ class App extends Component {
                             </main>
                         </div>
                     </Router>
+                    <Snackbar anchorOrigin={{vertical: 'bottom', horizontal: 'left'}} open={error!=null} autoHideDuration={6000} onClose={() => {this.setState({error: null})}}> 
+                        <SnackbarContent style={{backgroundColor: theme.palette.error.dark}} message={this.formatError(error)} />
+                    </Snackbar>
                 </MuiThemeProvider>
             </Provider>
         );

@@ -15,9 +15,6 @@ import axios from 'axios';
 class Editor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            error: null
-        };
         this.editedContent = null;
         this.onChange = this.onChange.bind(this);
         this.save = this.save.bind(this);
@@ -25,7 +22,6 @@ class Editor extends React.Component {
 
     render() {
         const { context, content, editUrl, open, onClose } = this.props;
-        const { error } = this.state;
 
         return (
             <Dialog fullWidth={true} maxWidth="lg" open={open} onClose={onClose}>
@@ -50,13 +46,6 @@ class Editor extends React.Component {
                         </Button>
                     </DialogActions>
                 )}
-                <div>
-                    {error && (
-                        <Typography color="error" align="center">
-                            {error.toString()}
-                        </Typography>
-                    )}
-                </div>
             </Dialog>
         );
     }
@@ -66,21 +55,16 @@ class Editor extends React.Component {
     }
 
     save(editUrl, context, onClose) {
-        try {
+        if (this.editedContent) {
             let json = JSON.parse(this.editedContent);
             delete json.status;
-            axios
-                .post(editUrl, json, {
-                    headers: {
-                        'k8s-context': context
-                    }
-                })
-                .then(onClose)
-                .catch(error => {
-                    this.setState({ error });
-                });
-        } catch (error) {
-            this.setState({ error });
+            axios.post(editUrl, json, {
+                headers: {
+                    'k8s-context': context
+                }
+            }).then(onClose).catch(e => {
+                this.editedContent = null;
+            });
         }
     }
 }
