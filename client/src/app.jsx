@@ -13,6 +13,7 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
 import TrendingUp from '@material-ui/icons/TrendingUp';
@@ -33,6 +34,7 @@ import Cronjobs from './cronjobs';
 import HPAs from './hpas';
 import Context from './context';
 import history from './history';
+import CustomResourceDefinitions from './customresourcedefinitions';
 import thunk from 'redux-thunk';
 import { rootReducer } from './reducer';
 import { Route, Redirect, Link, Router } from 'react-router-dom';
@@ -116,6 +118,7 @@ class App extends Component {
             {text: "HPAs", path: "/hpas", icon: <TrendingUp />, component: HPAs},
             {text: "Ingresses", path: "/ingresses", icon: <Input />, component: Ingresses},
             {text: "Configmaps", path: "/configmaps", icon: <DescriptionIcon />, component: Configmaps},
+            {text: "Custom Resource Definitions", path: "/customresourcedefinitions", icon: <AllInclusiveIcon />, component: CustomResourceDefinitions},
         ];
         return (
             <Provider store={store}>
