@@ -140,7 +140,7 @@ class App extends Component {
                                 <div className={classes.toolbar} />
                                 <List className={classes.menu}>
                                     {menus.map((item, i) => (
-                                        <ListItem key={i} button component={Link} to={{ pathname: item.path, search: window.location.search }}>
+                                        <ListItem key={i} button component={Link} to={location => ({ pathname: item.path, search: location.search })}>
                                             <ListItemIcon>
                                                 {item.icon}
                                             </ListItemIcon>
