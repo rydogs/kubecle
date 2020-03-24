@@ -118,7 +118,7 @@ class App extends Component {
             {text: "HPAs", path: "/hpas", icon: <TrendingUp />, component: HPAs},
             {text: "Ingresses", path: "/ingresses", icon: <Input />, component: Ingresses},
             {text: "Configmaps", path: "/configmaps", icon: <DescriptionIcon />, component: Configmaps},
-            {text: "Custom Resource Definitions", path: "/customresourcedefinitions", icon: <AllInclusiveIcon />, component: CustomResourceDefinitions},
+            {text: "CRDs", path: "/crds", icon: <AllInclusiveIcon />, component: CustomResourceDefinitions},
         ];
         return (
             <Provider store={store}>

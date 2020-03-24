@@ -1,15 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import Moment from 'react-moment';
+import axios from 'axios';
+import MaterialTable from 'material-table';
 import Fab from '@material-ui/core/Fab';
 import InfoIcon from '@material-ui/icons/Info';
 import Tooltip from '@material-ui/core/Tooltip';
-import MaterialTable from 'material-table';
-import { connect } from 'react-redux';
-import axios from 'axios';
+import { withStyles } from '@material-ui/core/styles';
 
-import CustomResourceDetailPanel from './customresourcedetailpanel';
 import Editor from './editor';
 
 const styles = theme => ({
@@ -26,26 +24,21 @@ const styles = theme => ({
     }
 });
 
-const mapStateToProps = ({ currentNs, currentContext }) => ({
-    currentNs,
-    currentContext
-});
-
-class CustomResourceDefinitions extends React.Component {
+class CustomResourceDetailPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            customResourceDefinitions: [],
+            customResources: [],
             viewer: {
                 open: false,
                 content: {},
             }
         };
-        this.fetchCRDs = this.fetchCRDs.bind(this);
+        this.fetchResources = this.fetchResources.bind(this);
     }
 
     componentDidMount() {
-        this.fetchCRDs();
+        this.fetchResources(this.props.crd);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -54,22 +47,8 @@ class CustomResourceDefinitions extends React.Component {
         const { viewer: prevViewer }  = prevState;
         const { viewer: currentViewer }  = this.state;
         if (currentNs !== prevNs || currentContext !== prevContext || currentViewer.open !== prevViewer.open) {
-            this.fetchCRDs();
+            this.fetchResources();
         }
-    }
-
-    fetchCRDs() {
-        const { currentContext, currentNs } = this.props;
-
-        axios
-            .get(`/api/namespace/${currentNs}/customResources`, {
-                headers: {
-                    'k8s-context': currentContext
-                }
-            })
-            .then(res => {
-                this.setState({ customResourceDefinitions: res.data.body.items });
-            });
     }
 
     viewDefinition(customResourceDefinition) {
@@ -81,10 +60,29 @@ class CustomResourceDefinitions extends React.Component {
         });
     }
 
+    fetchResources(crd) {
+        if (!crd) {
+            return;
+        }
+        const { currentContext, currentNs } = this.props;
+        axios
+            .get(`/api/namespace/${currentNs}/customResources/${crd.spec.group}/${crd.spec.version}/${crd.spec.names.plural}`, {
+                headers: {
+                    'k8s-context': currentContext
+                }
+            })
+            .then(res => {
+                this.setState({
+                    name: res.data.body.kind,
+                    customResources: res.data.body.items,
+                });
+            });
+    }
+
     actions(customResourceDefinition) {
         return (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <Tooltip title="View Definition" placement="top">
+                <Tooltip title="View Details" placement="top">
                     <Fab
                         size="small"
                         color="primary"
@@ -97,10 +95,10 @@ class CustomResourceDefinitions extends React.Component {
     }
 
     render() {
-        const { currentContext, currentNs } = this.props;
-        const { customResourceDefinitions, viewer } = this.state;
+        const { currentContext } = this.props;
+        const { customResources, viewer } = this.state;
         const columns = [
-            { title: 'Name', field: 'spec.names.kind' },
+            { title: 'Name', field: 'metadata.name' },
             { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
             { title: 'Actions', render: rowData => this.actions(rowData)},
         ].map(c => {
@@ -108,23 +106,15 @@ class CustomResourceDefinitions extends React.Component {
             c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
             return c;
         });
+        const title = this.props.crd.spec.names.plural;
 
         return (
             <div style={{ maxWidth: '100%' }}>
                 <MaterialTable
                     columns={columns}
-                    data={customResourceDefinitions}
-                    title='Custom Resources'
+                    data={customResources}
+                    title={title}
                     options={{paging: false, sorting: false}}
-                    detailPanel={crd => {
-                        return (
-                            <CustomResourceDetailPanel
-                                crd={crd}
-                                currentContext={currentContext}
-                                currentNs={currentNs}
-                            />
-                        );
-                    }}
                 />
                 <Editor
                     context={currentContext}
@@ -143,9 +133,10 @@ class CustomResourceDefinitions extends React.Component {
     }
 }
 
-CustomResourceDefinitions.propTypes = {
+CustomResourceDetailPanel.propTypes = {
+    crd: PropTypes.object,
     currentContext: PropTypes.string,
     currentNs: PropTypes.string.isRequired
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(CustomResourceDefinitions));
+export default withStyles(styles)(CustomResourceDetailPanel);
