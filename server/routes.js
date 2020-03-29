@@ -44,6 +44,33 @@ router.get('/api/namespace/:namespace/pods', handleAsync(async (req, res) => {
   res.json(pods);
 }));
 
+router.get('/api/namespace/:namespace/customResources', handleAsync(async (req, res) => {
+  const client = getClient(req);
+
+  const customResourceDefinitions = await client.apis['apiextensions.k8s.io'].v1beta1.customresourcedefinitions.get();
+
+  customResourceDefinitions.body.items.forEach(crd => {
+    const { metadata, spec } = crd;
+    if (client.__kubecle_custom_resource_definitions[metadata.selfLink]) {
+      return;
+    }
+    client.addCustomResourceDefinition({
+      apiVersion: 'apiextensions.k8s.io/v1beta1',
+      kind: 'CustomResourceDefinition',
+      metadata,
+      spec,
+    });
+    client.__kubecle_custom_resource_definitions[metadata.selfLink] = true;
+  });
+  res.json(customResourceDefinitions);
+}));
+
+// todo: lock this down. this is probably a security hazard
+router.get('/api/namespace/:namespace/customResources/:api/:version/:customResource', handleAsync(async (req, res) => {
+  const customResources = await getClient(req).apis[req.params.api][req.params.version].namespaces(req.params.namespace)[req.params.customResource].get();
+  res.json(customResources);
+}));
+
 router.get('/api/namespace/:namespace/hpas', handleAsync(async (req, res) => {
   const pods = await getClient(req).apis.autoscaling.v1.namespaces(req.params.namespace).hpa().get();
   res.json(pods);
@@ -174,10 +201,12 @@ function getClient(req) {
   } else {
     if (contextHeader) {
       let client = createClient(contextHeader);
+      client.__kubecle_custom_resource_definitions = {};
       contextMap[contextKey] = client;
       return client;
     } else {
       let client = createClient(null);
+      client.__kubecle_custom_resource_definitions = {};
       contextMap['k8s-default'] = client;
       return client;
     }

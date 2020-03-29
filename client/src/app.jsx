@@ -13,6 +13,7 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
 import TrendingUp from '@material-ui/icons/TrendingUp';
@@ -33,6 +34,7 @@ import Cronjobs from './cronjobs';
 import HPAs from './hpas';
 import Context from './context';
 import history from './history';
+import CustomResourceDefinitions from './customresourcedefinitions';
 import thunk from 'redux-thunk';
 import { rootReducer } from './reducer';
 import { Route, Redirect, Link, Router } from 'react-router-dom';
@@ -116,6 +118,7 @@ class App extends Component {
             {text: "HPAs", path: "/hpas", icon: <TrendingUp />, component: HPAs},
             {text: "Ingresses", path: "/ingresses", icon: <Input />, component: Ingresses},
             {text: "Configmaps", path: "/configmaps", icon: <DescriptionIcon />, component: Configmaps},
+            {text: "CRDs", path: "/crds", icon: <AllInclusiveIcon />, component: CustomResourceDefinitions},
         ];
         return (
             <Provider store={store}>
@@ -137,7 +140,7 @@ class App extends Component {
                                 <div className={classes.toolbar} />
                                 <List className={classes.menu}>
                                     {menus.map((item, i) => (
-                                        <ListItem key={i} button component={Link} to={{ pathname: item.path, search: window.location.search }}>
+                                        <ListItem key={i} button component={Link} to={location => ({ pathname: item.path, search: location.search })}>
                                             <ListItemIcon>
                                                 {item.icon}
                                             </ListItemIcon>
