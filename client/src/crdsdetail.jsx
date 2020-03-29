@@ -24,7 +24,7 @@ const styles = theme => ({
     }
 });
 
-class CustomResourceDetailPanel extends React.Component {
+class CRDsDetail extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -102,19 +102,16 @@ class CustomResourceDetailPanel extends React.Component {
             { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
             { title: 'Actions', render: rowData => this.actions(rowData)},
         ].map(c => {
-            c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
-            c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
+            c.cellStyle = Object.assign({padding: '4px 16px'}, c.cellStyle);
             return c;
         });
-        const title = this.props.crd.spec.names.plural;
-
         return (
             <div style={{ maxWidth: '100%' }}>
                 <MaterialTable
+                    style= {{ boxShadow: 'none', paddingLeft: '50px' }}
                     columns={columns}
                     data={customResources}
-                    title={title}
-                    options={{paging: false, sorting: false}}
+                    options={{paging: false, sorting: false, toolbar: false, header: false}}
                 />
                 <Editor
                     context={currentContext}
@@ -133,10 +130,10 @@ class CustomResourceDetailPanel extends React.Component {
     }
 }
 
-CustomResourceDetailPanel.propTypes = {
+CRDsDetail.propTypes = {
     crd: PropTypes.object,
     currentContext: PropTypes.string,
     currentNs: PropTypes.string.isRequired
 };
 
-export default withStyles(styles)(CustomResourceDetailPanel);
+export default withStyles(styles)(CRDsDetail);

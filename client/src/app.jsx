@@ -34,7 +34,7 @@ import Cronjobs from './cronjobs';
 import HPAs from './hpas';
 import Context from './context';
 import history from './history';
-import CustomResourceDefinitions from './customresourcedefinitions';
+import CRDs from './crds';
 import thunk from 'redux-thunk';
 import { rootReducer } from './reducer';
 import { Route, Redirect, Link, Router } from 'react-router-dom';
@@ -118,7 +118,7 @@ class App extends Component {
             {text: "HPAs", path: "/hpas", icon: <TrendingUp />, component: HPAs},
             {text: "Ingresses", path: "/ingresses", icon: <Input />, component: Ingresses},
             {text: "Configmaps", path: "/configmaps", icon: <DescriptionIcon />, component: Configmaps},
-            {text: "CRDs", path: "/crds", icon: <AllInclusiveIcon />, component: CustomResourceDefinitions},
+            {text: "CRDs", path: "/crds", icon: <AllInclusiveIcon />, component: CRDs},
         ];
         return (
             <Provider store={store}>

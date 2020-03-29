@@ -9,7 +9,7 @@ import MaterialTable from 'material-table';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-import CustomResourceDetailPanel from './customresourcedetailpanel';
+import CRDsDetail from './crdsdetail';
 import Editor from './editor';
 
 const styles = theme => ({
@@ -31,7 +31,7 @@ const mapStateToProps = ({ currentNs, currentContext }) => ({
     currentContext
 });
 
-class CustomResourceDefinitions extends React.Component {
+class CRDs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -118,7 +118,7 @@ class CustomResourceDefinitions extends React.Component {
                     options={{paging: false, sorting: false}}
                     detailPanel={crd => {
                         return (
-                            <CustomResourceDetailPanel
+                            <CRDsDetail
                                 crd={crd}
                                 currentContext={currentContext}
                                 currentNs={currentNs}
@@ -143,9 +143,9 @@ class CustomResourceDefinitions extends React.Component {
     }
 }
 
-CustomResourceDefinitions.propTypes = {
+CRDs.propTypes = {
     currentContext: PropTypes.string,
     currentNs: PropTypes.string.isRequired
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(CustomResourceDefinitions));
+export default connect(mapStateToProps)(withStyles(styles)(CRDs));

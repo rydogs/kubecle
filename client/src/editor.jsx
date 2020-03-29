@@ -31,6 +31,7 @@ class Editor extends React.Component {
                     mode="json"
                     theme="monokai"
                     name="editor"
+                    wrapEnabled={true}
                     onChange={this.onChange}
                     editorProps={{ $blockScrolling: true }}
                     value={beautify(content, null, 2, 80)}
