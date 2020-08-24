@@ -8,6 +8,7 @@ import AceEditor from 'react-ace';
 import beautify from 'json-beautify';
 import 'brace/mode/json';
 import 'brace/theme/monokai';
+import 'brace/ext/searchbox';
 
 import axios from 'axios';
 
@@ -23,9 +24,10 @@ class Editor extends React.Component {
         const { context, content, editUrl, open, onClose } = this.props;
 
         return (
-            <Dialog fullWidth={true} maxWidth="lg" open={open} onClose={onClose}>
+            <Dialog fullWidth={true} maxWidth="lg" open={open} onClose={onClose} disableAutoFocus={true}>
                 <DialogTitle id="simple-dialog-title">Describe</DialogTitle>
                 <AceEditor
+                    focus={true}
                     height="600px"
                     width="100%"
                     mode="json"

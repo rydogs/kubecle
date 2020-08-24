@@ -3,7 +3,7 @@ const express = require('express')
 const path = require('path');
 const asyncHandler = require('express-async-handler')
 const Client = require('kubernetes-client').Client;
-const config = require('kubernetes-client').config;
+const config = require('kubernetes-client/backends/request').config;
 const contextMap = {};
 
 const router = express.Router();
@@ -25,7 +25,7 @@ router.get('/api/namespace/:namespace/deployments', handleAsync(async (req, res)
 router.get('/api/namespace/:namespace/deployments/:deployment/history', handleAsync(async (req, res) => {
   const deployment = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).deployments(req.params.deployment).get();
   const replicaSets = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).replicasets.get(
-    {qs: {labelSelector:labelsToQuery(deployment.body.metadata.labels)}}
+    {qs: {labelSelector:labelsToQuery(deployment.body.spec.selector.matchLabels)}}
   );
   res.json(replicaSets);
 }));

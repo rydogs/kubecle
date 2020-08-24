@@ -6,8 +6,8 @@
   "main": "electron.js",
   "engineStrict": true,
   "engines": {
-    "node": ">=8.11.0",
-    "npm": ">=6.4.0"
+    "node": ">=10.22.0",
+    "npm": ">=6.14.6"
   },
   "scripts": {
     "start": "NODE_ENV=production node server/index",
@@ -67,7 +67,7 @@
     "fix-path": "^2.1.0",
     "html-to-text": "^5.1.1",
     "json-beautify": "^1.0.1",
-    "kubernetes-client": "^6.8.3",
+    "kubernetes-client": "^8.3.7",
     "request": "^2.88.0",
     "url-parse": "^1.4.3"
   },
