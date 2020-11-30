@@ -144,7 +144,7 @@ class HPAs extends React.Component {
                     columns={columns}
                     data={hpas}
                     title='Horizontal Pod Autoscaler'
-                    options={{paging: false, sorting: false}}
+                    options={{paging: false, sorting: true}}
                 />
                 <Editor
                     context={currentContext}

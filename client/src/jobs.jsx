@@ -180,7 +180,7 @@ class Jobs extends React.Component {
                     columns={columns}
                     data={jobs}
                     title='Jobs'
-                    options={{paging: false, sorting: false}}
+                    options={{paging: false, sorting: true}}
                 />
                 <Editor
                     context={currentContext}

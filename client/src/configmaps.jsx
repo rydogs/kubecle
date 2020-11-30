@@ -126,7 +126,7 @@ class ConfigMaps extends React.Component {
                     columns={columns}
                     data={configmaps}
                     title='Config Maps'
-                    options={{paging: false, sorting: false}}
+                    options={{paging: false, sorting: true}}
                 />
                 <Editor
                     context={currentContext}
