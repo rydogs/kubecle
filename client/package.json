@@ -28,7 +28,7 @@
     "@material-ui/core": "^4.0.0",
     "@material-ui/icons": "^4.0.0",
     "@material-ui/styles": "^4.0.0",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "copy-to-clipboard": "^3.0.8",
     "json-beautify": "^1.0.1",
     "lodash": "^4.17.13",
