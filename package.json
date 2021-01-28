@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "electron-builder": "^22.8.0",
-    "electron": "7.2.4",
+    "electron": "9.4.0",
     "nodemon": "^1.17.5",
     "pre-commit": "^1.2.2"
   }
