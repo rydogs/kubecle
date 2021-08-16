@@ -184,6 +184,20 @@ router.post('/api/namespace/:namespace/ingresses/:ingresses', handleAsync(async 
   }
 }));
 
+router.get('/api/namespace/:namespace/statefulsets', handleAsync(async (req, res) => {
+  const statefulsets = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).statefulsets().get();
+  res.json(statefulsets);
+}));
+
+router.post('/api/namespace/:namespace/statefulsets/:statefulset', handleAsync(async (req, res) => {
+  try {
+    const updated = await getClient(req).apis.apps.v1.namespaces(req.params.namespace).statefulsets(req.params.statefulset).put({ body: req.body });
+    res.json(updated);
+  } catch (err) {
+    if (err.statusCode !== 409) throw err;
+  }
+}));
+
 router.get('/api/contexts', handleAsync(async (req, res) => {
   const k8sConfig = config.loadKubeconfig();
   res.json({"currentContext": k8sConfig['current-context'], "contexts": k8sConfig.contexts.map(c => c.name)});
