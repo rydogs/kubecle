@@ -21,11 +21,13 @@ import Input from '@material-ui/icons/Input';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import TimerIcon from '@material-ui/icons/Timer';
 import Build from '@material-ui/icons/Build';
+import AllInbox from '@material-ui/icons/AllInbox';
 import GroupWork from '@material-ui/icons/GroupWork';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Services from './services';
 import Deployments from './deployments';
+import StatefulSets from './statefulsets';
 import Ingresses from './ingresses';
 import Pods from './pods';
 import Configmaps from './configmaps';
@@ -111,6 +113,7 @@ class App extends Component {
         const { error } = this.state;
         const menus = [
             {text: "Deployments", path: "/deployments", icon: <Build />, component: Deployments},
+            {text: "Stateful Sets", path: "/statefulsets", icon: <AllInbox />, component: StatefulSets},
             {text: "Pods", path: "/pods", icon: <GroupWork />, component: Pods},
             {text: "Jobs", path: "/jobs", icon: <ScheduleIcon />, component: Jobs},
             {text: "Cron Jobs", path: "/cronjobs", icon: <TimerIcon />, component: Cronjobs},
