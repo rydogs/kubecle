@@ -1,6 +1,6 @@
 {
   "name": "kubecle",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Useful ui for kubernetes",
   "repository": "https://github.com/rydogs/kubecle",
   "main": "electron.js",
