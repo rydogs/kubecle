@@ -4,20 +4,17 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import AceEditor from 'react-ace';
 import beautify from 'json-beautify';
 import 'brace/mode/json';
 import 'brace/theme/monokai';
+import 'brace/ext/searchbox';
 
 import axios from 'axios';
 
 class Editor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            error: null
-        };
         this.editedContent = null;
         this.onChange = this.onChange.bind(this);
         this.save = this.save.bind(this);
@@ -25,17 +22,18 @@ class Editor extends React.Component {
 
     render() {
         const { context, content, editUrl, open, onClose } = this.props;
-        const { error } = this.state;
 
         return (
-            <Dialog fullWidth={true} maxWidth="lg" open={open} onClose={onClose}>
+            <Dialog fullWidth={true} maxWidth="lg" open={open} onClose={onClose} disableAutoFocus={true}>
                 <DialogTitle id="simple-dialog-title">Describe</DialogTitle>
                 <AceEditor
+                    focus={true}
                     height="600px"
                     width="100%"
                     mode="json"
                     theme="monokai"
                     name="editor"
+                    wrapEnabled={true}
                     onChange={this.onChange}
                     editorProps={{ $blockScrolling: true }}
                     value={beautify(content, null, 2, 80)}
@@ -50,13 +48,6 @@ class Editor extends React.Component {
                         </Button>
                     </DialogActions>
                 )}
-                <div>
-                    {error && (
-                        <Typography color="error" align="center">
-                            {error.toString()}
-                        </Typography>
-                    )}
-                </div>
             </Dialog>
         );
     }
@@ -66,21 +57,16 @@ class Editor extends React.Component {
     }
 
     save(editUrl, context, onClose) {
-        try {
+        if (this.editedContent) {
             let json = JSON.parse(this.editedContent);
             delete json.status;
-            axios
-                .post(editUrl, json, {
-                    headers: {
-                        'k8s-context': context
-                    }
-                })
-                .then(onClose)
-                .catch(error => {
-                    this.setState({ error });
-                });
-        } catch (error) {
-            this.setState({ error });
+            axios.post(editUrl, json, {
+                headers: {
+                    'k8s-context': context
+                }
+            }).then(onClose).catch(e => {
+                this.editedContent = null;
+            });
         }
     }
 }

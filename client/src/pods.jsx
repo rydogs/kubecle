@@ -257,7 +257,7 @@ class Pods extends React.Component {
                         columns={columns}
                         data={pods}
                         title='Pods'
-                        options={{paging: false, sorting: false}}
+                        options={{paging: false, sorting: true}}
                     />
                     <LogViewer
                         context={currentContext}

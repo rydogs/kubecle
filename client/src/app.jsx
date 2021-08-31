@@ -13,6 +13,7 @@ import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SettingsEthernet from '@material-ui/icons/SettingsEthernet';
 import TrendingUp from '@material-ui/icons/TrendingUp';
@@ -20,9 +21,13 @@ import Input from '@material-ui/icons/Input';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import TimerIcon from '@material-ui/icons/Timer';
 import Build from '@material-ui/icons/Build';
+import AllInbox from '@material-ui/icons/AllInbox';
 import GroupWork from '@material-ui/icons/GroupWork';
+import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
 import Services from './services';
 import Deployments from './deployments';
+import StatefulSets from './statefulsets';
 import Ingresses from './ingresses';
 import Pods from './pods';
 import Configmaps from './configmaps';
@@ -31,9 +36,11 @@ import Cronjobs from './cronjobs';
 import HPAs from './hpas';
 import Context from './context';
 import history from './history';
+import CRDs from './crds';
 import thunk from 'redux-thunk';
 import { rootReducer } from './reducer';
 import { Route, Redirect, Link, Router } from 'react-router-dom';
+import axios from 'axios';
 
 const drawerWidth = 200;
 
@@ -80,10 +87,33 @@ const logger = createLogger();
 const store = createStore(rootReducer, undefined, applyMiddleware(thunk, logger));
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null
+        };
+        this.formatError = this.formatError.bind(this);
+        axios.interceptors.response.use((response) => {
+            return response;
+        }, (error) => {
+            this.setState({error});
+            return Promise.reject(error);
+        });
+    }
+
+    formatError(error) {
+        if (error) {
+            return error.response.data.message || error.response.data;
+        }
+        return "Unexpected error!";
+    }
+
     render() {
         const { classes } = this.props;
+        const { error } = this.state;
         const menus = [
             {text: "Deployments", path: "/deployments", icon: <Build />, component: Deployments},
+            {text: "Stateful Sets", path: "/statefulsets", icon: <AllInbox />, component: StatefulSets},
             {text: "Pods", path: "/pods", icon: <GroupWork />, component: Pods},
             {text: "Jobs", path: "/jobs", icon: <ScheduleIcon />, component: Jobs},
             {text: "Cron Jobs", path: "/cronjobs", icon: <TimerIcon />, component: Cronjobs},
@@ -91,6 +121,7 @@ class App extends Component {
             {text: "HPAs", path: "/hpas", icon: <TrendingUp />, component: HPAs},
             {text: "Ingresses", path: "/ingresses", icon: <Input />, component: Ingresses},
             {text: "Configmaps", path: "/configmaps", icon: <DescriptionIcon />, component: Configmaps},
+            {text: "CRDs", path: "/crds", icon: <AllInclusiveIcon />, component: CRDs},
         ];
         return (
             <Provider store={store}>
@@ -112,7 +143,7 @@ class App extends Component {
                                 <div className={classes.toolbar} />
                                 <List className={classes.menu}>
                                     {menus.map((item, i) => (
-                                        <ListItem key={i} button component={Link} to={{ pathname: item.path, search: window.location.search }}>
+                                        <ListItem key={i} button component={Link} to={location => ({ pathname: item.path, search: location.search })}>
                                             <ListItemIcon>
                                                 {item.icon}
                                             </ListItemIcon>
@@ -132,6 +163,9 @@ class App extends Component {
                             </main>
                         </div>
                     </Router>
+                    <Snackbar anchorOrigin={{vertical: 'bottom', horizontal: 'left'}} open={error!=null} autoHideDuration={6000} onClose={() => {this.setState({error: null})}}> 
+                        <SnackbarContent style={{backgroundColor: theme.palette.error.dark}} message={this.formatError(error)} />
+                    </Snackbar>
                 </MuiThemeProvider>
             </Provider>
         );

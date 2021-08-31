@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, '/../client/dist')));
 app.use(bodyParser.json());
-app.use('/', routes)
+app.use('/', routes);
 
 var server = app.listen(process.env.PORT || 23333, '127.0.0.1', async () => {
   var host = server.address().address;

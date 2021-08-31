@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import MaterialTable from 'material-table';
+import Tooltip from '@material-ui/core/Tooltip';
 import Moment from 'react-moment';
 import Fab from '@material-ui/core/Fab';
 import BuildIcon from '@material-ui/icons/Build';
-import Tooltip from '@material-ui/core/Tooltip';
-import Editor from './editor';
-import MaterialTable from 'material-table';
-import SimpleList from './simpleList';
-
 import { connect } from 'react-redux';
-
+import Editor from './editor';
+import fmt from './fmt';
+import SimpleList from './simpleList';
 import axios from 'axios';
 
 const styles = theme => ({
@@ -32,21 +31,27 @@ const mapStateToProps = ({ currentNs, currentContext }) => ({
     currentContext
 });
 
-class ConfigMaps extends React.Component {
+class StatefulSets extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            configmaps: [],
+            StatefulSets: [],
             editor: {
                 open: false,
+                editUrl: '',
                 content: {}
+            },
+            historyViewer: {
+                open: false,
+                historyUrl: '',
+                deployment: {}
             }
         };
-        this.fetchConfigMaps = this.fetchConfigMaps.bind(this);
+        this.fetchStatefulSets = this.fetchStatefulSets.bind(this);
     }
 
     componentDidMount() {
-        this.fetchConfigMaps();
+        this.fetchStatefulSets();
     }
 
     componentDidUpdate(prevProps, prevStats) {
@@ -55,50 +60,55 @@ class ConfigMaps extends React.Component {
         const { editor: prevEditor }  = prevStats;
         const { editor: currentEditor }  = this.state;
         if (currentNs !== prevNs || currentContext !== prevContext || currentEditor.open !== prevEditor.open) {
-            this.fetchConfigMaps();
+            this.fetchStatefulSets();
         }
     }
 
-    fetchConfigMaps() {
+    fetchStatefulSets() {
         const { currentContext, currentNs } = this.props;
 
         axios
-            .get(`/api/namespace/${currentNs}/configmaps`, {
+            .get(`/api/namespace/${currentNs}/statefulsets`, {
                 headers: {
                     'k8s-context': currentContext
                 }
             })
             .then(res => {
-                this.setState({ configmaps: this.transform(res.data.body.items) });
+                if (res && res.data && res.data.body) {
+                    this.setState({ statefulsets: this.transform(res.data.body.items) });
+                }
             });
     }
 
     transform(data) {
         return data.map(d => {
             d.name = d.metadata.name;
+            d.imageNames = fmt.containerImageNames(d.spec.template.spec.containers);
+            d.cpu = fmt.cpu(d.spec.template.spec.containers);
+            d.memory = fmt.memory(d.spec.template.spec.containers);
             return d;
         });
     }
 
-    edit(configMap) {
+    edit(statefulset) {
         const { currentNs } = this.props;
         this.setState({
             editor: {
                 open: true,
-                content: configMap,
-                editUrl: `/api/namespace/${currentNs}/configmaps/${configMap.metadata.name}`
+                content: statefulset,
+                editUrl: `/api/namespace/${currentNs}/statefulsets/${statefulset.metadata.name}`
             }
         });
     }
 
-    actions(configMap) {
+    actions(deployment) {
         return (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <Tooltip title="Edit" placement="top">
                     <Fab
                         size="small"
                         color="primary"
-                        onClick={() => this.edit(configMap)}>
+                        onClick={() => this.edit(deployment)}>
                         <BuildIcon />
                     </Fab>
                 </Tooltip>
@@ -107,13 +117,17 @@ class ConfigMaps extends React.Component {
     }
 
     render() {
-        const { classes, currentContext } = this.props;
-        const { configmaps, editor } = this.state;
+        const { classes, currentContext, currentNs } = this.props;
+        const { statefulsets, editor } = this.state;
         const columns = [
-            { title: 'Name', field: 'name' },
-            { title: 'Values', field: 'data', render: rowData => (<SimpleList data={rowData.data} />) },
-            { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
-            { title: 'Actions', render: rowData => this.actions(rowData)},
+            { title: 'Name', field: 'name'},
+            { title: 'Replicas', render: rowData => rowData.spec.replicas },
+            { title: 'Image Names', field: 'imageNames', render: rowData => (<SimpleList data={rowData.imageNames} />) },
+            { title: 'CPU', field: 'cpu', render: rowData => (<SimpleList data={rowData.cpu} />) },
+            { title: 'Memory', field: 'memory', render: rowData => (<SimpleList data={rowData.memory} />) },
+            { title: 'Ports', render: rowData => (<SimpleList data={fmt.containerPorts(rowData.spec.template.spec.containers)} />) },
+            // { title: 'Last Updated', render: rowData => (<Moment fromNow>{rowData.status.conditions[0].lastUpdateTime}</Moment>) },
+            { title: 'Action', render: rowData => this.actions(rowData) }
         ].map(c => {
             c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
             c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
@@ -124,8 +138,8 @@ class ConfigMaps extends React.Component {
             <div style={{ maxWidth: '100%' }}>
                 <MaterialTable
                     columns={columns}
-                    data={configmaps}
-                    title='Config Maps'
+                    data={statefulsets}
+                    title='Stateful Sets'
                     options={{paging: false, sorting: true}}
                 />
                 <Editor
@@ -133,23 +147,17 @@ class ConfigMaps extends React.Component {
                     content={editor.content}
                     editUrl={editor.editUrl}
                     open={editor.open}
-                    onClose={() =>
-                        this.setState({
-                            editor: {
-                                open: false
-                            }
-                        })
-                    }
+                    onClose={() => this.setState({ editor: { open: false } })}
                 />
             </div>
         );
     }
 }
 
-ConfigMaps.propTypes = {
+StatefulSets.propTypes = {
     classes: PropTypes.object.isRequired,
     currentContext: PropTypes.string,
     currentNs: PropTypes.string.isRequired
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(ConfigMaps));
+export default connect(mapStateToProps)(withStyles(styles)(StatefulSets));

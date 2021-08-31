@@ -3,15 +3,14 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Moment from 'react-moment';
 import Fab from '@material-ui/core/Fab';
-import BuildIcon from '@material-ui/icons/Build';
+import InfoIcon from '@material-ui/icons/Info';
 import Tooltip from '@material-ui/core/Tooltip';
-import Editor from './editor';
 import MaterialTable from 'material-table';
-import SimpleList from './simpleList';
-
 import { connect } from 'react-redux';
-
 import axios from 'axios';
+
+import CRDsDetail from './crdsdetail';
+import Editor from './editor';
 
 const styles = theme => ({
     root: {
@@ -32,74 +31,65 @@ const mapStateToProps = ({ currentNs, currentContext }) => ({
     currentContext
 });
 
-class ConfigMaps extends React.Component {
+class CRDs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            configmaps: [],
-            editor: {
+            customResourceDefinitions: [],
+            viewer: {
                 open: false,
-                content: {}
+                content: {},
             }
         };
-        this.fetchConfigMaps = this.fetchConfigMaps.bind(this);
+        this.fetchCRDs = this.fetchCRDs.bind(this);
     }
 
     componentDidMount() {
-        this.fetchConfigMaps();
+        this.fetchCRDs();
     }
 
-    componentDidUpdate(prevProps, prevStats) {
+    componentDidUpdate(prevProps, prevState) {
         const { currentNs, currentContext } = this.props;
         const { currentNs: prevNs, currentContext: prevContext } = prevProps;
-        const { editor: prevEditor }  = prevStats;
-        const { editor: currentEditor }  = this.state;
-        if (currentNs !== prevNs || currentContext !== prevContext || currentEditor.open !== prevEditor.open) {
-            this.fetchConfigMaps();
+        const { viewer: prevViewer }  = prevState;
+        const { viewer: currentViewer }  = this.state;
+        if (currentNs !== prevNs || currentContext !== prevContext || currentViewer.open !== prevViewer.open) {
+            this.fetchCRDs();
         }
     }
 
-    fetchConfigMaps() {
+    fetchCRDs() {
         const { currentContext, currentNs } = this.props;
 
         axios
-            .get(`/api/namespace/${currentNs}/configmaps`, {
+            .get(`/api/namespace/${currentNs}/customResources`, {
                 headers: {
                     'k8s-context': currentContext
                 }
             })
             .then(res => {
-                this.setState({ configmaps: this.transform(res.data.body.items) });
+                this.setState({ customResourceDefinitions: res.data.body.items });
             });
     }
 
-    transform(data) {
-        return data.map(d => {
-            d.name = d.metadata.name;
-            return d;
-        });
-    }
-
-    edit(configMap) {
-        const { currentNs } = this.props;
+    viewDefinition(customResourceDefinition) {
         this.setState({
-            editor: {
+            viewer: {
+                content: customResourceDefinition,
                 open: true,
-                content: configMap,
-                editUrl: `/api/namespace/${currentNs}/configmaps/${configMap.metadata.name}`
             }
         });
     }
 
-    actions(configMap) {
+    actions(customResourceDefinition) {
         return (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <Tooltip title="Edit" placement="top">
+                <Tooltip title="View Definition" placement="top">
                     <Fab
                         size="small"
                         color="primary"
-                        onClick={() => this.edit(configMap)}>
-                        <BuildIcon />
+                        onClick={() => this.viewDefinition(customResourceDefinition)}>
+                        <InfoIcon />
                     </Fab>
                 </Tooltip>
             </div>
@@ -107,11 +97,10 @@ class ConfigMaps extends React.Component {
     }
 
     render() {
-        const { classes, currentContext } = this.props;
-        const { configmaps, editor } = this.state;
+        const { currentContext, currentNs } = this.props;
+        const { customResourceDefinitions, viewer } = this.state;
         const columns = [
-            { title: 'Name', field: 'name' },
-            { title: 'Values', field: 'data', render: rowData => (<SimpleList data={rowData.data} />) },
+            { title: 'Name', field: 'spec.names.kind' },
             { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
             { title: 'Actions', render: rowData => this.actions(rowData)},
         ].map(c => {
@@ -124,18 +113,26 @@ class ConfigMaps extends React.Component {
             <div style={{ maxWidth: '100%' }}>
                 <MaterialTable
                     columns={columns}
-                    data={configmaps}
-                    title='Config Maps'
-                    options={{paging: false, sorting: true}}
+                    data={customResourceDefinitions}
+                    title='Custom Resources'
+                    options={{paging: false, sorting: false}}
+                    detailPanel={crd => {
+                        return (
+                            <CRDsDetail
+                                crd={crd}
+                                currentContext={currentContext}
+                                currentNs={currentNs}
+                            />
+                        );
+                    }}
                 />
                 <Editor
                     context={currentContext}
-                    content={editor.content}
-                    editUrl={editor.editUrl}
-                    open={editor.open}
+                    content={viewer.content}
+                    open={viewer.open}
                     onClose={() =>
                         this.setState({
-                            editor: {
+                            viewer: {
                                 open: false
                             }
                         })
@@ -146,10 +143,9 @@ class ConfigMaps extends React.Component {
     }
 }
 
-ConfigMaps.propTypes = {
-    classes: PropTypes.object.isRequired,
+CRDs.propTypes = {
     currentContext: PropTypes.string,
     currentNs: PropTypes.string.isRequired
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(ConfigMaps));
+export default connect(mapStateToProps)(withStyles(styles)(CRDs));

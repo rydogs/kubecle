@@ -157,7 +157,7 @@ class Cronjobs extends React.Component {
                     columns={columns}
                     data={cronjobs}
                     title='Cron Jobs'
-                    options={{paging: false, sorting: false}}
+                    options={{paging: false, sorting: true}}
                 />
                 <Editor
                     context={currentContext}

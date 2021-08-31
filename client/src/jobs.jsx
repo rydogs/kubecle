@@ -113,7 +113,7 @@ class Jobs extends React.Component {
     getStatus(job) {
         if (!job.status.conditions) {
             return (
-                <Button mini fullWidth color="error">
+                <Button size="small" fullWidth color="error">
                     Unknown
                 </Button>
             );
@@ -122,14 +122,14 @@ class Jobs extends React.Component {
         if (job.status.conditions[0].message) {
             return (
                 <Tooltip title={job.status.conditions[0].message} placement="top">
-                    <Button mini fullWidth color={color}>
+                    <Button size="small" fullWidth color={color}>
                         {job.status.conditions[0].type}
                     </Button>
                 </Tooltip>
             );
         } else {
             return (
-                <Button mini fullWidth color={color}>
+                <Button size="small" fullWidth color={color}>
                     {job.status.conditions[0].type}
                 </Button>
             );
@@ -180,7 +180,7 @@ class Jobs extends React.Component {
                     columns={columns}
                     data={jobs}
                     title='Jobs'
-                    options={{paging: false, sorting: false}}
+                    options={{paging: false, sorting: true}}
                 />
                 <Editor
                     context={currentContext}

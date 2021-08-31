@@ -7,6 +7,7 @@ const port = process.env.PORT || 3001;
 
 module.exports = {
     context: __dirname,
+    devtool: 'source-map',
     entry: path.resolve(__dirname, 'src/index.jsx'),
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -52,5 +53,5 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'src/index.html') }),
         new CopyWebPackPlugin([{from:'src/images',to:'images'}])
-    ]
+    ],
 };
