@@ -6,8 +6,8 @@
   "main": "electron.js",
   "engineStrict": true,
   "engines": {
-    "node": ">=10.22.0",
-    "npm": ">=6.14.6"
+    "node": ">=14",
+    "npm": ">=8"
   },
   "scripts": {
     "start": "NODE_ENV=production node server/index",
@@ -34,7 +34,15 @@
       }
     ],
     "mac": {
-      "target": "dmg"
+      "target": [
+        {
+          "target": "default",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
     },
     "dmg": {
       "icon": "build/icon.png",
@@ -61,10 +69,10 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "electron-log": "^2.2.17",
-    "electron-updater": "^4.3.4",
+    "electron-updater": "^4.5.2",
     "express": "^4.16.3",
     "express-async-handler": "^1.1.4",
-    "fix-path": "^2.1.0",
+    "fix-path": "^3.0.0",
     "html-to-text": "^5.1.1",
     "json-beautify": "^1.0.1",
     "kubernetes-client": "^8.3.7",
@@ -72,8 +80,8 @@
     "url-parse": "^1.4.3"
   },
   "devDependencies": {
-    "electron-builder": "^22.8.0",
-    "electron": "7.2.4",
+    "electron": "^14",
+    "electron-builder": "^22.14.5",
     "nodemon": "^1.17.5",
     "pre-commit": "^1.2.2"
   }

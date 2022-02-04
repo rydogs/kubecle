@@ -6,13 +6,14 @@ const htmlToText = require('html-to-text');
 
 // Fix path issue with k8s client auth
 require('fix-path')();
+
 var mainWindow = null;
 app.on("window-all-closed", function(){
     app.quit();
 });
 
 app.on("ready", function () {
-    mainWindow = new BrowserWindow({ width: 1400, height: 1000, frame: false });
+    mainWindow = new BrowserWindow({ width: 1400, height: 1000, frame: false, webPreferences: { nativeWindowOpen: true } });
     mainWindow.loadURL('http://localhost:23333');
     mainWindow.on("closed", function () {
         mainWindow =  null;
