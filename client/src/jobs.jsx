@@ -10,8 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Tooltip from '@material-ui/core/Tooltip';
 import Editor from './editor';
 import fmt from './fmt';
-import { connect } from 'react-redux';
-
+import useK8sContext from './contextStore';
 import axios from 'axios';
 import SimpleList from './simpleList';
 
@@ -32,19 +31,13 @@ const styles = theme => ({
     }
 });
 
-const mapStateToProps = ({ currentNs, currentContext }) => ({
-    currentNs,
-    currentContext
-});
-
 const Jobs = (props) => {
     const [ jobs, setJobs ] = useState([])
     const [editor, setEditor] = useState({ open: false, content: {}})
-    useEffect(() => fetchJobs(), [props.currentNs, props.currentContext])
+    const { currentContext, currentNs } = useK8sContext()
+    useEffect(() => fetchJobs(), [currentContext, currentNs])
 
     const fetchJobs = () => {
-        const { currentContext, currentNs } = props;
-
         axios
             .get(`/api/namespace/${currentNs}/jobs`, {
                 headers: { 'k8s-context': currentContext }
@@ -65,8 +58,6 @@ const Jobs = (props) => {
     }
 
     const edit = (job) => {
-        const { currentNs } = props;
-
         setEditor(
             {
                 open: true,
@@ -77,8 +68,6 @@ const Jobs = (props) => {
     }
 
     const deleteJob = (jobName) => {
-        const { currentContext, currentNs } = props;
-
         axios
             .delete(`/api/namespace/${currentNs}/jobs/${jobName}`, {
                 headers: {
@@ -136,7 +125,7 @@ const Jobs = (props) => {
             </div>
         );
     }
-    const { classes, currentContext } = props;
+    const { classes } = props;
     const columns = [
         { title: 'Name', field: 'name' },
         { title: 'Image', field: 'imageNames', render: rowData => (<SimpleList data={rowData.imageNames} />) },
@@ -171,9 +160,7 @@ const Jobs = (props) => {
 }
 
 Jobs.propTypes = {
-    classes: PropTypes.object.isRequired,
-    currentContext: PropTypes.string,
-    currentNs: PropTypes.string.isRequired
+    classes: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Jobs));
+export default withStyles(styles)(Jobs);

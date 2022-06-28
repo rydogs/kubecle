@@ -8,8 +8,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Editor from './editor';
 import MaterialTable from 'material-table';
 import fmt from './fmt';
-import { connect } from 'react-redux';
 import SimpleList from './simpleList';
+import useK8sContext from './contextStore';
 
 import axios from 'axios';
 
@@ -27,20 +27,14 @@ const styles = theme => ({
     }
 });
 
-const mapStateToProps = ({ currentNs, currentContext }) => ({
-    currentNs,
-    currentContext
-});
-
 const Services = (props) => {
     const [services, setServices] = useState([])
     const [editor, setEditor] = useState({ open: false, content: {}})
+    const { currentContext, currentNs } = useK8sContext()
 
-    useEffect(() => fetchServices(), [props.currentNs, props.currentContext])
-
+    useEffect(() => fetchServices(), [currentContext, currentNs])
 
     const fetchServices = () => {
-        console.log('fetchService', currentNs, currentContext);
         axios
             .get(`/api/namespace/${currentNs}/services`, {
                 headers: {
@@ -65,7 +59,6 @@ const Services = (props) => {
     }
 
     const edit = (content) => {
-        const { currentNs } = props;
         setEditor({
             open: true,
             content,
@@ -92,7 +85,6 @@ const Services = (props) => {
        );
     }
 
-    const { classes, currentContext } = props;
     const columns = [
         { title: 'Name', field: 'name' },
         { title: 'Type', field: 'type' },
@@ -108,6 +100,7 @@ const Services = (props) => {
 
     return (
         <div style={{ maxWidth: '100%' }}>
+            <span>{currentContext} {currentNs}</span>
             <MaterialTable
                 columns={columns}
                 data={services}
@@ -115,10 +108,8 @@ const Services = (props) => {
                 options={{paging: false, sorting: true}}
             />
             <Editor
-                context={currentContext}
                 content={editor.content}
                 editUrl={editor.editUrl}
-                readOnly={true}
                 open={editor.open}
                 onClose={() => setEditor({ open: false })}
             />
@@ -128,8 +119,6 @@ const Services = (props) => {
 
 Services.propTypes = {
     classes: PropTypes.object.isRequired,
-    currentContext: PropTypes.string,
-    currentNs: PropTypes.string.isRequired
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Services));
+export default withStyles(styles)(Services);

@@ -30,8 +30,8 @@
     "@material-ui/styles": "^4.0.0",
     "axios": ">=0.21.2",
     "copy-to-clipboard": "^3.0.8",
-    "json-beautify": "^1.0.1",
     "handlebars": ">=4.7.7",
+    "json-beautify": "^1.0.1",
     "lodash": "^4.17.13",
     "material-table": "^1.57.2",
     "moment": "^2.22.2",
@@ -48,7 +48,8 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "string-humanize": "^1.0.0",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
