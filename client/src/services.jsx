@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Moment from 'react-moment';
@@ -32,36 +32,15 @@ const mapStateToProps = ({ currentNs, currentContext }) => ({
     currentContext
 });
 
-class Services extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            services: [],
-            editor: {
-                open: false,
-                content: {}
-            }
-        };
-        this.fetchServices = this.fetchServices.bind(this);
-    }
+const Services = (props) => {
+    const [services, setServices] = useState([])
+    const [editor, setEditor] = useState({ open: false, content: {}})
 
-    componentDidMount() {
-        this.fetchServices();
-    }
+    useEffect(() => fetchServices(), [props.currentNs, props.currentContext])
 
-    componentDidUpdate(prevProps, prevStats) {
-        const { currentNs, currentContext } = this.props;
-        const { currentNs: prevNs, currentContext: prevContext } = prevProps;
-        const { editor: prevEditor }  = prevStats;
-        const { editor: currentEditor }  = this.state;
-        if (currentNs !== prevNs || currentContext !== prevContext || currentEditor.open !== prevEditor.open) {
-            this.fetchServices();
-        }
-    }
 
-    fetchServices() {
-        const { currentNs, currentContext } = this.props;
-
+    const fetchServices = () => {
+        console.log('fetchService', currentNs, currentContext);
         axios
             .get(`/api/namespace/${currentNs}/services`, {
                 headers: {
@@ -70,12 +49,12 @@ class Services extends React.Component {
             })
             .then(res => {
                 if (res && res.data && res.data.body) {
-                    this.setState({ services: this.transform(res.data.body.items) });
+                    setServices(transform(res.data.body.items));
                 }
             });
     }
 
-    transform(data) {
+    const transform = (data) => {
         return data.map(d => {
             d.name = d.metadata.name;
             d.type = d.spec.type;
@@ -85,19 +64,16 @@ class Services extends React.Component {
         });
     }
 
-    edit(content) {
-        const { currentNs } = this.props;
-
-        this.setState({
-            editor: {
-                open: true,
-                content,
-                editUrl: `/api/namespace/${currentNs}/services/${content.metadata.name}`
-            }
+    const edit = (content) => {
+        const { currentNs } = props;
+        setEditor({
+            open: true,
+            content,
+            editUrl: `/api/namespace/${currentNs}/services/${content.metadata.name}`
         });
     }
 
-    actions(service) {
+    const actions = (service) => {
        return (
             <div
                 style={{
@@ -108,7 +84,7 @@ class Services extends React.Component {
                     <Fab
                         size="small"
                         color="primary"
-                        onClick={() => this.edit(service)}>
+                        onClick={() => edit(service)}>
                         <BuildIcon />
                     </Fab>
                 </Tooltip>
@@ -116,40 +92,38 @@ class Services extends React.Component {
        );
     }
 
-    render() {
-        const { classes, currentContext } = this.props;
-        const { editor, services } = this.state;
-        const columns = [
-            { title: 'Name', field: 'name' },
-            { title: 'Type', field: 'type' },
-            { title: 'Selectors', field: 'selectors', render: rowData => <SimpleList data={rowData.selectors} /> },
-            { title: 'Ports', field: 'ports', render: rowData => (<SimpleList data={rowData.ports} />) },
-            { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
-            { title: 'Actions', render: rowData => this.actions(rowData)},
-        ].map(c => {
-            c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
-            c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
-            return c;
-        });
-        return (
-            <div style={{ maxWidth: '100%' }}>
-                <MaterialTable
-                    columns={columns}
-                    data={services}
-                    title='Services'
-                    options={{paging: false, sorting: true}}
-                />
-                <Editor
-                    context={currentContext}
-                    content={editor.content}
-                    editUrl={editor.editUrl}
-                    readOnly={true}
-                    open={editor.open}
-                    onClose={() => this.setState({ editor: { open: false } })}
-                />
-            </div>
-        );
-    }
+    const { classes, currentContext } = props;
+    const columns = [
+        { title: 'Name', field: 'name' },
+        { title: 'Type', field: 'type' },
+        { title: 'Selectors', field: 'selectors', render: rowData => <SimpleList data={rowData.selectors} /> },
+        { title: 'Ports', field: 'ports', render: rowData => (<SimpleList data={rowData.ports} />) },
+        { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
+        { title: 'Actions', render: rowData => actions(rowData)},
+    ].map(c => {
+        c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
+        c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
+        return c;
+    });
+
+    return (
+        <div style={{ maxWidth: '100%' }}>
+            <MaterialTable
+                columns={columns}
+                data={services}
+                title='Services'
+                options={{paging: false, sorting: true}}
+            />
+            <Editor
+                context={currentContext}
+                content={editor.content}
+                editUrl={editor.editUrl}
+                readOnly={true}
+                open={editor.open}
+                onClose={() => setEditor({ open: false })}
+            />
+        </div>
+    );
 }
 
 Services.propTypes = {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MaterialTable from 'material-table';
@@ -37,35 +37,13 @@ const mapStateToProps = ({ currentNs, currentContext }) => ({
     currentContext
 });
 
-class Jobs extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            jobs: [],
-            editor: {
-                open: false,
-                content: {}
-            }
-        };
-        this.fetchJobs = this.fetchJobs.bind(this);
-    }
+const Jobs = (props) => {
+    const [ jobs, setJobs ] = useState([])
+    const [editor, setEditor] = useState({ open: false, content: {}})
+    useEffect(() => fetchJobs(), [props.currentNs, props.currentContext])
 
-    componentDidMount() {
-        this.fetchJobs();
-    }
-
-    componentDidUpdate(prevProps, prevStats) {
-        const { currentContext, currentNs } = this.props;
-        const { currentContext: prevContext, currentNs: prevNs } = prevProps;
-        const { editor: prevEditor }  = prevStats;
-        const { editor: currentEditor }  = this.state;
-        if (currentNs !== prevNs || currentContext !== prevContext || currentEditor.open !== prevEditor.open) {
-            this.fetchJobs();
-        }
-    }
-
-    fetchJobs() {
-        const { currentContext, currentNs } = this.props;
+    const fetchJobs = () => {
+        const { currentContext, currentNs } = props;
 
         axios
             .get(`/api/namespace/${currentNs}/jobs`, {
@@ -73,12 +51,12 @@ class Jobs extends React.Component {
             })
             .then(res => {
                 if (res && res.data && res.data.body) {
-                    this.setState({ jobs: this.transform(res.data.body.items) });
+                    setJobs(transform(res.data.body.items));
                 }
             });
     }
 
-    transform(data) {
+    const transform = (data) => {
         return data.map(d => {
             d.name = d.metadata.name;
             d.imageNames = fmt.containerImageNames(d.spec.template.spec.containers);
@@ -86,20 +64,20 @@ class Jobs extends React.Component {
         });
     }
 
-    edit(job) {
-        const { currentNs } = this.props;
+    const edit = (job) => {
+        const { currentNs } = props;
 
-        this.setState({
-            editor: {
+        setEditor(
+            {
                 open: true,
                 content: job,
                 editUrl: `/api/namespace/${currentNs}/jobs/${job.metadata.name}`
             }
-        });
+        );
     }
 
-    delete(jobName) {
-        const { currentContext, currentNs } = this.props;
+    const deleteJob = (jobName) => {
+        const { currentContext, currentNs } = props;
 
         axios
             .delete(`/api/namespace/${currentNs}/jobs/${jobName}`, {
@@ -107,10 +85,10 @@ class Jobs extends React.Component {
                     'k8s-context': currentContext
                 }
             })
-            .then(this.fetchJobs);
+            .then(fetchJobs);
     }
 
-    getStatus(job) {
+    const getStatus = (job) => {
         if (!job.status.conditions) {
             return (
                 <Button size="small" fullWidth color="error">
@@ -136,14 +114,14 @@ class Jobs extends React.Component {
         }
     }
 
-    actions(job) {
+    const actions = (job) => {
         return (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <Tooltip title="Edit" placement="top">
                     <Fab
                         size="small"
                         color="primary"
-                        onClick={() => this.edit(job)}>
+                        onClick={() => edit(job)}>
                         <BuildIcon />
                     </Fab>
                 </Tooltip>
@@ -151,54 +129,45 @@ class Jobs extends React.Component {
                     <Fab
                         size="small"
                         color="secondary"
-                        onClick={() => this.delete(job.metadata.name)}>
+                        onClick={() => deleteJob(job.metadata.name)}>
                         <DeleteIcon />
                     </Fab>
                 </Tooltip>
             </div>
         );
     }
+    const { classes, currentContext } = props;
+    const columns = [
+        { title: 'Name', field: 'name' },
+        { title: 'Image', field: 'imageNames', render: rowData => (<SimpleList data={rowData.imageNames} />) },
+        { title: 'Status', headerStyle: {textAlign: 'center'}, render: rowData => getStatus(rowData) },
+        { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
+        { title: 'Actions', render: rowData => actions(rowData)},
+    ].map(c => {
+        c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
+        c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
+        return c;
+    });
 
-    render() {
-        const { classes, currentContext } = this.props;
-        const { jobs, editor } = this.state;
-        const columns = [
-            { title: 'Name', field: 'name' },
-            { title: 'Image', field: 'imageNames', render: rowData => (<SimpleList data={rowData.imageNames} />) },
-            { title: 'Status', headerStyle: {textAlign: 'center'}, render: rowData => this.getStatus(rowData) },
-            { title: 'Created', render: rowData => (<Moment fromNow>{rowData.metadata.creationTimestamp}</Moment>) },
-            { title: 'Actions', render: rowData => this.actions(rowData)},
-        ].map(c => {
-            c.cellStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.cellStyle);
-            c.headerStyle = Object.assign({padding: '4px 24px 4px 14px'}, c.headerStyle);
-            return c;
-        });
-
-        return (
-            <div style={{ maxWidth: '100%' }}>
-                <MaterialTable
-                    columns={columns}
-                    data={jobs}
-                    title='Jobs'
-                    options={{paging: false, sorting: true}}
-                />
-                <Editor
-                    context={currentContext}
-                    content={editor.content}
-                    editUrl={editor.editUrl}
-                    readOnly={true}
-                    open={editor.open}
-                    onClose={() =>
-                        this.setState({
-                            editor: {
-                                open: false
-                            }
-                        })
-                    }
-                />
-            </div>
-        );
-    }
+    return (
+        <div style={{ maxWidth: '100%' }}>
+            <MaterialTable
+                columns={columns}
+                data={jobs}
+                title='Jobs'
+                options={{paging: false, sorting: true}}
+            />
+            <Editor
+                context={currentContext}
+                content={editor.content}
+                editUrl={editor.editUrl}
+                readOnly={true}
+                open={editor.open}
+                onClose={() => setEditor({open: false})
+                }
+            />
+        </div>
+    );
 }
 
 Jobs.propTypes = {
