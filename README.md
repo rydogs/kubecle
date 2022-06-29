@@ -26,7 +26,7 @@ It also allows you to perform some basic actions:
 * Download binary
   * [MacOS](https://github.com/rydogs/kubecle/releases/latest)
 * Run locallly
-  1. `npm install && npm start`
+  1. `npm install && npm run client-build && npm start`
   2. Open browser to http://localhost:23333
 
 ## How to develop
